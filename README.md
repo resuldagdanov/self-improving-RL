@@ -54,3 +54,12 @@ pip install -U "ray[tune]"
 ```python
 pip install -U "ray[rllib]"
 ```
+
+## Test Training Example
+
+> run default PPO training example with ray.tune
+```sh
+cd highway_environment
+
+python test_train.py
+```
