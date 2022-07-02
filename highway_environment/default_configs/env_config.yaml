@@ -1,48 +1,49 @@
-lanes_count:            1
-vehicles_count:         20
-controlled_vehicles:    1
-duration:               60  # [s]
-simulation_frequency:   10  # [hz]
-policy_frequency:       1  # [hz]
-collision_reward:       -10  # [reward received when colliding with a vehicle]
-offroad_terminal:       false  # [create termination condition for road deviation]
-rew_tgap_range:         [ 0.8, 2.0 ]  # [negative reward is given then time-gap is outside this range]
-rew_tgap_coef:          0.6  # [time-gap punishment multiplier coeficient]
-tgap_mean:              1.2
-tgap_std:               0.25
-speed_range:            [ 5.0, 40.0 ]
-speed_std:              2.5
-min_tgap:               0.5
-max_tgap:               5.0
-min_ttc:                6.0  # [ttc reward is given when ttc < min_ttc]
-max_ttc:                99.0  # [ttc is normalized by deviding ttc by max_ttc]
-rew_ttc_coef:           1.2  # [ttc reward is inversely multiplied with rew_ttc_coef]
-rew_u_range:            [ -0.5, 0.5 ]  # [throttle-brake action reward for being between this range]
-rew_u_coefs:            [ 0.075, 0.3 ]  # [1 idx: positive reward coeficient for throttle-brake in rew_u_range]
-rew_speed_coef:         4.0  # [velocity multiplier for reward function]
-rew_jerk_lim:           3.0  # [negative reward is given when abs(ego jerk) > rew_jerk_lim]
-rew_jerk_coefs:         1.0  # [jerk punishment multiplier]
-manual_control:         false
-offscreen_rendering:    false  # [instruction allows the drawing to be done on surfaces without handling a screen display]
-rendering_mode:         rgb_array  # ['human', 'rgb_array']
-render_agent:           true
-real_time_rendering:    true
-rendering:              false  # [true: to visualize each episode]
-screen_width:           600
-screen_height:          150
-centering_position:     [ 0.3, 0.5 ]
-scaling:                5.5
-show_trajectories:      false
+config:
+    lanes_count:            1
+    vehicles_count:         20
+    controlled_vehicles:    1
+    duration:               60  # [s]
+    simulation_frequency:   10  # [hz]
+    policy_frequency:       1  # [hz]
+    collision_reward:       -10  # [reward received when colliding with a vehicle]
+    offroad_terminal:       false  # [create termination condition for road deviation]
+    rew_tgap_range:         [ 0.8, 2.0 ]  # [negative reward is given then time-gap is outside this range]
+    rew_tgap_coef:          0.6  # [time-gap punishment multiplier coeficient]
+    tgap_mean:              1.2
+    tgap_std:               0.25
+    speed_range:            [ 5.0, 40.0 ]
+    speed_std:              2.5
+    min_tgap:               0.5
+    max_tgap:               5.0
+    min_ttc:                6.0  # [ttc reward is given when ttc < min_ttc]
+    max_ttc:                99.0  # [ttc is normalized by deviding ttc by max_ttc]
+    rew_ttc_coef:           1.2  # [ttc reward is inversely multiplied with rew_ttc_coef]
+    rew_u_range:            [ -0.5, 0.5 ]  # [throttle-brake action reward for being between this range]
+    rew_u_coefs:            [ 0.075, 0.3 ]  # [1 idx: positive reward coeficient for throttle-brake in rew_u_range]
+    rew_speed_coef:         4.0  # [velocity multiplier for reward function]
+    rew_jerk_lim:           3.0  # [negative reward is given when abs(ego jerk) > rew_jerk_lim]
+    rew_jerk_coefs:         1.0  # [jerk punishment multiplier]
+    manual_control:         false
+    offscreen_rendering:    false  # [instruction allows the drawing to be done on surfaces without handling a screen display]
+    rendering_mode:         rgb_array  # ['human', 'rgb_array']
+    render_agent:           true
+    real_time_rendering:    true
+    rendering:              false  # [true: to visualize each episode]
+    screen_width:           600
+    screen_height:          150
+    centering_position:     [ 0.3, 0.5 ]
+    scaling:                5.5
+    show_trajectories:      false
 
-observation:
-    type:               Kinematics
+    observation:
+        type:               Kinematics
 
-action:
-    type:               ContinuousAction
-    acceleration_range: [ -4.0, 4.0 ]  # [m/s^2]
-    steering_range:     [ -1.0, 1.0 ]  # [radian]
-    speed_range:        [ 0.0, 45.0 ]  # [m/s]
-    longitudinal:       true  # [whether to enable throttle control]
-    lateral:            false  # [whether to enable steering control]
-    dynamical:          false  # [whether to simulate dynamics (i.e. friction) rather than kinematics]
-    clip:               true  # [clip action to the defined range]
+    action:
+        type:               ContinuousAction
+        acceleration_range: [ -4.0, 4.0 ]  # [m/s^2]
+        steering_range:     [ -1.0, 1.0 ]  # [radian]
+        speed_range:        [ 0.0, 45.0 ]  # [m/s]
+        longitudinal:       true  # [whether to enable throttle control]
+        lateral:            false  # [whether to enable steering control]
+        dynamical:          false  # [whether to simulate dynamics (i.e. friction) rather than kinematics]
+        clip:               true  # [clip action to the defined range]
