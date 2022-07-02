@@ -37,3 +37,15 @@ cd highway_environment
 
 python create_env.py
 ```
+
+## Package Installation
+
+> install Ray + dependencies for Ray Tune
+```python
+pip install -U "ray[tune]"
+```
+
+> install Ray + dependencies for Ray RLlib
+```python
+pip install -U "ray[rllib]"
+```
