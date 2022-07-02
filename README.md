@@ -38,6 +38,11 @@ cd highway_environment
 python create_env.py
 ```
 
+> install custom highway environment globally
+```python
+python setup.py install
+```
+
 ## Package Installation
 
 > install Ray + dependencies for Ray Tune
