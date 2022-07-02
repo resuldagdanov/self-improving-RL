@@ -2,6 +2,25 @@
 
 Test Verification Algorithms on Gym Highway Environment using Ray RLlib
 
+---
+## Export Repository Path
+
+> save this directory to .bashrc
+```sh
+gedit ~/.bashrc
+```
+
+> paste and save the following to .bashrc file
+```sh
+export BLACK_BOX="LocalPathOfThisRepository"
+```
+
+> execure saved changes
+```sh
+source ~/.bashrc
+```
+
+---
 ## Anaconda Environment Creation
 
 > used python3.7
@@ -16,6 +35,7 @@ conda activate highway
 pip install -r requirements.txt
 ```
 
+---
 ## Environment Installation
 
 > prepare Ubuntu
@@ -43,6 +63,7 @@ python create_env.py
 python setup.py install
 ```
 
+---
 ## Package Installation
 
 > install Ray + dependencies for Ray Tune
@@ -55,6 +76,7 @@ pip install -U "ray[tune]"
 pip install -U "ray[rllib]"
 ```
 
+---
 ## Test Training Example
 
 > run default PPO training example with ray.tune
