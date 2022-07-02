@@ -9,7 +9,7 @@ from highway_env.road.road import Road, RoadNetwork
 from highway_env.utils import near_split
 
 from typing import Tuple, Optional
-from highway_environment.src.observation import Observation
+from highway_environment.envs.observation import Observation
 
 
 class Environment(AbstractEnv):

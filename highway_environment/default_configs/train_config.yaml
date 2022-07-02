@@ -1,5 +1,5 @@
 train:
-    env:                                'highway_environment:highway-environment-v0'
+    env:                                "highway_environment:highway-environment-v0"
     run:                                PPO
     checkpoint_freq:                    50
     checkpoint_at_end:                  true
@@ -10,7 +10,7 @@ train:
     config:
         horizon:                        200
         framework:                      torch
-        env:                            'highway_environment:highway-environment-v0'
+        env:                            "highway_environment:highway-environment-v0"
         gamma:                          0.95
         lr:                             0.0003
         num_gpus:                       0.5

@@ -15,9 +15,9 @@ if __name__ == "__main__":
 
     register(
         id='highway-environment-v0',
-        entry_point='highway_environment.src.environment:Environment',
+        entry_point='highway_environment.envs.environment:Environment',
     )
 
-    env = gym.make('highway-environment-v0')
+    env = gym.make("highway_environment:highway-environment-v0")
 
     print("\n Environment is successfully created as : ", env)

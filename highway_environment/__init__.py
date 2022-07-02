@@ -12,5 +12,5 @@ sys.path.insert(0, parent_directory)
 # register custom highway environment
 register(
     id='highway-environment-v0',
-    entry_point='highway_environment.src:Environment'
+    entry_point='highway_environment.envs:Environment'
 )
