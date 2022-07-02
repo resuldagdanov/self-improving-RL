@@ -20,4 +20,4 @@ if __name__ == "__main__":
 
     env = gym.make('highway-environment-v0')
 
-    print("Environment is successfully created as : ", env)
+    print("\n Environment is successfully created as : ", env)

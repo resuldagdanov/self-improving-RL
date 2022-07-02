@@ -17,7 +17,7 @@ class Environment(AbstractEnv):
     with open(f"./default_configs/env_config.yaml") as f:
         init_config = yaml.safe_load(f)
     
-    def __init__(self, config=init_config):
+    def __init__(self, config=init_config["config"]):
         super(Environment, self).__init__(config)
         
         self.rendering_mode = self.config["rendering_mode"]
