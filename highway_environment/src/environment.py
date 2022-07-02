@@ -14,7 +14,7 @@ from highway_environment.src.observation import Observation
 
 class Environment(AbstractEnv):
 
-    with open(f"default_config.yaml") as f:
+    with open(f"./default_configs/env_config.yaml") as f:
         init_config = yaml.safe_load(f)
     
     def __init__(self, config=init_config):
