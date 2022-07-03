@@ -9,7 +9,7 @@ from ray.tune.logger import pretty_print
 from highway_environment.envs import Environment
 
 
-def initialize_config(env_config_path: str, model_config_path: str) -> tuple:
+def initialize_config(env_config_path: str, model_config_path: str, train_config_path: str) -> tuple:
     # highway environment configirations
     with open(env_config_path) as f:
         env_configs = yaml.safe_load(f)
@@ -18,6 +18,10 @@ def initialize_config(env_config_path: str, model_config_path: str) -> tuple:
     with open(model_config_path) as f:
         model_configs = yaml.safe_load(f)
     
+    # general parameters for training
+    with open(train_config_path) as f:
+        train_config = yaml.safe_load(f)
+    
     # add environment configurations to training config
     general_config = model_configs.copy()
     general_config["env_config"] = env_configs
@@ -25,7 +29,7 @@ def initialize_config(env_config_path: str, model_config_path: str) -> tuple:
     # initialize environment
     env = Environment(config=env_configs["config"])
 
-    return env, general_config
+    return env, general_config, train_config
 
 
 def initialize_model(general_config: dict) -> object:
@@ -36,16 +40,16 @@ def initialize_model(general_config: dict) -> object:
 
 
 if __name__ == "__main__":
-    seed = 12
 
     # get directory paths
     repo_path = os.path.join(os.environ["BLACK_BOX"], "experiments")
     configs_path = os.path.join(repo_path, "configs")
 
     # organize parameters
-    env, general_config = initialize_config(
+    env, general_config, train_config = initialize_config(
         env_config_path=configs_path + "/env_config.yaml",
-        model_config_path=configs_path + "/ppo_config.yaml"
+        model_config_path=configs_path + "/ppo_config.yaml",
+        train_config_path=configs_path + "/train_config.yaml"
     )
 
     # define PPO agent trainer
@@ -53,4 +57,12 @@ if __name__ == "__main__":
         general_config=general_config
     )
 
-    print("trainer : ", trainer)
+    for _ in range(train_config["train_episode_num"]):
+        # perform one iteration of training the policy
+        result = trainer.train()
+        print(pretty_print(result))
+
+        checkpoint = trainer.save()
+        print("checkpoint saved at", checkpoint)
+
+        print("\n\n-------------------------------------------------------------------------------------------")
