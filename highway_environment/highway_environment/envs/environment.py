@@ -1,3 +1,4 @@
+import os
 import yaml
 import numpy as np
 
@@ -7,14 +8,16 @@ from highway_env.envs.common.action import action_factory, Action
 from highway_env.envs.common.graphics import EnvViewer
 from highway_env.road.road import Road, RoadNetwork
 from highway_env.utils import near_split
+from highway_env.vehicle.controller import ControlledVehicle
+from highway_env.vehicle.kinematics import Vehicle
 
 from typing import Tuple, Optional
 from highway_environment.envs.observation import Observation
 
 
 class Environment(AbstractEnv):
-
-    with open(f"./default_configs/env_config.yaml") as f:
+    
+    with open(os.path.join(os.environ["BLACK_BOX"], "highway_environment/highway_environment/default_configs/env_config.yaml")) as f:
         init_config = yaml.safe_load(f)
     
     def __init__(self, config=init_config["config"]):
@@ -67,28 +70,60 @@ class Environment(AbstractEnv):
         other_per_controlled = near_split(self.config["vehicles_count"], num_bins=self.config["controlled_vehicles"])
 
         self.controlled_vehicles = []
-
         for others in other_per_controlled:
-            ego_speed = self.np_random.normal(np.random.uniform(*(self.config["speed_range"])), self.config["speed_std"])
-            
-            controlled_vehicle = self.action_type.vehicle_class.create_random(
-                self.road,
-                speed=ego_speed,
-                lane_id=self.config["initial_lane_id"]
-            )
+
+            # manually set ego vehicle position and speed for verification algorithms
+            if len(self.config["set_manually"]) != 0:
+                vehicle = ControlledVehicle(
+                    road=self.road,
+                    position=self.config["set_manually"]["ego_position"],
+                    heading=self.config["set_manually"]["ego_heading"],
+                    speed=self.config["set_manually"]["ego_speed"],
+                    target_speed=self.config["set_manually"]["ego_target_speed"]
+                )
+                controlled_vehicle = self.action_type.vehicle_class.create_from(vehicle=vehicle)
+
+            # randomly set ego vehicle position and initial velocity
+            else:
+                ego_speed = self.np_random.normal(np.random.uniform(*(self.config["speed_range"])), self.config["speed_std"])
+                
+                controlled_vehicle = self.action_type.vehicle_class.create_random(
+                    road=self.road,
+                    speed=ego_speed,
+                    lane_id=self.config["initial_lane_id"]
+                )
             
             self.controlled_vehicles.append(controlled_vehicle)
             self.road.vehicles.append(controlled_vehicle)
 
             for _ in range(others):
-                tgap = self.np_random.normal(self.config["tgap_mean"], self.config["tgap_std"])
-                tgap = np.clip(tgap, self.config["min_tgap"], self.config["max_tgap"])
-                speed = self.np_random.normal(ego_speed, self.config["speed_std"])
-                v = other_vehicles_type.create_random(self.road, spacing=tgap,speed=speed)
-                target_speed = self.np_random.normal(speed, self.config["speed_std"])
-                v.target_speed = target_speed
+                # manually set other vehicle position and speed for verification algorithms
+                if len(self.config["set_manually"]) != 0:
+                    vehicle = Vehicle(
+                        road=self.road,
+                        position=self.config["set_manually"]["front_position"],
+                        heading=self.config["set_manually"]["front_heading"],
+                        speed=self.config["set_manually"]["front_speed"]
+                    )
 
-                self.road.vehicles.append(v)
+                    other_vehicle = other_vehicles_type.create_from(vehicle=vehicle)
+                    target_speed = self.config["set_manually"]["front_target_speed"]
+
+                # randomly set other vehicle position and initial velocity
+                else:
+                    tgap = self.np_random.normal(self.config["tgap_mean"], self.config["tgap_std"])
+                    tgap = np.clip(tgap, self.config["min_tgap"], self.config["max_tgap"])
+                    speed = self.np_random.normal(ego_speed, self.config["speed_std"])
+
+                    other_vehicle = other_vehicles_type.create_random(
+                        road=self.road,
+                        spacing=tgap,
+                        speed=speed
+                    )
+                    target_speed = self.np_random.normal(speed, self.config["speed_std"])
+                
+                other_vehicle.target_speed = target_speed
+                self.road.vehicles.append(other_vehicle)
 
     def _is_terminal(self) -> bool:
         return self.vehicle.crashed or \
