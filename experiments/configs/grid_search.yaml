@@ -1,0 +1,21 @@
+experiment_name:        grid_search
+agent_name:             PPOTrainer_highway_environment:highway-environment-v0_2022-07-03_19-43-53bhx486c4    # [trained model checkpoint folder in ~/ray_results]
+checkpoint_number:      30      # [trained model saved checkpoint number]
+resume:                 False
+num_samples:            1
+max_eps_length:         250
+
+search_space:
+    distance: 
+        min:            10.0    # [m]
+        max:            40.0    # [m]
+        steps:          6       # [discrete number]
+    
+    velocity:
+        min:            10.0    # [m/s]
+        max:            40.0    # [m/s]
+        steps:          6       # [discrete number]
+
+ray_tune_resources:
+    cpu:                4       # [number of cpu's per worker]
+    gpu:                0.5     # [number of gpu's per worker]
