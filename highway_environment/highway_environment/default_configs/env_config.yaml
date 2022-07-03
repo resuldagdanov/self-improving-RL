@@ -34,6 +34,7 @@ config:
     centering_position:     [ 0.3, 0.5 ]
     scaling:                5.5
     show_trajectories:      false
+    set_manually:           {}
 
     observation:
         type:               Kinematics
