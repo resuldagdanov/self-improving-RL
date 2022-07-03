@@ -1,10 +1,14 @@
+import os
 import yaml
 
 from ray.tune.tune import run_experiments
 
+
+custom_env_path = os.path.join(os.environ["BLACK_BOX"], "highway_environment/highway_environment")
+
 # path to default configurations
-env_config_path = "./default_configs/env_config.yaml"
-train_config_path = "./default_configs/train_config.yaml"
+env_config_path = custom_env_path + "/default_configs/env_config.yaml"
+train_config_path = custom_env_path + "/default_configs/train_config.yaml"
 
 # default highway environment config
 with open(env_config_path) as f:
