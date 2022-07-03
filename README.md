@@ -53,15 +53,18 @@ pip install highway-env==1.5
 
 > register custom environment wrapper class
 ```sh
-cd highway_environment
+cd highway_environment/highway_environment
 
 python create_env.py
 ```
 
 > install custom highway environment globally
 ```python
+cd highway_environment
+
 python setup.py install
 ```
+NOTE: make sure that after each update of Environment class, environment installation has to be performed again
 
 ---
 ## Package Installation
@@ -81,7 +84,7 @@ pip install -U "ray[rllib]"
 
 > run default PPO training example with ray.tune
 ```sh
-cd highway_environment
+cd highway_environment/highway_environment
 
 python test_train.py
 ```
