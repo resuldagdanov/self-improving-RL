@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# ignore training checkpoints
+/experiments/results/trained_models/
