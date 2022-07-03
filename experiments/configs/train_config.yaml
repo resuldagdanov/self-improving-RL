@@ -1,9 +1,8 @@
 experiment_name:                    train
-model:                              PPO
-load_agent_name:                    0GenAgent
-checkpoint_freq:                    50
-checkpoint_at_end:                  true
-train_episode_num:                  100
+load_agent_name:                    PPOTrainer_highway_environment:highway-environment-v0_2022-07-03_19-53-39x_hbub0t
+checkpoint_number:                  60
 
 stop:
     training_iteration:             300
+
+train_or_eval:                      false       # [true: training;  false: evaluation of checkpoint]
