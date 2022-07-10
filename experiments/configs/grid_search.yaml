@@ -1,6 +1,10 @@
 experiment_name:        grid_search
-agent_name:             PPOTrainer_highway_environment:highway-environment-v0_2022-07-03_19-43-53bhx486c4    # [trained model checkpoint folder in ~/ray_results]
+
+# [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
+load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-07-03_19-53-39x_hbub0t
+
 checkpoint_number:      30      # [trained model saved checkpoint number]
+
 resume:                 False
 num_samples:            1
 max_eps_length:         250
