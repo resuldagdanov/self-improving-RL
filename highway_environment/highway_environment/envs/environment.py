@@ -133,11 +133,13 @@ class Environment(AbstractEnv):
     def _info(self, obs: np.ndarray, action: Action, reward: float, terminated: bool) -> dict:
         info = {
             "obs": list(obs),
-            "action": list(action),
+            "ego_action": list(action),
+            "ego_speed": round(self.vehicle.speed, 4),
+            "ego_accel": round(self.observation_type.raw_obs["ego_accel"], 4),
+            "ego_jerk": round(self.observation_type.raw_obs["ego_jerk"], 4),
+            "mio_position": round(self.observation_type.raw_obs["mio_pos"], 4),
+            "mio_speed": round(self.observation_type.raw_obs["mio_vel"], 4),
             "reward": round(reward, 4),
-            "speed": round(self.vehicle.speed, 4),
-            "accel": round(self.observation_type.raw_obs['ego_accel'], 4),
-            "jerk": round(self.observation_type.raw_obs['ego_jerk'], 4),
             "crashed": self.vehicle.crashed,
             "terminated": terminated
         }
