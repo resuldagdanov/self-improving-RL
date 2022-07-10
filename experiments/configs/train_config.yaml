@@ -1,4 +1,6 @@
 experiment_name:                    train
+max_eps_length:                     250
+
 load_agent_name:                    PPOTrainer_highway_environment:highway-environment-v0_2022-07-03_19-53-39x_hbub0t
 checkpoint_number:                  60
 
