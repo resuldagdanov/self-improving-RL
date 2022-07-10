@@ -128,5 +128,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# ignore training checkpoints
+*.csv
+*.json
+*.pkl
+*.txt
+*.events.
+
+# ignore training and validation checkpoints
 /experiments/results/trained_models/
+/experiments/results/validation_checkpoints/
