@@ -2,6 +2,7 @@ config:
     lanes_count:              1
     vehicles_count:           2
     controlled_vehicles:      1
+    episode_length:           250               # [steps]
     duration:                 60                # [s]
     simulation_frequency:     10                # [hz]
     policy_frequency:         1                 # [hz]
