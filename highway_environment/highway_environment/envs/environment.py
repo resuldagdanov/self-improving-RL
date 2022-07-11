@@ -99,30 +99,29 @@ class Environment(AbstractEnv):
             for _ in range(others):
                 # manually set other vehicle position and speed for verification algorithms
                 if len(self.config["set_manually"]) != 0:
-                    vehicle = Vehicle(
+                    vehicle = ControlledVehicle(
                         road=self.road,
                         position=self.config["set_manually"]["front_position"],
                         heading=self.config["set_manually"]["front_heading"],
-                        speed=self.config["set_manually"]["front_speed"]
+                        speed=self.config["set_manually"]["front_speed"],
+                        target_speed=self.config["set_manually"]["front_target_speed"]
                     )
-
                     other_vehicle = other_vehicles_type.create_from(vehicle=vehicle)
-                    target_speed = self.config["set_manually"]["front_target_speed"]
-
+                
                 # randomly set other vehicle position and initial velocity
                 else:
                     tgap = self.np_random.normal(self.config["tgap_mean"], self.config["tgap_std"])
                     tgap = np.clip(tgap, self.config["min_tgap"], self.config["max_tgap"])
                     speed = self.np_random.normal(ego_speed, self.config["speed_std"])
-
+                    
                     other_vehicle = other_vehicles_type.create_random(
                         road=self.road,
                         spacing=tgap,
                         speed=speed
                     )
                     target_speed = self.np_random.normal(speed, self.config["speed_std"])
+                    other_vehicle.target_speed = target_speed
                 
-                other_vehicle.target_speed = target_speed
                 self.road.vehicles.append(other_vehicle)
 
     def _is_terminal(self) -> bool:
