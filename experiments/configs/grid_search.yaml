@@ -12,17 +12,17 @@ max_eps_length:         250
 search_space:
     distance: 
         min:            10.0    # [m]
-        max:            40.0    # [m]
-        steps:          6       # [discrete number]
+        max:            120.0   # [m]
+        steps:          12      # [discrete number]
     
     velocity:
         min:            10.0    # [m/s]
         max:            40.0    # [m/s]
-        steps:          6       # [discrete number]
+        steps:          12      # [discrete number]
 
 ray_tune_resources:
-    cpu:                4       # [number of cpu's per worker]
-    gpu:                0.5     # [number of gpu's per worker]
+    cpu:                2       # [number of CPUs to allocate to the trial]
+    gpu:                0.25    # [number of GPUs to allocate to the trial]
 
 metric:                 null    # [str metric to optimize (should be in tune.report() arguments)]
 mode:                   null    # [str objective to apply ([maximize -> max] or [minimize -> min])]

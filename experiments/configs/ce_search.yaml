@@ -6,22 +6,22 @@ load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_20
 checkpoint_number:      30      # [trained model saved checkpoint number]
 
 resume:                 False
-num_samples:            1296    # [iteration_number x sample_size = num_samples]
-sample_size:            144     # [number of samples per iteration]
+num_samples:            8192    # [iteration_number x sample_size = num_samples]
+sample_size:            256     # [number of samples per iteration]
 max_eps_length:         250
 
 search_space:
     distance: 
         min:            10.0    # [m]
-        max:            40.0    # [m]
+        max:            120.0   # [m]
     
     velocity:
         min:            10.0    # [m/s]
         max:            40.0    # [m/s]
 
 ray_tune_resources:
-    cpu:                4       # [number of cpu's per worker]
-    gpu:                0.5     # [number of gpu's per worker]
+    cpu:                2       # [number of CPUs to allocate to the trial]
+    gpu:                0.20    # [number of GPUs to allocate to the trial]
 
 metric:                 reward  # [metric to optimize (should be in tune.report() arguments)]
 mode:                   max     # [objective to apply ([maximize -> max] or [minimize -> min])]

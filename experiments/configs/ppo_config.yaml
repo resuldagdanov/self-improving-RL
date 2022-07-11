@@ -116,12 +116,12 @@ no_done_at_end:                                 false
 normalize_actions:                              true
 
 num_cpus_for_driver:                            1
-num_cpus_per_worker:                            1
-num_envs_per_worker:                            1
-num_gpus:                                       0.5
-num_gpus_per_worker:                            0.5
+num_cpus_per_worker:                            2
+num_envs_per_worker:                            2
+num_gpus:                                       0.40
+num_gpus_per_worker:                            0.10
 num_sgd_iter:                                   10
-num_workers:                                    0
+num_workers:                                    4
 
 observation_filter:                             NoFilter
 optimizer:                                      {}
