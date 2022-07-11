@@ -54,5 +54,6 @@ if __name__ == "__main__":
     validation_utils.run_search_algorithm(
         agent=agent,
         validation_config=algorithm_config,
-        seach_config=search_configs
+        seach_config=search_configs,
+        search_alg=None
     )

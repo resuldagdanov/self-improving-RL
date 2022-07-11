@@ -1,13 +1,15 @@
 import os
 import yaml
 import argparse
+
+from typing import Optional
 from ray import tune
 
 repo_path = os.path.join(os.environ["BLACK_BOX"], "experiments")
 configs_path = os.path.join(repo_path, "configs")
 
 
-def run_search_algorithm(agent: object, validation_config: dict, seach_config: dict) -> None:
+def run_search_algorithm(agent: object, validation_config: dict, seach_config: Optional[dict] = None, search_alg: Optional[object] = None) -> None:
     local_directory = os.path.join(repo_path, "results/validation_checkpoints")
     save_folder_name = validation_config["experiment_name"] + "_" + validation_config["load_agent_name"] + "_Chkpt" + str(validation_config["checkpoint_number"])
 
@@ -16,7 +18,10 @@ def run_search_algorithm(agent: object, validation_config: dict, seach_config: d
             run_or_experiment   =   agent.simulate,
             num_samples         =   validation_config["num_samples"],
             resources_per_trial =   validation_config["ray_tune_resources"],
+            metric              =   validation_config["metric"],
+            mode                =   validation_config["mode"],
             config              =   seach_config,
+            search_alg          =   search_alg,
             local_dir           =   local_directory, 
             name                =   save_folder_name,
             sync_config         =   tune.SyncConfig(),
@@ -57,3 +62,7 @@ def get_algorithm_config(args: argparse) -> dict:
     algo_config = yaml.load(open(algo_yaml_path), Loader=yaml.FullLoader)
 
     return algo_config
+
+
+def sort_samples(list_sample_results: list, metric: str) -> list:
+    return sorted(list_sample_results, key=lambda value: value.get(metric), reverse=False)
