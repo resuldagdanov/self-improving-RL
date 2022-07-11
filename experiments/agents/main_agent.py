@@ -62,6 +62,9 @@ class MainAgent:
         with open(validation_utils.configs_path + model_config_path) as f:
             model_configs = yaml.safe_load(f)
         
+        # number of workers for verification tests is manually changed to zero
+        model_configs["num_workers"] = 0
+        
         # add environment configurations to training config
         general_config = model_configs.copy()
         general_config["env_config"] = env_configs
