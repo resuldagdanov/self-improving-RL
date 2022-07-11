@@ -83,10 +83,10 @@ class CEOptimizer:
 
         for i in range(Ne):
             params.append([
-                sorted_results[i]['parameters/ego_v1'],
-                sorted_results[i]['parameters/front_v1'],
-                sorted_results[i]['parameters/front_v2'],
-                sorted_results[i]['parameters/delta_dist']
+                sorted_results[i]['config/ego_v1'],
+                sorted_results[i]['config/front_v1'],
+                sorted_results[i]['config/front_v2'],
+                sorted_results[i]['config/delta_dist']
                 ])
         
         # determine new minimum and new maximum limits for uniform distribution
