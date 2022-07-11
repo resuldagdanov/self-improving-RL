@@ -48,15 +48,15 @@ class MainAgent:
             env_configs = yaml.safe_load(f)
         
         # change vehicle initialization parameters according to search space configuration
-        env_configs["set_manually"]["ego_position"] = [ 0.0, 0.0 ]
-        env_configs["set_manually"]["ego_heading"] = 0.0
-        env_configs["set_manually"]["ego_speed"] = search_config["ego_v1"]
-        env_configs["set_manually"]["ego_target_speed"] = 40.0
+        env_configs["config"]["set_manually"]["ego_position"] = [ 0.0, 0.0 ]
+        env_configs["config"]["set_manually"]["ego_heading"] = 0.0
+        env_configs["config"]["set_manually"]["ego_speed"] = search_config["ego_v1"]
+        env_configs["config"]["set_manually"]["ego_target_speed"] = 40.0
 
-        env_configs["set_manually"]["front_position"] = [ search_config["delta_dist"], 0.0 ]
-        env_configs["set_manually"]["front_heading"] = 0.0
-        env_configs["set_manually"]["front_speed"] = search_config["front_v1"]
-        env_configs["set_manually"]["front_target_speed"] = search_config["front_v2"]
+        env_configs["config"]["set_manually"]["front_position"] = [ search_config["delta_dist"], 0.0 ]
+        env_configs["config"]["set_manually"]["front_heading"] = 0.0
+        env_configs["config"]["set_manually"]["front_speed"] = search_config["front_v1"]
+        env_configs["config"]["set_manually"]["front_target_speed"] = search_config["front_v2"]
 
         # training algorithms configurations
         with open(validation_utils.configs_path + model_config_path) as f:
@@ -87,7 +87,7 @@ class MainAgent:
         env = Environment(config=env_configs["config"])
         
         print("\n[INFO]-> Environment:\t", env)
-        return
+        return env
 
     def run_episode(self, env: Environment, agent: object) -> tuple:        
         statistics = {
@@ -112,18 +112,18 @@ class MainAgent:
             action_prediction, state, _ = agent.get_policy().compute_actions([obs]) # NOTE: change this line when model different than PPO is used
 
             # step in the environment with predicted action to get next state
-            obs, reward, done, info = env.step(action_prediction)
+            obs, reward, done, info = env.step(action_prediction[0])
             episode_reward += reward
 
             # store information at every step
             statistics["ego_speeds"].append(info["ego_speed"])
             statistics["ego_accels"].append(info["ego_accel"])
             statistics["ego_jerks"].append(info["ego_jerk"])
-            statistics["ego_actions"].append(info["ego_action"])
+            statistics["ego_actions"].append(info["ego_action"][0])
             statistics["ego_rewards"].append(reward)
             statistics["front_positions"].append(info["mio_position"])
             statistics["front_speeds"].append(info["mio_speed"])
-            
+
             is_crashed = info["crashed"]
             is_terminated = info["terminated"]
 

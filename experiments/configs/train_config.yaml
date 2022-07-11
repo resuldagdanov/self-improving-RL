@@ -1,10 +1,10 @@
 experiment_name:                    train
 max_eps_length:                     250
 
-load_agent_name:                    PPOTrainer_highway_environment:highway-environment-v0_2022-07-03_19-53-39x_hbub0t
+load_agent_name:                    PPOTrainer_highway_environment:highway-environment-v0_2022-07-11_13-14-25s0r035pg
 checkpoint_number:                  60
 
 stop:
     training_iteration:             300
 
-train_or_eval:                      false       # [true: training;  false: evaluation of checkpoint]
+train_or_eval:                      true       # [true: training;  false: evaluation of checkpoint]
