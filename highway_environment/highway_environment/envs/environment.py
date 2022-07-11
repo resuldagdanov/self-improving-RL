@@ -133,13 +133,13 @@ class Environment(AbstractEnv):
     def _info(self, obs: np.ndarray, action: Action, reward: float, terminated: bool) -> dict:
         info = {
             "obs": list(obs),
-            "ego_action": list(action),
-            "ego_speed": round(self.vehicle.speed, 4),
-            "ego_accel": round(self.observation_type.raw_obs["ego_accel"], 4),
-            "ego_jerk": round(self.observation_type.raw_obs["ego_jerk"], 4),
-            "mio_position": round(self.observation_type.raw_obs["mio_pos"], 4),
-            "mio_speed": round(self.observation_type.raw_obs["mio_vel"], 4),
-            "reward": round(reward, 4),
+            "ego_action": action,
+            "ego_speed": self.vehicle.speed,
+            "ego_accel": self.observation_type.raw_obs["ego_accel"],
+            "ego_jerk": self.observation_type.raw_obs["ego_jerk"],
+            "mio_position": self.observation_type.raw_obs["mio_pos"],
+            "mio_speed": self.observation_type.raw_obs["mio_vel"],
+            "reward": reward,
             "crashed": self.vehicle.crashed,
             "terminated": terminated
         }
@@ -191,7 +191,7 @@ class Environment(AbstractEnv):
         # time-gap punishment
         if 0 < tgap < self.config["rew_tgap_range"][0]:
             tgap_rew = max(-1 * (1 / tgap), -10) * self.config["rew_tgap_coef"]
-            speed_rew = 0
+            speed_rew = 0.0
         elif tgap > self.config["rew_tgap_range"][1]:
             tgap_rew = max(-tgap, -10) * self.config["rew_tgap_coef"] / 4
         else:
@@ -215,7 +215,7 @@ class Environment(AbstractEnv):
         else:
             jerk_rew = 0.0
 
-        reward = ttc_rew + speed_rew + eco_rew + jerk_rew + tgap_rew + too_slow
+        reward = float(ttc_rew + speed_rew + eco_rew + jerk_rew + tgap_rew + too_slow)
 
         return reward
     
