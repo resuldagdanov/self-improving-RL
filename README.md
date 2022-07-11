@@ -107,10 +107,24 @@ python ppo_train.py
 
 NOTE:
 * parameters of a trained model should be moved to **/experiments/results/trained_models/** folder from **~/ray_results/** folder
-* please change _train-or-eval_ parameter to false_ inside **/experiments/configs/train_config.yaml** config
+* please change _train-or-eval_ parameter to _false_ inside **/experiments/configs/train_config.yaml** config
 
 ```sh
 cd experiments/training
 
 python ppo_train.py
+```
+
+---
+## Grid-Search Validation
+
+> apply grid-search algorithm verification on a trained rl model
+
+NOTE:
+* check _load-agent-name_ key inside **/experiments/configs/grid_search.yaml** config and make sure that the model is located in **/experiments/results/trained_models/** folder
+
+```sh
+cd experiments/algorithms
+
+python grid_search.py
 ```
