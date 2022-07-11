@@ -163,7 +163,7 @@ class MainAgent:
         # report results to optimize a minimization or a maximization metric variable
         tune.report(
                 crashed         =   is_crashed,
-                episode_lenght  =   episode_steps,
-                episode_reward  =   total_episode_reward,
+                episode_length  =   episode_steps,
+                reward          =   total_episode_reward,
                 statistics      =   statistics
         )
