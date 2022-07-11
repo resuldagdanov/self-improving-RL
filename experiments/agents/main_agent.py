@@ -26,8 +26,6 @@ class MainAgent:
                 start   =   params["distance"]["min"],
                 stop    =   params["distance"]["max"],
                 num     =   params["distance"]["steps"],
-                endpoint=   True,
-                retstep =   True,
                 dtype   =   np.float32
             )
         )
@@ -36,8 +34,6 @@ class MainAgent:
                 start   =   params["velocity"]["min"],
                 stop    =   params["velocity"]["max"],
                 num     =   params["velocity"]["steps"],
-                endpoint=   True,
-                retstep =   True,
                 dtype   =   np.float32
             )
         )
