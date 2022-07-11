@@ -23,3 +23,6 @@ search_space:
 ray_tune_resources:
     cpu:                4       # [number of cpu's per worker]
     gpu:                0.5     # [number of gpu's per worker]
+
+metric:                 null    # [str metric to optimize (should be in tune.report() arguments)]
+mode:                   null    # [str objective to apply ([maximize -> max] or [minimize -> min])]
