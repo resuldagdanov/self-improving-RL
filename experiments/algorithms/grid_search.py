@@ -5,7 +5,8 @@ import ray
 from ray import tune
 from ray.tune.logger import pretty_print
 
-sys.path.append(os.path.join(os.environ["BLACK_BOX"]))
+parent_directory = os.path.join(os.environ["BLACK_BOX"])
+sys.path.append(parent_directory)
 
 from experiments.utils import validation_utils
 from experiments.agents.main_agent import MainAgent
@@ -34,7 +35,11 @@ if __name__ == "__main__":
     print("\n[INFO]-> Distance Space:\t", distance_space)
     print("\n[INFO]-> Velocity Space:\t", velocity_space)
 
-    ray.init()
+    # set project directory for all ray workers
+    runtime_env = {
+        "working_dir": parent_directory
+    }
+    ray.init(runtime_env=runtime_env)
 
     # gridding search space configurations from given parameters
     search_configs = {

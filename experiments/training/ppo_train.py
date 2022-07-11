@@ -3,7 +3,8 @@ import sys
 
 from ray.tune.logger import pretty_print
 
-sys.path.append(os.path.join(os.environ["BLACK_BOX"]))
+parent_directory = os.path.join(os.environ["BLACK_BOX"])
+sys.path.append(parent_directory)
 
 from experiments.utils import training_utils
 

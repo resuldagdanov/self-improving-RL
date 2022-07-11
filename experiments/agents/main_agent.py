@@ -7,9 +7,11 @@ from ray import tune
 from ray.tune.logger import pretty_print
 from ray.rllib.agents.ppo import PPOTrainer
 
-sys.path.append(os.path.join(os.environ["BLACK_BOX"]))
-
 from highway_environment.envs import Environment
+
+parent_directory = os.path.join(os.environ["BLACK_BOX"])
+sys.path.append(parent_directory)
+
 from experiments.utils import validation_utils
 
 
