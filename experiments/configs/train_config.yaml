@@ -8,3 +8,8 @@ stop:
     training_iteration:             300
 
 train_or_eval:                      true       # [true: training;  false: evaluation of checkpoint]
+
+num_cpus_per_worker:                2
+num_envs_per_worker:                2
+num_gpus:                           0.40       # [number of GPUs to be allocated]
+num_gpus_per_worker:                0.40       # [number of GPUs to be used by each worker]
