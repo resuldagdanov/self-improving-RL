@@ -3,6 +3,7 @@ import sys
 import yaml
 import numpy as np
 
+from typing import Optional
 from ray import tune
 from ray.tune.logger import pretty_print
 from ray.rllib.agents.ppo import PPOTrainer
@@ -139,7 +140,7 @@ class MainAgent:
         
         return step_idx, is_crashed, episode_reward, statistics
 
-    def simulate(self, search_config: dict) -> None:
+    def simulate(self, search_config: dict, is_tune_report: Optional[bool] = True):
         # recall trained model configurations within environment parameters
         general_config = self.initialize_config(
             env_config_path     =   "/env_config.yaml",
@@ -163,10 +164,16 @@ class MainAgent:
                     agent       =   model
         )
 
-        # report results to optimize a minimization or a maximization metric variable
-        tune.report(
-                crashed         =   is_crashed,
-                episode_length  =   episode_steps,
-                reward          =   total_episode_reward,
-                statistics      =   statistics
-        )
+        # when ray.tune is run
+        if is_tune_report:
+            # report results to optimize a minimization or a maximization metric variable
+            tune.report(
+                    crashed         =   is_crashed,
+                    episode_length  =   episode_steps,
+                    reward          =   total_episode_reward,
+                    statistics      =   statistics
+            )
+        
+        # when manually statistics are required
+        else:
+            return statistics
