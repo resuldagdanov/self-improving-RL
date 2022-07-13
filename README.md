@@ -128,3 +128,18 @@ cd experiments/algorithms
 
 python grid_search.py
 ```
+
+---
+## Cross-Entropy-Search Validation
+
+> apply cross-entropy-search algorithm verification on a trained rl model
+
+NOTE:
+* check _load-agent-name_ key inside **/experiments/configs/ce_search.yaml** config and make sure that the model is located in **/experiments/results/trained_models/** folder
+* check _number-of-samples_ key inside **/experiments/configs/ce_search.yaml** config is defined as a multiplication of iteration number and sample size per iteration. At each iteration best 10 percent will be selected from batch of sample size to determine next iteration's minimum and maximum limits.
+
+```sh
+cd experiments/algorithms
+
+python ce_search.py
+```
