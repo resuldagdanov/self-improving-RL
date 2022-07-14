@@ -107,12 +107,13 @@ python ppo_train.py
 
 NOTE:
 * parameters of a trained model should be moved to **/experiments/results/trained_models/** folder from **~/ray_results/** folder
-* please change _train-or-eval_ parameter to _false_ inside **/experiments/configs/train_config.yaml** config
+* please check _load-agent-name_ key inside **/experiments/configs/evaluation_config.yaml** config to be the model intended to evaluate
+* consider _initial-space_ key in the same config yaml that represents the initial conditions of the front vehicle while evaluation
 
 ```sh
-cd experiments/training
+cd experiments/evaluation
 
-python ppo_train.py
+python evaluate_model.py
 ```
 
 ---
