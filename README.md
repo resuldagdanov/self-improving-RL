@@ -130,6 +130,20 @@ python grid_search.py
 ```
 
 ---
+## Monte-Carlo-Search Validation
+
+> apply monte-carlo-search algorithm verification on a trained rl model
+
+NOTE:
+* check _load-agent-name_ key inside **/experiments/configs/monte_carlo_search.yaml** config and make sure that the model is located in **/experiments/results/trained_models/** folder
+
+```sh
+cd experiments/algorithms
+
+python monte_carlo_search.py
+```
+
+---
 ## Cross-Entropy-Search Validation
 
 > apply cross-entropy-search algorithm verification on a trained rl model
