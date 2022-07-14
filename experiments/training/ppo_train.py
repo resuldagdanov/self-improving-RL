@@ -23,8 +23,8 @@ if __name__ == "__main__":
         general_config=general_config
     )
 
-    # load defined checkpoint for evalution
-    if train_config["train_or_eval"] is False:
+    # load model from defined checkpoint
+    if train_config["is_restore"] is True:
         checkpoint_num = train_config["checkpoint_number"]
 
         agent_path = os.path.join(training_utils.repo_path, "results/trained_models/" + train_config["load_agent_name"])
@@ -34,18 +34,13 @@ if __name__ == "__main__":
         trainer.restore(checkpoint_path)
         print("\n[INFO]-> Restore Checkpoint:\t", checkpoint_path)
 
-        # evaluate for one iteration
-        eval_results = trainer.evaluate()
-        print("\n[INFO]-> Evaluation Results:\t", pretty_print(eval_results))
-    
     # default training loop
-    else:
-        for _ in range(train_config["stop"]["training_iteration"]):
-            # perform one iteration of training the policy
-            result = trainer.train()
-            print("\n[INFO]-> Training Results:\t", pretty_print(result))
+    for _ in range(train_config["stop"]["training_iteration"]):
+        # perform one iteration of training the policy
+        result = trainer.train()
+        print("\n[INFO]-> Training Results:\t", pretty_print(result))
 
-            checkpoint = trainer.save()
-            print("\n[INFO]-> Checkpoint Saved:\t", checkpoint)
+        checkpoint = trainer.save()
+        print("\n[INFO]-> Checkpoint Saved:\t", checkpoint)
 
-            print("\n\n-------------------------------------------------------------------------------------------")
+        print("\n\n-------------------------------------------------------------------------------------------")

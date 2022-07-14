@@ -7,9 +7,9 @@ load_agent_name:                    PPOTrainer_highway_environment:highway-envir
 checkpoint_number:                  30
 
 stop:
-    training_iteration:             300
+    training_iteration:             100
 
-train_or_eval:                      true       # [true: training;  false: evaluation of checkpoint]
+is_restore:                         false       # [true: load trained checkpoint: load_agent_name]
 
 num_cpus_per_worker:                2
 num_envs_per_worker:                2
