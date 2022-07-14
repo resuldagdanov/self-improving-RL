@@ -1,3 +1,5 @@
+# config for -> python ./experiments/algorithms/grid_search.py
+
 experiment_name:        grid_search
 
 # [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]

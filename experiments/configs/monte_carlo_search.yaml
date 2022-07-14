@@ -1,3 +1,5 @@
+# config for -> python ./experiments/algorithms/monte_carlo_search.py
+
 experiment_name:        monte_carlo_search
 
 # [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]

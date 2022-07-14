@@ -1,3 +1,5 @@
+# config for -> python ./experiments/training/ppo_train.py
+
 experiment_name:                    train
 max_eps_length:                     250
 
