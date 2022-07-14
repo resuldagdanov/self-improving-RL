@@ -152,7 +152,7 @@ class Environment(AbstractEnv):
             # forward action to the vehicle
             if action is not None \
                 and not self.config["manual_control"] \
-                and self.time % int(self.config["simulation_frequency"] // self.config["policy_frequency"]) == 0:
+                    and self.time % int(self.config["simulation_frequency"] // self.config["policy_frequency"]) == 0:
                 
                 self.action_type.act(action)
 
@@ -172,50 +172,49 @@ class Environment(AbstractEnv):
         # get observation dictionary elements without normalizations
         raw_obs = self.observation_type.raw_obs
 
-        # calculate time-gap and time-to-collision
-        tgap = np.clip(raw_obs["mio_pos"] / (raw_obs["ego_speed"] + 1e-5), 0, self.config["max_tgap"])
-        ttc = - raw_obs["mio_pos"] / (raw_obs["mio_vel"] - 1e-5) if raw_obs["mio_vel"] < 0 else self.config["max_ttc"]
-        # ttc = np.clip(ttc, 0, self.config["max_ttc"])
-
         # desired speed reward
         speed_ratio = min(1, raw_obs["ego_speed"] / self.config["speed_range"][1])
         speed_rew = speed_ratio * self.config["rew_speed_coef"]
         
         # too slow ego vehicle punishment
-        if raw_obs["ego_speed"] < 1:
-            too_slow = - 0.5
+        if raw_obs["ego_speed"] < 1.0:
+            too_slow = -0.5
         else:
             too_slow = 0.0
         
+        # calculate time-gap and time-to-collision
+        tgap = np.clip(raw_obs["mio_pos"] / (raw_obs["ego_speed"] + 1e-5), 0, self.config["max_tgap"])
+        ttc = -raw_obs["mio_pos"] / (raw_obs["mio_vel"] - 1e-5) if raw_obs["mio_vel"] < 0 else self.config["max_ttc"]
+
         # time-gap punishment
         if 0 < tgap < self.config["rew_tgap_range"][0]:
-            tgap_rew = max(-1 * (1 / tgap), -10) * self.config["rew_tgap_coef"]
+            tgap_rew = max(-1 / tgap, -10) * self.config["rew_tgap_coef"]
             speed_rew = 0.0
         elif tgap > self.config["rew_tgap_range"][1]:
             tgap_rew = max(-tgap, -10) * self.config["rew_tgap_coef"] / 4
         else:
             tgap_rew = 0.0
         
-        # time-to-collision reward
+        # time-to-collision punishment
         if ttc < self.config["min_ttc"]:
-            ttc_rew = (ttc - self.config["min_ttc"]) / self.config["min_ttc"] * self.config["rew_ttc_coef"]
+            ttc_rew = ((ttc - self.config["min_ttc"]) / self.config["min_ttc"]) * self.config["rew_ttc_coef"]
         else:
             ttc_rew = 0.0
         
         # input action cost
         if not (self.config["rew_u_range"][0] < action[0] < self.config["rew_u_range"][1]):
-            eco_rew = - abs(action[0]) * self.config["rew_u_coefs"][1]
+            eco_rew = -abs(action[0]) * self.config["rew_u_coefs"][1]
         else:
-            eco_rew = - abs(action[0]) * self.config["rew_u_coefs"][0]
+            eco_rew = -abs(action[0]) * self.config["rew_u_coefs"][0]
         
         # jerk punishment
         if abs(raw_obs["ego_jerk"]) > self.config["rew_jerk_lim"]:
-            jerk_rew = - (abs(raw_obs["ego_jerk"]) / 20) * self.config["rew_jerk_coefs"]
+            jerk_rew = -abs(raw_obs["ego_jerk"]) * self.config["rew_jerk_coef"]
         else:
             jerk_rew = 0.0
-
-        reward = float(ttc_rew + speed_rew + eco_rew + jerk_rew + tgap_rew + too_slow)
-
+        
+        reward = float(speed_rew + tgap_rew + ttc_rew + eco_rew + jerk_rew + too_slow)
+        
         return reward
     
     def step(self, action: Action) -> Tuple[np.ndarray, float, bool, dict]:

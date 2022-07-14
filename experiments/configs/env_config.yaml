@@ -8,22 +8,22 @@ config:
     policy_frequency:         1                 # [hz]
     collision_reward:         -10               # [reward received when colliding with a vehicle]
     offroad_terminal:         false             # [create termination condition for road deviation]
-    rew_tgap_range:           [ 0.8, 2.0 ]      # [negative reward is given then time-gap is outside this range]
-    rew_tgap_coef:            0.6               # [time-gap punishment multiplier coeficient]
-    tgap_mean:                1.2
-    tgap_std:                 0.25
     speed_range:              [ 10.0, 40.0 ]    # [m/s]
     speed_std:                2.5
     min_tgap:                 0.5
     max_tgap:                 5.0
+    tgap_mean:                1.2
+    tgap_std:                 0.25
     min_ttc:                  6.0               # [ttc reward is given when ttc < min_ttc]
     max_ttc:                  99.0              # [ttc is normalized by deviding ttc by max_ttc]
+    rew_tgap_range:           [ 0.8, 2.0 ]      # [negative reward is given then time-gap is outside this range]
+    rew_tgap_coef:            0.6               # [time-gap punishment multiplier coeficient]
     rew_ttc_coef:             1.2               # [ttc reward is inversely multiplied with rew_ttc_coef]
     rew_u_range:              [ -0.50, 0.5 ]    # [throttle-brake action reward for being between this range]
     rew_u_coefs:              [ 0.075, 0.3 ]    # [1 idx: positive reward coeficient for throttle-brake in rew_u_range]
     rew_speed_coef:           4.0               # [velocity multiplier for reward function]
     rew_jerk_lim:             3.0               # [negative reward is given when abs(ego jerk) > rew_jerk_lim]
-    rew_jerk_coefs:           1.0               # [jerk punishment multiplier]
+    rew_jerk_coef:            0.05              # [jerk punishment multiplier]
     screen_width:             600               # [px]
     screen_height:            150               # [px]
     centering_position:       [ 0.3, 0.5 ]
@@ -35,7 +35,7 @@ config:
     rendering_mode:           rgb_array         # ['human', 'rgb_array']
     render_agent:             true
     real_time_rendering:      true
-    rendering:                true             # [true: to visualize each episode]
+    rendering:                false             # [true: to visualize each episode]
     set_manually:             {}                # [search space -> when initial speed and positions are set manually, especially during verifications]
 
     observation:

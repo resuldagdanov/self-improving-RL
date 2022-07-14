@@ -3,15 +3,15 @@
 experiment_name:        evaluation
 
 # [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
-load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-07-11_20-22-38rk0yqtp9
+load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-07-14_16-56-435db19vhx
 
-checkpoint_number:      30      # [trained model saved checkpoint number]
+checkpoint_number:      100     # [trained model saved checkpoint number]
 
 simulation_loops:       1       # [each simulation has max_eps_length number of steps]
 max_eps_length:         250     # [maximum number of steps in each episode without collision]
 
 initial_space:
-    distance:           90.0   # [m: this will define initial relative distance of front vehicle]
+    distance:           40.0   # [m: this will define initial relative distance of front vehicle]
     
     velocity:
         min:            10.0    # [m/s; this will also be used for ego and front vehicle initial velocities]
