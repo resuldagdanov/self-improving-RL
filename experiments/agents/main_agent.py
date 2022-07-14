@@ -130,7 +130,7 @@ class MainAgent:
 
             is_crashed = info["crashed"]
             is_terminated = info["terminated"]
-
+            
             if done:
                 if is_crashed:
                     print("\n[INFO]-> Vehicle is Crashed!")
@@ -168,10 +168,10 @@ class MainAgent:
         if is_tune_report:
             # report results to optimize a minimization or a maximization metric variable
             tune.report(
-                    crashed         =   is_crashed,
-                    episode_length  =   episode_steps,
-                    reward          =   total_episode_reward,
-                    statistics      =   statistics
+                crashed         =   is_crashed,
+                episode_length  =   episode_steps,
+                reward          =   total_episode_reward,
+                statistics      =   statistics
             )
         
         # when manually statistics are required

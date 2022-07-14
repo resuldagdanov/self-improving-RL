@@ -1,10 +1,10 @@
 config:
     lanes_count:              1
-    vehicles_count:           2
-    controlled_vehicles:      1
+    vehicles_count:           1                 # [number of IDM vehicles (not controlled vehicles)]
+    controlled_vehicles:      1                 # [number of controlled vehicles]
     episode_length:           250               # [steps]
     duration:                 60                # [s]
-    simulation_frequency:     10                # [hz]
+    simulation_frequency:     15                # [hz]
     policy_frequency:         1                 # [hz]
     collision_reward:         -10               # [reward received when colliding with a vehicle]
     offroad_terminal:         false             # [create termination condition for road deviation]
@@ -24,17 +24,18 @@ config:
     rew_speed_coef:           4.0               # [velocity multiplier for reward function]
     rew_jerk_lim:             3.0               # [negative reward is given when abs(ego jerk) > rew_jerk_lim]
     rew_jerk_coefs:           1.0               # [jerk punishment multiplier]
+    screen_width:             600               # [px]
+    screen_height:            150               # [px]
+    centering_position:       [ 0.3, 0.5 ]
+    scaling:                  5.5
+    other_vehicles_type:      "highway_env.vehicle.behavior.IDMVehicle"
+    show_trajectories:        false
     manual_control:           false
     offscreen_rendering:      false             # [instruction allows the drawing to be done on surfaces without handling a screen display]
     rendering_mode:           rgb_array         # ['human', 'rgb_array']
     render_agent:             true
     real_time_rendering:      true
-    rendering:                false             # [true: to visualize each episode]
-    screen_width:             600
-    screen_height:            150
-    centering_position:       [ 0.3, 0.5 ]
-    scaling:                  5.5
-    show_trajectories:        false
+    rendering:                true             # [true: to visualize each episode]
     set_manually:             {}                # [search space -> when initial speed and positions are set manually, especially during verifications]
 
     observation:
