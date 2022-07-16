@@ -87,8 +87,8 @@ class MainAgent:
         print("\n[INFO]-> Restore Checkpoint:\t", checkpoint_path)
         return trainer
 
-    def initialize_environment(self, env_configs: dict) -> Environment:
-        env = Environment(config=env_configs["config"])
+    def initialize_environment(self, env_configs: dict, scenario_configs: dict) -> Environment:
+        env = Environment(config=env_configs["config"], set_scenario=scenario_configs)
         
         print("\n[INFO]-> Environment:\t", env)
         return env
@@ -140,7 +140,7 @@ class MainAgent:
         
         return step_idx, is_crashed, episode_reward, statistics
 
-    def simulate(self, search_config: dict, is_tune_report: Optional[bool] = True):
+    def simulate(self, search_config: dict, is_tune_report: Optional[bool] = True, scenario_configs: Optional[dict] = {"type": None}):
         # recall trained model configurations within environment parameters
         general_config = self.initialize_config(
             env_config_path     =   "/env_config.yaml",
@@ -150,9 +150,10 @@ class MainAgent:
 
         # create environment object with default parameters
         env = self.initialize_environment(
-            env_configs         =   general_config["env_config"]
+            env_configs         =   general_config["env_config"],
+            scenario_configs    =   scenario_configs
         )
-
+        
         # load trained rl model checkpoint
         model = self.initialize_model(
             general_config      =   general_config

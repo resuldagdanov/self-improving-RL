@@ -1,4 +1,5 @@
 import os
+import sys
 import yaml
 import numpy as np
 
@@ -9,10 +10,14 @@ from highway_env.envs.common.graphics import EnvViewer
 from highway_env.road.road import Road, RoadNetwork
 from highway_env.utils import near_split
 from highway_env.vehicle.controller import ControlledVehicle
-from highway_env.vehicle.kinematics import Vehicle
 
 from typing import Tuple, Optional
 from highway_environment.envs.observation import Observation
+
+parent_directory = os.path.join(os.environ["BLACK_BOX"])
+sys.path.append(parent_directory)
+
+from experiments.utils import scenarios
 
 
 class Environment(AbstractEnv):
@@ -20,13 +25,17 @@ class Environment(AbstractEnv):
     with open(os.path.join(os.environ["BLACK_BOX"], "highway_environment/highway_environment/default_configs/env_config.yaml")) as f:
         init_config = yaml.safe_load(f)
     
-    def __init__(self, config=init_config["config"]):
+    def __init__(self, config: Optional[dict] = init_config["config"], set_scenario: Optional[dict] = {"type": None}) -> None:
+        self.scenario_runner = scenarios.Scenarios(
+            env_config=config,
+            scenario_config=set_scenario
+        )
+
         super(Environment, self).__init__(config)
-        
+
         self.rendering_mode = self.config["rendering_mode"]
         self.enable_auto_render = True
-        self.steps = 0  # actions performed
-
+    
     @classmethod
     def default_config(cls) -> dict:
         config = super().default_config()
@@ -35,7 +44,7 @@ class Environment(AbstractEnv):
         })
         
         return config
-
+    
     def define_spaces(self) -> None:
         self.action_type = action_factory(self, self.config["action"])
         self.action_space = self.action_type.space()
@@ -46,9 +55,15 @@ class Environment(AbstractEnv):
             clip=self.action_type.clip
         )
         self.observation_space = self.observation_type.space()
-
+    
     def _reset(self) -> None:
+        # define lanes and road profile
         self._create_road()
+
+        # whether to set scenario from predefined configurations
+        self.config["set_manually"] = self.scenario_runner.setter()
+        
+        # spawn all vehicles
         self._create_vehicles()
 
         if not self.config["rendering"]:
