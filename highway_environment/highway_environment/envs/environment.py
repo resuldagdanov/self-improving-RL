@@ -142,7 +142,7 @@ class Environment(AbstractEnv):
     def _is_terminal(self) -> bool:
         return self.vehicle.crashed or \
             self.steps >= self.config["episode_length"] or \
-                (self.config["offroad_terminal"] and not self.vehicle.on_road)
+                self.config["offroad_terminal"] and not self.vehicle.on_road
 
     def _info(self, obs: np.ndarray, action: Action, reward: float, terminated: bool) -> dict:
         info = {
