@@ -25,12 +25,10 @@ class Environment(AbstractEnv):
     with open(os.path.join(os.environ["BLACK_BOX"], "highway_environment/highway_environment/default_configs/env_config.yaml")) as f:
         init_config = yaml.safe_load(f)
     
-    def __init__(self, config: Optional[dict] = init_config["config"], set_scenario: Optional[dict] = {"type": None}) -> None:
+    def __init__(self, config: Optional[dict] = init_config["config"]) -> None:
         self.scenario_runner = scenarios.Scenarios(
-            env_config=config,
-            scenario_config=set_scenario
+            env_config=config
         )
-
         super(Environment, self).__init__(config)
 
         self.rendering_mode = self.config["rendering_mode"]

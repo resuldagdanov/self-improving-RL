@@ -4,9 +4,9 @@ import pandas as pd
 
 class Scenarios(object):
 
-    def __init__(self, env_config: dict, scenario_config: dict) -> None:
+    def __init__(self, env_config: dict) -> None:
         self.initial_scenario = env_config["set_manually"]
-        self.scenario_config = scenario_config
+        self.scenario_config = env_config["scenario_config"]
 
     def setter(self) -> dict:
         # set default initializations when manual scenario setter type is not given

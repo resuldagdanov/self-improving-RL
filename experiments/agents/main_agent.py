@@ -87,8 +87,8 @@ class MainAgent:
         print("\n[INFO]-> Restore Checkpoint:\t", checkpoint_path)
         return trainer
 
-    def initialize_environment(self, env_configs: dict, scenario_configs: dict) -> Environment:
-        env = Environment(config=env_configs["config"], set_scenario=scenario_configs)
+    def initialize_environment(self, env_configs: dict) -> Environment:
+        env = Environment(config=env_configs["config"])
         
         print("\n[INFO]-> Environment:\t", env)
         return env
