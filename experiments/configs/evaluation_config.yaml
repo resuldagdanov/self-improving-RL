@@ -10,7 +10,7 @@ checkpoint_number:      100     # [trained model saved checkpoint number]
 simulation_loops:       1       # [each simulation has max_eps_length number of steps]
 max_eps_length:         250     # [maximum number of steps in each episode without collision]
 
-initial_space:
+evaluation_state:
     distance:           40.0   # [m: this will define initial relative distance of front vehicle]
     
     velocity:
