@@ -23,12 +23,20 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
     # general parameters for training
     with open(configs_path + train_config_path) as f:
         train_config = yaml.safe_load(f)
-
+    
     # number of ray resources are set from training configuration
     model_configs["num_gpus"] = train_config["num_gpus"]
     model_configs["num_envs_per_worker"] = train_config["num_envs_per_worker"]
     model_configs["num_cpus_per_worker"] = train_config["num_cpus_per_worker"]
     model_configs["num_gpus_per_worker"] = train_config["num_gpus_per_worker"]
+
+    # set custom scenario loader attributes
+    if "validation_folder_name" in train_config:
+        env_configs["config"]["scenario_config"]["type"] = train_config["validation_type"]
+        
+        env_configs["config"]["scenario_config"]["file_name"] = \
+            os.path.join(repo_path + "/results/validation_checkpoints/" \
+                + train_config["validation_folder_name"], train_config["validation_file_name"])
     
     # add environment configurations to training config
     general_config = model_configs.copy()
