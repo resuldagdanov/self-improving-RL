@@ -26,4 +26,4 @@ ray_tune_resources:
     gpu:                0.20    # [number of GPUs to allocate to the trial]
 
 metric:                 reward  # [metric to optimize (should be in tune.report() arguments)]
-mode:                   max     # [objective to apply ([maximize -> max] or [minimize -> min])]
+mode:                   min     # [objective to apply ([maximize -> max] or [minimize -> min])]

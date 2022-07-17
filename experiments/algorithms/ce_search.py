@@ -76,7 +76,7 @@ class CEOptimizer:
         # re-order list of all samples results in increasing order
         # sorting list of sample results of each discrete sample in an increasing order
         sorted_results = validation_utils.sort_samples(list_sample_results=list(self.sort_buffer), metric=self.algorithm_config["metric"])
-
+        
         params = []
         # using better Ne examples to update min and max
         Ne = 10
@@ -87,7 +87,7 @@ class CEOptimizer:
                 sorted_results[i]['config/front_v1'],
                 sorted_results[i]['config/front_v2'],
                 sorted_results[i]['config/delta_dist']
-                ])
+            ])
         
         # determine new minimum and new maximum limits for uniform distribution
         self.min_point = np.amin(np.array(params), axis=0)
