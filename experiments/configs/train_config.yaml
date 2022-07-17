@@ -11,7 +11,7 @@ stop:
 
 is_restore:                         false       # [true: load trained checkpoint: load_agent_name]
 
-num_cpus_per_worker:                2
-num_envs_per_worker:                2
+num_cpus_per_worker:                3
+num_envs_per_worker:                1
 num_gpus:                           0.60       # [number of GPUs to be allocated]
-num_gpus_per_worker:                0.15       # [number of GPUs to be used by each worker]
+num_gpus_per_worker:                0.20       # [number of GPUs to be used by each worker]

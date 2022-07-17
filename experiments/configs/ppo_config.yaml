@@ -117,7 +117,7 @@ normalize_actions:                              true
 
 num_cpus_for_driver:                            1
 num_sgd_iter:                                   10
-num_workers:                                    4
+num_workers:                                    3
 
 observation_filter:                             NoFilter
 optimizer:                                      {}
