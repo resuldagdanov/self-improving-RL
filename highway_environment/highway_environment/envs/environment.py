@@ -151,6 +151,8 @@ class Environment(AbstractEnv):
             "ego_jerk": self.observation_type.raw_obs["ego_jerk"],
             "mio_position": self.observation_type.raw_obs["mio_pos"],
             "mio_speed": self.observation_type.raw_obs["mio_vel"],
+            "tgap": self.observation_type.raw_obs["tgap"],
+            "ttc": self.observation_type.raw_obs["ttc"],
             "reward": reward,
             "crashed": self.vehicle.crashed,
             "terminated": terminated
@@ -195,10 +197,10 @@ class Environment(AbstractEnv):
         else:
             too_slow = 0.0
         
-        # calculate time-gap and time-to-collision
+        # calculate time-gap and time-to-collision with reward function configuration limits
         tgap = np.clip(raw_obs["mio_pos"] / (raw_obs["ego_speed"] + 1e-5), 0, self.config["max_tgap"])
         ttc = -raw_obs["mio_pos"] / (raw_obs["mio_vel"] - 1e-5) if raw_obs["mio_vel"] < 0 else self.config["max_ttc"]
-
+        
         # time-gap punishment
         if 0 < tgap < self.config["rew_tgap_range"][0]:
             tgap_rew = max(-1 / tgap, -10) * self.config["rew_tgap_coef"]

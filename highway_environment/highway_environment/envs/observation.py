@@ -95,17 +95,23 @@ class Observation(ObservationType):
         else:
             mio_pos = self.features_range["mio_pos"][1]
             mio_vel = self.features_range["mio_vel"][1]
-
+        
         # global position and velocity of mio
         mio_location = mio_pos + self.observer_vehicle.to_dict()["x"]
         mio_speed = mio_vel + ego_speed
+
+        # calculate time-gap and time-to-collision
+        tgap = mio_pos / (ego_speed + 1e-5)
+        ttc = -mio_pos / (mio_vel - 1e-5)
 
         self.raw_obs = {
             "ego_speed": ego_speed,
             "ego_accel": accel,
             "ego_jerk": jerk,
             "mio_pos": mio_pos,
-            "mio_vel": mio_vel
+            "mio_vel": mio_vel,
+            "tgap": tgap,
+            "ttc": ttc
         }
         
         df = pd.DataFrame(self.raw_obs, index=[0])

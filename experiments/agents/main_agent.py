@@ -101,7 +101,9 @@ class MainAgent:
             "ego_actions"    :  [],
             "ego_rewards"    :  [],
             "front_positions":  [],
-            "front_speeds"   :  []
+            "front_speeds"   :  [],
+            "tgap"           :  [],
+            "ttc"            :  []
         }
         is_crashed = False
         episode_reward = 0.0
@@ -127,7 +129,9 @@ class MainAgent:
             statistics["ego_rewards"].append(reward)
             statistics["front_positions"].append(info["mio_position"])
             statistics["front_speeds"].append(info["mio_speed"])
-
+            statistics["tgap"].append(info["tgap"])
+            statistics["ttc"].append(info["ttc"])
+            
             is_crashed = info["crashed"]
             is_terminated = info["terminated"]
             
