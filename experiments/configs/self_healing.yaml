@@ -10,7 +10,7 @@ checkpoint_number:                  30
 stop:
     training_iteration:             100        # [total number of training episodes]
 
-is_restore:                         false      # [true: load trained checkpoint: load_agent_name]
+is_restore:                         true       # [true: load trained checkpoint: load_agent_name]
 
 num_cpus_per_worker:                3
 num_envs_per_worker:                1
