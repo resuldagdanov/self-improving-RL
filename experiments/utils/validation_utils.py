@@ -1,6 +1,7 @@
 import os
 import yaml
 import argparse
+import pandas as pd
 
 from typing import Optional
 from ray import tune
@@ -66,3 +67,30 @@ def get_algorithm_config(args: argparse) -> dict:
 
 def sort_samples(list_sample_results: list, metric: str) -> list:
     return sorted(list_sample_results, key=lambda value: value.get(metric), reverse=False)
+
+
+def extract_csv(file_path: str) -> pd.DataFrame:
+    file_df = pd.read_csv(file_path)
+
+    # parameters should be included in tune.report
+    filtered_df = file_df[[
+            "collision",
+            "episode_length",
+            "episode_min_ttc",
+            "reward",
+            "statistics.ego_speeds",
+            "statistics.ego_accels",
+            "statistics.ego_jerks",
+            "statistics.ego_actions",
+            "statistics.ego_rewards",
+            "statistics.front_positions",
+            "statistics.front_speeds",
+            "statistics.tgap",
+            "statistics.ttc",
+            "config.ego_v1",
+            "config.front_v1",
+            "config.front_v2",
+            "config.delta_dist"
+        ]
+    ]
+    return filtered_df
