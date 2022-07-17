@@ -154,7 +154,7 @@ class Environment(AbstractEnv):
             "tgap": self.observation_type.raw_obs["tgap"],
             "ttc": self.observation_type.raw_obs["ttc"],
             "reward": reward,
-            "crashed": self.vehicle.crashed,
+            "collision": self.vehicle.crashed,
             "terminated": terminated
         }
 
