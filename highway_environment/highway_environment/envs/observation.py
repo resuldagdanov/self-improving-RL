@@ -99,10 +99,10 @@ class Observation(ObservationType):
         # global position and velocity of mio
         mio_location = mio_pos + self.observer_vehicle.to_dict()["x"]
         mio_speed = mio_vel + ego_speed
-
+        
         # calculate time-gap and time-to-collision
-        tgap = mio_pos / (ego_speed + 1e-5)
-        ttc = -mio_pos / (mio_vel - 1e-5)
+        tgap = mio_pos / (ego_speed + 1e-5) if (ego_speed + 1e-5) != 0.0 else 9999
+        ttc = mio_pos / (mio_vel - 1e-5) if (mio_vel - 1e-5) != 0.0 else 9999
 
         self.raw_obs = {
             "ego_speed": ego_speed,
