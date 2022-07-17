@@ -9,9 +9,10 @@ class Scenarios(object):
         self.initial_scenario = env_config["set_manually"]
         self.scenario_config = env_config["scenario_config"]
         
-        self.sampler = Sampler(
-            scenarios_df    =   pd.read_csv(self.scenario_config["file_name"])
-        )
+        if self.scenario_config["type"] is not None:
+            self.sampler = Sampler(
+                scenarios_df    =   pd.read_csv(self.scenario_config["file_name"])
+            )
 
     def setter(self) -> dict:
         # set default initializations when manual scenario setter type is not given
