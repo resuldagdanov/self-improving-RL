@@ -107,6 +107,7 @@ class MainAgent:
         }
         is_collision = False
         episode_reward = 0.0
+        episode_min_ttc = 100.0
         
         # get initial observation
         obs = env.reset()
@@ -131,6 +132,10 @@ class MainAgent:
             statistics["front_speeds"].append(info["mio_speed"])
             statistics["tgap"].append(info["tgap"])
             statistics["ttc"].append(info["ttc"])
+
+            # report minimum ttc observed in this episode
+            if 0.0 < info["ttc"] < episode_min_ttc:
+                episode_min_ttc = info["ttc"]
             
             is_collision = info["collision"]
             is_terminated = info["terminated"]
@@ -142,7 +147,7 @@ class MainAgent:
                     print("\n[INFO]-> Episode is Finished! Length of Episode:\t", step_idx, "steps")
                 break
         
-        return step_idx, is_collision, episode_reward, statistics
+        return step_idx, is_collision, episode_reward, episode_min_ttc, statistics
 
     def simulate(self, search_config: dict, is_tune_report: Optional[bool] = True):
         # recall trained model configurations within environment parameters
@@ -163,7 +168,7 @@ class MainAgent:
         )
 
         # run one simulation and obtain returning parameters
-        episode_steps, is_collision, total_episode_reward, statistics = self.run_episode(
+        episode_steps, is_collision, total_episode_reward, episode_min_ttc, statistics = self.run_episode(
                     env         =   env,
                     agent       =   model
         )
@@ -174,6 +179,7 @@ class MainAgent:
             tune.report(
                 collision       =   is_collision,
                 episode_length  =   episode_steps,
+                episode_min_ttc =   episode_min_ttc,
                 reward          =   total_episode_reward,
                 statistics      =   statistics
             )
