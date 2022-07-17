@@ -158,3 +158,21 @@ cd experiments/algorithms
 
 python ce_search.py
 ```
+
+---
+## Train RL on Custom Verification Scenarios
+
+> after applying verification algorithm, RL agent could be trained again on validation results
+
+NOTE:
+- use **/experiments/configs/self_healing.yaml** config
+- train model with **/experiments/training/self_healing.py** script
+- trained model could be loaded and re-trained from latest checkpoint with _is-restore_ key inside config
+- custom scenario setter class is located at **/experiments/utils/scenarios.py**
+- new scenario loader could be added and referenced with key _validation-type_ in config **self_healing.yaml** config
+
+```sh
+cd experiments/training
+
+python self_healing.py
+```
