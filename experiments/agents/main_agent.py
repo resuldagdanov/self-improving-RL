@@ -116,10 +116,10 @@ class MainAgent:
         for step_idx in range(self.algorithm_config["max_eps_length"]):
 
             # get model action prediction
-            action_prediction, state, _ = agent.get_policy().compute_actions([obs]) # NOTE: change this line when model different than PPO is used
+            action_prediction = agent.compute_single_action(obs) # NOTE: change this line when model different than PPO is used
 
             # step in the environment with predicted action to get next state
-            obs, reward, done, info = env.step(action_prediction[0])
+            obs, reward, done, info = env.step(action_prediction)
             episode_reward += reward
 
             # store information at every step
