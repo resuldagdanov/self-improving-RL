@@ -69,7 +69,7 @@ def sort_samples(list_sample_results: list, metric: str) -> list:
     return sorted(list_sample_results, key=lambda value: value.get(metric), reverse=False)
 
 
-def extract_csv(file_path: str) -> pd.DataFrame:
+def extract_results_csv(file_path: str) -> pd.DataFrame:
     file_df = pd.read_csv(file_path)
 
     # parameters should be included in tune.report
