@@ -6,7 +6,6 @@ import numpy as np
 from highway_env import utils
 from highway_env.envs.common.abstract import AbstractEnv
 from highway_env.envs.common.action import action_factory, Action
-from highway_env.envs.common.graphics import EnvViewer
 from highway_env.road.road import Road, RoadNetwork
 from highway_env.utils import near_split
 from highway_env.vehicle.controller import ControlledVehicle
@@ -64,13 +63,8 @@ class Environment(AbstractEnv):
         # spawn all vehicles
         self._create_vehicles()
 
-        if not self.config["rendering"]:
-            self.viewer = None
-        else:
-            self.viewer = EnvViewer(
-                env=self.action_type.env,
-                config=self.config
-            )
+        if self.config["rendering"]:
+            self.action_type.env.render()
 
     def _create_road(self) -> None:
         self.road = Road(
