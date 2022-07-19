@@ -1,6 +1,7 @@
 import os
 import yaml
 import ray
+import pandas as pd
 
 from ray.tune.logger import pretty_print
 from ray.rllib.agents.ppo import PPOTrainer
@@ -57,3 +58,21 @@ def ppo_model_initialize(general_config: dict) -> object:
 
     print("\n[INFO]-> PPO Trainer:\t", ppo_trainer)
     return ppo_trainer
+
+
+def extract_progress_csv(file_path: str) -> pd.DataFrame:
+    file_df = pd.read_csv(file_path)
+
+    # parameters should be included in progress.csv inside folders of ./trained_models
+    filtered_df = file_df[[
+            "num_agent_steps_trained",
+            "training_iteration",
+            "hist_stats/episode_reward",
+            "hist_stats/episode_lengths",
+            "info/learner/default_policy/learner_stats/policy_loss",
+            "info/learner/default_policy/learner_stats/vf_loss",
+            "info/learner/default_policy/learner_stats/kl",
+            "info/learner/default_policy/learner_stats/entropy"
+        ]
+    ]
+    return filtered_df
