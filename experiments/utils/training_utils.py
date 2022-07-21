@@ -30,7 +30,11 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
     model_configs["num_envs_per_worker"] = train_config["num_envs_per_worker"]
     model_configs["num_cpus_per_worker"] = train_config["num_cpus_per_worker"]
     model_configs["num_gpus_per_worker"] = train_config["num_gpus_per_worker"]
-
+    
+    # remove workers while render is open
+    if env_configs["config"]["rendering"]:
+        model_configs["num_workers"] = 0
+    
     # set custom scenario loader attributes
     if "validation_folder_name" in train_config:
         env_configs["config"]["scenario_config"]["type"] = train_config["validation_type"]
