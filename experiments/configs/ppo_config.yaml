@@ -7,8 +7,10 @@ _tf_policy_handles_more_than_one_loss:          false
 actions_in_input_normalized:                    false
 always_attach_evaluation_results:               false
 batch_mode:                                     truncate_episodes
-clip_actions:                                   false
+clip_actions:                                   true
 clip_param:                                     0.3
+no_done_at_end:                                 false
+normalize_actions:                              true
 collect_metrics_timeout:                        -1
 
 compress_observations:                          false
@@ -86,7 +88,7 @@ model:
     fcnet_hiddens:                              [ 64, 64 ]
     grayscale:                                  false
   
-    framestack:                                 true
+    framestack:                                 false
     free_log_std:                               true
   
     lstm_cell_size:                             64
@@ -111,9 +113,6 @@ multiagent:
     policy_map_capacity:                        100
     policy_mapping_fn:                          null
     replay_mode:                                independent
-
-no_done_at_end:                                 false
-normalize_actions:                              true
 
 num_cpus_for_driver:                            1
 num_sgd_iter:                                   10
