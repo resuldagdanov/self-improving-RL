@@ -189,6 +189,16 @@ class Environment(AbstractEnv):
         # get observation dictionary elements without normalizations
         raw_obs = self.observation_type.raw_obs
 
+        # split action into steering and throttle-brake
+        if self.config["action"]["lateral"] and self.config["action"]["longitudinal"]:
+            steer_action, accel_action = action
+        elif self.config["action"]["lateral"]:
+            steer_action, accel_action = action[0], 0.0
+        elif self.config["action"]["longitudinal"]:
+            steer_action, accel_action = 0.0, action[0]
+        else:
+            steer_action, accel_action = 0.0, 0.0
+        
         # desired speed reward
         speed_ratio = min(1, raw_obs["ego_speed"] / self.config["speed_range"][1])
         speed_rew = speed_ratio * self.config["rew_speed_coef"]
@@ -218,19 +228,34 @@ class Environment(AbstractEnv):
         else:
             ttc_rew = 0.0
         
-        # input action cost
-        if not (self.config["rew_u_range"][0] < action[0] < self.config["rew_u_range"][1]):
-            eco_rew = -abs(action[0]) * self.config["rew_u_coefs"][1]
+        # input acceleration action cost
+        if not (self.config["rew_u_range"][0] < accel_action < self.config["rew_u_range"][1]):
+            eco_rew = abs(accel_action) * self.config["rew_u_coefs"][1]
         else:
-            eco_rew = -abs(action[0]) * self.config["rew_u_coefs"][0]
+            eco_rew = abs(accel_action) * self.config["rew_u_coefs"][0]
         
+        # input steering action cost
+        steer_rew = abs(steer_action) * self.config["rew_steer_coef"]
+
         # jerk punishment
         if abs(raw_obs["ego_jerk"]) > self.config["rew_jerk_lim"]:
-            jerk_rew = -abs(raw_obs["ego_jerk"]) * self.config["rew_jerk_coef"]
+            jerk_rew = abs(raw_obs["ego_jerk"]) * self.config["rew_jerk_coef"]
         else:
             jerk_rew = 0.0
         
-        reward = float(speed_rew + tgap_rew + ttc_rew + eco_rew + jerk_rew + too_slow)
+        # collision punishment
+        if self.vehicle.crashed:
+            collision_rew = self.config["collision_reward"]
+        else:
+            collision_rew = 0.0
+        
+        # out of track punishment
+        if not self.vehicle.on_road:
+            track_rew = self.config["offroad_reward"]
+        else:
+            track_rew = 0.0
+        
+        reward = float(speed_rew + tgap_rew + ttc_rew + eco_rew + steer_rew + jerk_rew + too_slow + collision_rew + track_rew)
         
         return reward
     
