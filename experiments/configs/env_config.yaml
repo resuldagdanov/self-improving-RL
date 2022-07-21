@@ -1,14 +1,15 @@
 config:
-    lanes_count:              1
+    lanes_count:              3
+    initial_lane_id:          1                 # [change this to start agent from spesific lane id]
     vehicles_count:           1                 # [number of IDM vehicles (not controlled vehicles)]
     controlled_vehicles:      1                 # [number of controlled vehicles]
     episode_length:           250               # [steps]
     duration:                 60                # [s]
-    simulation_frequency:     10                # [hz]
+    simulation_frequency:     1                 # [hz]
     policy_frequency:         1                 # [hz]
     
     collision_reward:         -10               # [reward received when colliding with a vehicle]
-    offroad_terminal:         false             # [create termination condition for road deviation]
+    offroad_terminal:         true              # [create termination condition for road deviation]
     speed_range:              [ 10.0, 40.0 ]    # [m/s]
     speed_std:                2.5
     min_tgap:                 0.5               # [minimum time gap limit seconds for reward configuration]
@@ -55,6 +56,6 @@ config:
         steering_range:       [ -1.0, 1.0 ]     # [radian]
         speed_range:          [ 10.0, 40.0 ]    # [m/s]
         longitudinal:         true              # [whether to enable throttle control]
-        lateral:              false             # [whether to enable steering control]
+        lateral:              true              # [whether to enable steering control]
         dynamical:            false             # [whether to simulate dynamics (i.e. friction) rather than kinematics]
         clip:                 true              # [clip action to the defined range]
