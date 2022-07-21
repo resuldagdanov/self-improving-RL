@@ -137,3 +137,6 @@ dmypy.json
 # ignore training and validation checkpoints
 /experiments/results/trained_models/
 /experiments/results/validation_checkpoints/
+
+# ignore archive of results and models
+/experiments/results/archive/
