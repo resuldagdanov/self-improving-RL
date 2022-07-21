@@ -63,8 +63,6 @@ class Observation(ObservationType):
 
         ego_speed = self.observer_vehicle.to_dict()["vx"]
 
-        # df = pd.DataFrame.from_records({"ego_speed": ego_speed}, index=[0])
-        
         if self.initial:
             accel = 0.0
             jerk = 0.0

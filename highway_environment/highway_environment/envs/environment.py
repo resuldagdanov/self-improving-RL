@@ -35,12 +35,7 @@ class Environment(AbstractEnv):
     
     @classmethod
     def default_config(cls) -> dict:
-        config = super().default_config()
-        config.update({
-            "initial_lane_id": None # change this to start agent from spesific lane id
-        })
-        
-        return config
+        return super().default_config()
     
     def define_spaces(self) -> None:
         self.action_type = action_factory(self, self.config["action"])
@@ -86,7 +81,8 @@ class Environment(AbstractEnv):
                     position=self.config["set_manually"]["ego_position"],
                     heading=self.config["set_manually"]["ego_heading"],
                     speed=self.config["set_manually"]["ego_speed"],
-                    target_speed=self.config["set_manually"]["ego_target_speed"]
+                    target_speed=self.config["set_manually"]["ego_target_speed"],
+                    target_lane_index=None
                 )
                 controlled_vehicle = self.action_type.vehicle_class.create_from(vehicle=vehicle)
 
@@ -103,28 +99,40 @@ class Environment(AbstractEnv):
             self.controlled_vehicles.append(controlled_vehicle)
             self.road.vehicles.append(controlled_vehicle)
 
-            for _ in range(others):
+            for idx in range(others):
                 # manually set other vehicle position and speed for verification algorithms
                 if len(self.config["set_manually"]) != 0:
+                    # TODO: should be inside search space
+                    lane_index = ("0", "1", self.config["initial_lane_id"]) if idx == 0 else None
+                    
                     vehicle = ControlledVehicle(
                         road=self.road,
                         position=self.config["set_manually"]["front_position"],
                         heading=self.config["set_manually"]["front_heading"],
                         speed=self.config["set_manually"]["front_speed"],
-                        target_speed=self.config["set_manually"]["front_target_speed"]
+                        target_speed=self.config["set_manually"]["front_target_speed"],
+                        target_lane_index=lane_index
                     )
                     other_vehicle = other_vehicles_type.create_from(vehicle=vehicle)
                 
                 # randomly set other vehicle position and initial velocity
                 else:
+                    # assign lane id same with the ego vehicle's for the first mio vehicle
+                    lane_id = self.config["initial_lane_id"] if idx == 0 else None
+
+                    # randomly select initial conditions
                     tgap = self.np_random.normal(self.config["tgap_mean"], self.config["tgap_std"])
                     tgap = np.clip(tgap, self.config["min_tgap"], self.config["max_tgap"])
                     speed = self.np_random.normal(ego_speed, self.config["speed_std"])
                     
+                    # spawn other vehicle
                     other_vehicle = other_vehicles_type.create_random(
                         road=self.road,
                         spacing=tgap,
-                        speed=speed
+                        speed=speed, # other vehicle velocity in m/s
+                        lane_from=None, # start node of the lane to spawn in
+                        lane_to=None,   # end node of the lane to spawn in
+                        lane_id=lane_id # id of the lane to spawn in
                     )
                     target_speed = self.np_random.normal(speed, self.config["speed_std"])
                     other_vehicle.target_speed = target_speed
