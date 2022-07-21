@@ -114,9 +114,9 @@ multiagent:
     policy_mapping_fn:                          null
     replay_mode:                                independent
 
-num_cpus_for_driver:                            1
+num_cpus_for_driver:                            2
 num_sgd_iter:                                   10
-num_workers:                                    3
+num_workers:                                    0
 
 observation_filter:                             NoFilter
 optimizer:                                      {}
