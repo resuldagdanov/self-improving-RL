@@ -117,7 +117,7 @@ class MainAgent:
 
             # get model action prediction
             action_prediction = agent.compute_single_action(obs) # NOTE: change this line when model different than PPO is used
-
+            
             # step in the environment with predicted action to get next state
             obs, reward, done, info = env.step(action_prediction)
             episode_reward += reward
@@ -126,7 +126,7 @@ class MainAgent:
             statistics["ego_speeds"].append(info["ego_speed"])
             statistics["ego_accels"].append(info["ego_accel"])
             statistics["ego_jerks"].append(info["ego_jerk"])
-            statistics["ego_actions"].append(info["ego_action"][0])
+            statistics["ego_actions"].append(info["ego_action"])
             statistics["ego_rewards"].append(reward)
             statistics["front_positions"].append(info["mio_position"])
             statistics["front_speeds"].append(info["mio_speed"])
@@ -142,7 +142,9 @@ class MainAgent:
             
             if done:
                 if is_collision:
-                    print("\n[INFO]-> Vehicle is Crashed!")
+                    print("\n[INFO]-> Vehicle is Crashed! Length of Episode:\t", step_idx, "steps")
+                elif is_terminated:
+                    print("\n[INFO]-> Vehicle is Out of Track! Length of Episode:\t", step_idx, "steps")
                 else:
                     print("\n[INFO]-> Episode is Finished! Length of Episode:\t", step_idx, "steps")
                 break
