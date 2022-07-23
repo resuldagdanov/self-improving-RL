@@ -8,6 +8,8 @@ from ray import tune
 from ray.tune.logger import pretty_print
 from ray.rllib.agents.ppo import PPOTrainer
 
+from highway_env.road.lane import AbstractLane
+
 from highway_environment.envs import Environment
 
 parent_directory = os.path.join(os.environ["BLACK_BOX"])
@@ -48,14 +50,17 @@ class MainAgent:
         with open(validation_utils.configs_path + env_config_path) as f:
             env_configs = yaml.safe_load(f)
         
+        # initialize vehicles with lateral offset for corresponding lane
+        lateral_offset = env_configs["config"]["initial_lane_id"] * AbstractLane.DEFAULT_WIDTH # 4m default lane width
+        
         # change vehicle initialization parameters according to search space configuration
-        env_configs["config"]["set_manually"]["ego_position"] = [ 0.0, 0.0 ]
-        env_configs["config"]["set_manually"]["ego_heading"] = 0.0
-        env_configs["config"]["set_manually"]["ego_speed"] = search_config["ego_v1"]
-        env_configs["config"]["set_manually"]["ego_target_speed"] = 40.0
+        env_configs["config"]["set_manually"]["ego_position"] = [ 0.0, lateral_offset ]  # [x, y] -> x: longitudinal, y: lateral
+        env_configs["config"]["set_manually"]["ego_heading"] = 0.0 # radians
+        env_configs["config"]["set_manually"]["ego_speed"] = search_config["ego_v1"] # m/s ego vehicle initial speed
+        env_configs["config"]["set_manually"]["ego_target_speed"] = 40.0 # ego vehicle target speed (is not important)
 
-        env_configs["config"]["set_manually"]["front_position"] = [ search_config["delta_dist"], 0.0 ]
-        env_configs["config"]["set_manually"]["front_heading"] = 0.0
+        env_configs["config"]["set_manually"]["front_position"] = [ search_config["delta_dist"], lateral_offset ]
+        env_configs["config"]["set_manually"]["front_heading"] = 0.0 # radians
         env_configs["config"]["set_manually"]["front_speed"] = search_config["front_v1"]
         env_configs["config"]["set_manually"]["front_target_speed"] = search_config["front_v2"]
 
@@ -139,14 +144,21 @@ class MainAgent:
             
             is_collision = info["collision"]
             is_terminated = info["terminated"]
+
+            # print("\n")
+            # print("action : ", info["ego_action"])
+            # print("accel : ", info["ego_accel"])
+            # print("speed : ", info["ego_speed"])
+            # print("position : ",  env.road.vehicles[0].position)
+            # print("heading : ",  env.road.vehicles[0].heading, env.road.vehicles[0].heading * 57.2958)
             
             if done:
                 if is_collision:
-                    print("\n[INFO]-> Vehicle is Crashed! Length of Episode:\t", step_idx, "steps")
+                    print("\n[INFO]-> Vehicle is Crashed! Length of Episode:\t", step_idx, "steps", " Reward:", episode_reward)
                 elif is_terminated:
-                    print("\n[INFO]-> Vehicle is Out of Track! Length of Episode:\t", step_idx, "steps")
+                    print("\n[INFO]-> Vehicle is Out of Track! Length of Episode:\t", step_idx, "steps", " Reward:", episode_reward)
                 else:
-                    print("\n[INFO]-> Episode is Finished! Length of Episode:\t", step_idx, "steps")
+                    print("\n[INFO]-> Episode is Finished! Length of Episode:\t", step_idx, "steps", " Reward:", episode_reward)
                 break
         
         return step_idx, is_collision, episode_reward, episode_min_ttc, statistics
