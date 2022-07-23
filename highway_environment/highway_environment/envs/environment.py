@@ -191,13 +191,13 @@ class Environment(AbstractEnv):
 
         # split action into steering and throttle-brake
         if self.config["action"]["lateral"] and self.config["action"]["longitudinal"]:
-            steer_action, accel_action = action
+            accel_action, steer_action = action
         elif self.config["action"]["lateral"]:
-            steer_action, accel_action = action[0], 0.0
+            accel_action, steer_action = 0.0, action[0]
         elif self.config["action"]["longitudinal"]:
-            steer_action, accel_action = 0.0, action[0]
+            accel_action, steer_action = action[0], 0.0
         else:
-            steer_action, accel_action = 0.0, 0.0
+            accel_action, steer_action = 0.0, 0.0
         
         # desired speed reward
         speed_ratio = min(1, raw_obs["ego_speed"] / self.config["speed_range"][1])
