@@ -6,15 +6,14 @@ from ray.rllib.utils import try_import_torch
 from ray.rllib.utils.annotations import override
 from ray.rllib.utils.typing import List, Dict, TensorType, ModelConfigDict
 from ray.rllib.models.utils import get_activation_fn
-from ray.rllib.models.modelv2 import ModelV2
 from ray.rllib.models.torch.torch_modelv2 import TorchModelV2
-from ray.rllib.models.torch.misc import SlimFC, normc_initializer
+from ray.rllib.models.torch.misc import SlimFC, AppendBiasLayer, normc_initializer
 from ray.rllib.models.preprocessors import get_preprocessor
 
 torch, nn = try_import_torch()
 
 
-class CustomTorchModel(nn.Module, TorchModelV2):
+class CustomTorchModel(TorchModelV2, nn.Module):
 
     def __init__(self,
                 obs_space: gym.spaces.Space,
@@ -26,6 +25,11 @@ class CustomTorchModel(nn.Module, TorchModelV2):
         TorchModelV2.__init__(self, obs_space, action_space, num_outputs, model_config, name)
         nn.Module.__init__(self)
 
+        self.free_log_std = model_config.get("free_log_std")
+        if self.free_log_std:
+            assert num_outputs % 2 == 0, ("num_outputs must be divisible by two", num_outputs)
+            num_outputs = num_outputs // 2
+        
         input_size = get_preprocessor(obs_space)(obs_space).size
         output_size = get_preprocessor(action_space)(action_space).size
 
@@ -48,7 +52,7 @@ class CustomTorchModel(nn.Module, TorchModelV2):
             prev_layer_size = size
 
             # add a batch norm layer
-            policy_layers.append(nn.BatchNorm1d(prev_layer_size))
+            # policy_layers.append(nn.BatchNorm1d(prev_layer_size))
         
         # put everything in sequence to build a parallel set of hidden layers for the policy network
         self.policy_hiddens = nn.Sequential(*policy_layers)
@@ -63,6 +67,10 @@ class CustomTorchModel(nn.Module, TorchModelV2):
                 framework   =   "torch"
             )
         )
+
+        # layer to add the log std vars to the state-dependent means
+        if self.free_log_std:
+            self.append_free_log_std = AppendBiasLayer(num_outputs)
 
         # add hidden layers for value network
         value_layers = []
@@ -83,8 +91,8 @@ class CustomTorchModel(nn.Module, TorchModelV2):
             prev_layer_size = size
 
             # add a batch norm layer
-            value_layers.append(nn.BatchNorm1d(prev_layer_size))
-
+            # value_layers.append(nn.BatchNorm1d(prev_layer_size))
+        
         # build a parallel set of hidden layers for the value network
         self.value_hiddens = nn.Sequential(*value_layers)
 
@@ -101,22 +109,18 @@ class CustomTorchModel(nn.Module, TorchModelV2):
     
     @override(TorchModelV2)
     def forward(self, input_dict: Dict[str, TensorType], state: Optional[List[TensorType]] = [], seq_lens: Optional[TensorType] = None) -> tuple:
-        if len(input_dict) == 1:
-            train_eval_mode = False
-        else:
-            train_eval_mode = True
-        
-        self.policy_hiddens.train(mode=train_eval_mode)
-        self.value_hiddens.train(mode=train_eval_mode)
+        obs = input_dict["obs"].float()
+        obs = obs.reshape(obs.shape[0], -1)
 
-        self.policy_hidden_out = self.policy_hiddens(input_dict["obs"].float())
-        self.value_hidden_out = self.value_hiddens(input_dict["obs"].float())
+        self.policy_hidden_out = self.policy_hiddens(obs)
+        self.value_hidden_out = self.value_hiddens(obs)
 
         # pass through main policy action layer
         policy_out = self.policy_branch(self.policy_hidden_out)
 
-        print("policy_out : ", policy_out, policy_out.shape, type(policy_out))
-
+        if self.free_log_std:
+            policy_out = self.append_free_log_std(policy_out)
+        
         return policy_out, state
 
     @override(TorchModelV2)
@@ -124,6 +128,4 @@ class CustomTorchModel(nn.Module, TorchModelV2):
         assert self.value_hidden_out is not None, "must call forward first!"
         value_out = self.value_branch(self.value_hidden_out)
 
-        print("value_out : ", value_out)
-        
-        return torch.reshape(value_out, [-1])
+        return value_out.squeeze(1)
