@@ -40,8 +40,8 @@ if __name__ == "__main__":
     runtime_env = {
         "working_dir": parent_directory
     }
-    ray.init(runtime_env=runtime_env)    
-
+    ray.init(runtime_env=runtime_env)
+    
     for eps in range(eval_config["simulation_loops"]):
         # run one simulation (episode) loop for defined amount of steps
         statistics = agent.simulate(search_config=initial_conditions, is_tune_report=False)

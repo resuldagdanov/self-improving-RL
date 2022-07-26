@@ -11,6 +11,8 @@ from highway_environment.envs import Environment
 repo_path = os.path.join(os.environ["BLACK_BOX"], "experiments")
 configs_path = os.path.join(repo_path, "configs")
 
+from experiments.models.custom_torch_model import CustomTorchModel
+
 
 def initialize_config(env_config_path: str, model_config_path: str, train_config_path: str) -> tuple:
     # highway environment configirations
@@ -34,6 +36,15 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
     # remove workers while render is open
     if env_configs["config"]["rendering"]:
         model_configs["num_workers"] = 0
+    
+    # use custom nn model if required
+    if train_config["use_custom_torch_model"] is True:
+        model_name = model_configs["model"]["custom_model"]
+
+        if model_name == "CustomTorchModel":
+            ray.rllib.models.ModelCatalog.register_custom_model(model_name, CustomTorchModel)
+        else:
+            print("\n[ERROR]-> Custom Model Named:\t", model_name, "is Not Supported Yet")
     
     # set custom scenario loader attributes
     if "validation_folder_name" in train_config:

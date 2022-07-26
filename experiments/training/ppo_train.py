@@ -17,7 +17,7 @@ if __name__ == "__main__":
         model_config_path="/ppo_config.yaml",
         train_config_path="/train_config.yaml"
     )
-
+    
     # define PPO agent trainer
     trainer = training_utils.ppo_model_initialize(
         general_config=general_config

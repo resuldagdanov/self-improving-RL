@@ -55,7 +55,7 @@ config:
     action:
         type:                 ContinuousAction
         acceleration_range:   [ -4.0, 4.0 ]     # [m/s^2]
-        steering_range:       [ -0.5, 0.5 ]     # [radian]
+        steering_range:       [ -1.0, 1.0 ]     # [radian]
         speed_range:          [ 10.0, 40.0 ]    # [m/s]
         longitudinal:         true              # [whether to enable throttle control]
         lateral:              true              # [whether to enable steering control]

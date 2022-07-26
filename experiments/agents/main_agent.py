@@ -145,6 +145,7 @@ class MainAgent:
             is_collision = info["collision"]
             is_terminated = info["terminated"]
 
+            # print("agent : ", agent.get_policy().model)
             # print("\n")
             # print("action : ", info["ego_action"])
             # print("accel : ", info["ego_accel"])

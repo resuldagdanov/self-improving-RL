@@ -21,7 +21,7 @@ eager_max_retraces:                             20
 eager_tracing:                                  false
 entropy_coeff:                                  0.001
 
-log_level:                                      WARN
+log_level:                                      INFO
 log_sys_usage:                                  true
 monitor:                                        -1
 
@@ -56,14 +56,13 @@ horizon:                                        250
 seed:                                           12
 
 render_env:                                     false
-rollout_fragment_length:                        200
+rollout_fragment_length:                        256
 
 model:
-    _disable_action_flattening:                 false
-    _disable_preprocessor_api:                  false
-    _time_major:                                false
     _use_default_native_models:                 false
-
+    _time_major:                                false
+    
+    use_attention:                              false
     attention_dim:                              64
     attention_head_dim:                         32
     attention_init_gru_gate_bias:               2.0
@@ -78,31 +77,34 @@ model:
     conv_activation:                            relu
     conv_filters:                               null
   
-    custom_action_dist:                         null
-    custom_model:                               null
-    custom_model_config:                        {}
     custom_preprocessor:                        null
-  
-    dim:                                        84
-    fcnet_activation:                           tanh
+    custom_action_dist:                         null
+    custom_model:                               "CustomTorchModel"
+    custom_model_config:
+        fcnet_hiddens:                          [ 64, 64 ]
+        hidden_layer_activation:                relu
+        action_layer_activation:                tanh
+        value_layer_activation:                 null
+    
+    dim:                                        5
+    fcnet_activation:                           relu
     fcnet_hiddens:                              [ 64, 64 ]
     grayscale:                                  false
-  
+
     framestack:                                 false
     free_log_std:                               true
-  
+    no_final_linear:                            false
+    post_fcnet_activation:                      tanh
+    post_fcnet_hiddens:                         [ 64 ]
+    vf_share_layers:                            false
+    zero_mean:                                  true
+
+    use_lstm:                                   false
+    max_seq_len:                                20
     lstm_cell_size:                             64
     lstm_use_prev_action:                       false
     lstm_use_prev_action_reward:                -1
     lstm_use_prev_reward:                       false
-    max_seq_len:                                20  
-    no_final_linear:                            false
-    post_fcnet_activation:                      relu
-    post_fcnet_hiddens:                         []
-    use_attention:                              false
-    use_lstm:                                   false
-    vf_share_layers:                            false
-    zero_mean:                                  true
 
 multiagent:
     count_steps_by:                             env_steps
@@ -153,7 +155,7 @@ tf_session_args:
     log_device_placement:                       false
 
 timesteps_per_iteration:                        0
-train_batch_size:                               4000
+train_batch_size:                               3072
 use_critic:                                     true
 use_gae:                                        true
 vf_clip_param:                                  10.0
@@ -162,7 +164,6 @@ vf_loss_coeff:                                  1.0
 evaluation_config:                              {}
 evaluation_duration:                            10
 evaluation_duration_unit:                       episodes
-evaluation_num_episodes:                        50
 evaluation_num_workers:                         0
 evaluation_parallel_to_training:                false
 
