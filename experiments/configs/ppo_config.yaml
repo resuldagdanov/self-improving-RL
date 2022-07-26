@@ -79,10 +79,12 @@ model:
   
     custom_preprocessor:                        null
     custom_action_dist:                         null
-    custom_model:                               "CustomTorchModel"
+    custom_model:                               null
     custom_model_config:
-        fcnet_hiddens:                          [ 64, 64 ]
-        hidden_layer_activation:                relu
+        policy_fcnet_hiddens:                   [ 64, 64 ]
+        policy_hidden_activation:               relu
+        value_fcnet_hiddens:                    [ 64 ]
+        value_hidden_activation:                relu
         action_layer_activation:                tanh
         value_layer_activation:                 null
     

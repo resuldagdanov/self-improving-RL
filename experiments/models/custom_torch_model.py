@@ -15,7 +15,7 @@ torch, nn = try_import_torch()
 
 
 class CustomTorchModel(nn.Module, TorchModelV2):
-    
+
     def __init__(self,
                 obs_space: gym.spaces.Space,
                 action_space: gym.spaces.Space,
@@ -26,22 +26,21 @@ class CustomTorchModel(nn.Module, TorchModelV2):
         TorchModelV2.__init__(self, obs_space, action_space, num_outputs, model_config, name)
         nn.Module.__init__(self)
 
-        layers = []
-        prev_layer_size = int(np.product(obs_space.shape))
-
         input_size = get_preprocessor(obs_space)(obs_space).size
         output_size = get_preprocessor(action_space)(action_space).size
-        hidden_size = model_config["custom_model_config"]["fcnet_hiddens"]
 
-        # add hidden layers
-        for size in hidden_size:
-            layers.append(
+        # add hidden layers for policy network
+        policy_layers = []
+        prev_layer_size = int(np.product(obs_space.shape))
+
+        for size in model_config["custom_model_config"]["policy_fcnet_hiddens"]:
+            policy_layers.append(
                 SlimFC(
                     in_size         =   prev_layer_size,
                     out_size        =   size,
                     initializer     =   normc_initializer(1.0),
                     activation_fn   =   get_activation_fn(
-                        model_config["custom_model_config"]["hidden_layer_activation"],
+                        model_config["custom_model_config"]["policy_hidden_activation"],
                         framework   =   "torch"
                     )
                 )
@@ -49,21 +48,48 @@ class CustomTorchModel(nn.Module, TorchModelV2):
             prev_layer_size = size
 
             # add a batch norm layer
-            layers.append(nn.BatchNorm1d(prev_layer_size))
+            policy_layers.append(nn.BatchNorm1d(prev_layer_size))
+        
+        # put everything in sequence to build a parallel set of hidden layers for the policy network
+        self.policy_hiddens = nn.Sequential(*policy_layers)
         
         # add main policy action layer
-        self._logits = SlimFC(
+        self.policy_branch = SlimFC(
             in_size         =   prev_layer_size,
             out_size        =   output_size,
-            initializer     =   normc_initializer(1.0),# 0.01),
+            initializer     =   normc_initializer(0.01),
             activation_fn   =   get_activation_fn(
                 model_config["custom_model_config"]["action_layer_activation"],
                 framework   =   "torch"
             )
         )
 
+        # add hidden layers for value network
+        value_layers = []
+        prev_layer_size = int(np.product(obs_space.shape))
+
+        for size in model_config["custom_model_config"]["value_fcnet_hiddens"]:
+            value_layers.append(
+                SlimFC(
+                    in_size         =   prev_layer_size,
+                    out_size        =   size,
+                    initializer     =   normc_initializer(1.0),
+                    activation_fn   =   get_activation_fn(
+                        model_config["custom_model_config"]["value_hidden_activation"],
+                        framework   =   "torch"
+                    )
+                )
+            )
+            prev_layer_size = size
+
+            # add a batch norm layer
+            value_layers.append(nn.BatchNorm1d(prev_layer_size))
+
+        # build a parallel set of hidden layers for the value network
+        self.value_hiddens = nn.Sequential(*value_layers)
+
         # add value function layer
-        self._value_branch = SlimFC(
+        self.value_branch = SlimFC(
             in_size         =   prev_layer_size,
             out_size        =   1,
             initializer     =   normc_initializer(1.0),
@@ -72,27 +98,32 @@ class CustomTorchModel(nn.Module, TorchModelV2):
                 framework   =   "torch"
             )
         )
-
-        self._hidden_layers = nn.Sequential(*layers)
     
-    @override(ModelV2)
+    @override(TorchModelV2)
     def forward(self, input_dict: Dict[str, TensorType], state: Optional[List[TensorType]] = [], seq_lens: Optional[TensorType] = None) -> tuple:
         if len(input_dict) == 1:
             train_eval_mode = False
         else:
             train_eval_mode = True
         
-        self._hidden_layers.train(mode=train_eval_mode)
-        self._hidden_out = self._hidden_layers(input_dict["obs"].float())
+        self.policy_hiddens.train(mode=train_eval_mode)
+        self.value_hiddens.train(mode=train_eval_mode)
+
+        self.policy_hidden_out = self.policy_hiddens(input_dict["obs"].float())
+        self.value_hidden_out = self.value_hiddens(input_dict["obs"].float())
 
         # pass through main policy action layer
-        logits = self._logits(self._hidden_out)
+        policy_out = self.policy_branch(self.policy_hidden_out)
 
-        return logits, state
+        print("policy_out : ", policy_out, policy_out.shape, type(policy_out))
 
-    @override(ModelV2)
+        return policy_out, state
+
+    @override(TorchModelV2)
     def value_function(self) -> torch.tensor:
-        assert self._hidden_out is not None, "must call forward first!"
-        value_out = self._value_branch(self._hidden_out)
+        assert self.value_hidden_out is not None, "must call forward first!"
+        value_out = self.value_branch(self.value_hidden_out)
+
+        print("value_out : ", value_out)
         
         return torch.reshape(value_out, [-1])

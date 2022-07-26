@@ -39,8 +39,9 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
     
     # use custom nn model if required
     if train_config["use_custom_torch_model"] is True:
-        model_name = model_configs["model"]["custom_model"]
+        model_configs["model"]["custom_model"] = "CustomTorchModel" # TODO: change this when new model is implemented
 
+        model_name = model_configs["model"]["custom_model"]
         if model_name == "CustomTorchModel":
             ray.rllib.models.ModelCatalog.register_custom_model(model_name, CustomTorchModel)
         else:
