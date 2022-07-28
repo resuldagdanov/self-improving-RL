@@ -2,6 +2,7 @@ import os
 import sys
 import yaml
 import numpy as np
+import ray
 
 from typing import Optional
 from ray import tune
@@ -16,6 +17,7 @@ parent_directory = os.path.join(os.environ["BLACK_BOX"])
 sys.path.append(parent_directory)
 
 from experiments.utils import validation_utils
+from experiments.models.custom_torch_model import CustomTorchModel
 
 
 class MainAgent:
@@ -70,6 +72,16 @@ class MainAgent:
         
         # number of workers for verification tests is manually changed to zero
         model_configs["num_workers"] = 0
+
+        # use custom nn model if required
+        if self.algorithm_config["use_custom_torch_model"] is True:
+            model_configs["model"]["custom_model"] = "CustomTorchModel" # TODO: change this when new model is implemented
+
+            model_name = model_configs["model"]["custom_model"]
+            if model_name == "CustomTorchModel":
+                ray.rllib.models.ModelCatalog.register_custom_model(model_name, CustomTorchModel)
+            else:
+                print("\n[ERROR]-> Custom Model Named:\t", model_name, "is Not Supported Yet")
         
         # add environment configurations to training config
         general_config = model_configs.copy()
