@@ -20,7 +20,7 @@ if __name__ == "__main__":
     # config for evaluation configurations
     eval_config = validation_utils.get_algorithm_config(args=args)
     print("\n[CONFIG]-> Evalution Configuration:\t", pretty_print(eval_config))
-
+    
     # initialize main agent class
     agent = MainAgent(
         algorithm_config=eval_config

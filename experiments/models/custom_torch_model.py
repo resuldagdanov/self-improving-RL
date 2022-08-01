@@ -118,6 +118,18 @@ class CustomTorchModel(TorchModelV2, nn.Module):
         # pass through main policy action layer
         policy_out = self.policy_branch(self.policy_hidden_out)
 
+        # acceleration is from 0 ti 1;  braking is from 0 to -1
+        accel_brake = policy_out[:, 0].reshape(-1, 1)
+        
+        # only %50 of the steering command will be used
+        steer = 0.5 * policy_out[:, 1].reshape(-1, 1)
+
+        # apply tangent hyperbolic activation functions to actions
+        accel_brake = torch.tanh(accel_brake)
+        steer = torch.tanh(steer)
+        
+        policy_out = torch.cat((steer, accel_brake), 1)
+
         if self.free_log_std:
             policy_out = self.append_free_log_std(policy_out)
         

@@ -51,7 +51,7 @@ gamma:                                          0.95
 kl_coeff:                                       0.2
 kl_target:                                      0.01
 lambda:                                         1.0
-lr:                                             0.0003
+lr:                                             0.001
 horizon:                                        250
 seed:                                           12
 
@@ -81,11 +81,11 @@ model:
     custom_action_dist:                         null
     custom_model:                               null
     custom_model_config:
-        policy_fcnet_hiddens:                   [ 64, 64 ]
+        policy_fcnet_hiddens:                   [ 128, 128, 128 ]
         policy_hidden_activation:               relu
-        value_fcnet_hiddens:                    [ 64 ]
+        value_fcnet_hiddens:                    [ 128, 128, 128 ]
         value_hidden_activation:                relu
-        action_layer_activation:                tanh
+        action_layer_activation:                null
         value_layer_activation:                 null
     
     dim:                                        5
@@ -100,7 +100,7 @@ model:
     post_fcnet_hiddens:                         [ 64 ]
     vf_share_layers:                            false
     zero_mean:                                  true
-
+    
     use_lstm:                                   false
     max_seq_len:                                20
     lstm_cell_size:                             64
@@ -160,7 +160,7 @@ timesteps_per_iteration:                        0
 train_batch_size:                               3072
 use_critic:                                     true
 use_gae:                                        true
-vf_clip_param:                                  10.0
+vf_clip_param:                                  20.0
 vf_loss_coeff:                                  1.0
 
 evaluation_config:                              {}
