@@ -7,7 +7,7 @@ config:
     simulation_frequency:     10                # [hz]
     policy_frequency:         1                 # [hz]
     
-    collision_reward:         -10               # [reward received when colliding with a vehicle]
+    collision_reward:         -10.0             # [reward received when colliding with a vehicle]
     offroad_terminal:         false             # [create termination condition for road deviation]
     speed_range:              [ 10.0, 40.0 ]    # [m/s]
     speed_std:                2.5

@@ -46,17 +46,36 @@ class CEOptimizer:
         print("\n[INFO]-> Search Space:\t", pretty_print(search_configs))
         return search_configs
     
-    # returns same distribution parameters for one iteration,
-    # distribution parameters (min, max) will change when iteration is updated
-    def sample_data(self) -> dict:
-        self.sample_count += 1
-
-        parameters = {
+    # get uniformly sampled initial conditions
+    def uniformly_sample(self) -> dict:
+        return {
             "ego_v1"      : np.random.uniform(low=self.min_point[0], high=self.max_point[0]),
             "front_v1"    : np.random.uniform(low=self.min_point[1], high=self.max_point[1]),
             "front_v2"    : np.random.uniform(low=self.min_point[2], high=self.max_point[2]),
             "delta_dist"  : np.random.uniform(low=self.min_point[3], high=self.max_point[3])
         }
+    
+    # returns same distribution parameters for one iteration,
+    # distribution parameters (min, max) will change when iteration is updated
+    def sample_data(self) -> dict:
+        self.sample_count += 1
+
+        for _ in range(self.algorithm_config["check_impossible_count"]):
+            # check and do not include impossible configurations
+            parameters = self.uniformly_sample()
+
+            if validation_utils.is_impossible_2_stop(
+                initial_distance    =   parameters["delta_dist"],
+                ego_velocity        =   parameters["ego_v1"],
+                front_velocity      =   parameters["front_v1"],
+                ego_acceleration    =   0.0, # TODO: initial ego vehicle acceleration could be added to parameter space
+                front_acceleration  =   self.algorithm_config["desired_comfort_accel"] * \
+                    (1 - np.power(max(parameters["front_v1"], 0) / parameters["front_v2"], self.algorithm_config["velocity_exponent"]))
+            ):
+                continue
+            else:
+                break
+        
         return parameters
 
     # run optimizer code with result

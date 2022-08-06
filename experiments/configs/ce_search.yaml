@@ -3,14 +3,14 @@
 experiment_name:        ce_search
 
 # [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
-load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-07-11_13-14-25s0r035pg
+load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-05_19-02-38we2wyenm
 
-checkpoint_number:      30      # [trained model saved checkpoint number]
+checkpoint_number:      100      # [trained model saved checkpoint number]
 
 resume:                 False
 num_samples:            8192    # [iteration_number x sample_size = num_samples]
 sample_size:            256     # [number of samples per iteration]
-max_eps_length:         250
+max_eps_length:         250     # [maximum number of steps in each episode without collision]
 
 search_space:
     distance: 
@@ -27,3 +27,8 @@ ray_tune_resources:
 
 metric:                 reward  # [metric to optimize (should be in tune.report() arguments)]
 mode:                   min     # [objective to apply ([maximize -> max] or [minimize -> min])]
+
+check_impossible_count: 1000    # [number of counting steps for avoiding impossible to prevent collision scenarios]
+
+velocity_exponent:      4.0     # [IDM vehicle eponent of the velocity term for acceleration calculation (highway_env.vehicle.behavior.IDMVehicle)]
+desired_comfort_accel:  3.0     # [m/s^2 desired maximum acceleration for IDM vehicle (highway_env.vehicle.behavior.IDMVehicle)]
