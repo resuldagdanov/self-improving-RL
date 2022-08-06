@@ -16,7 +16,7 @@ from highway_environment.envs.observation import Observation
 parent_directory = os.path.join(os.environ["BLACK_BOX"])
 sys.path.append(parent_directory)
 
-from experiments.utils import scenarios
+from experiments.utils import scenarios, validation_utils
 
 
 class Environment(AbstractEnv):
@@ -76,6 +76,9 @@ class Environment(AbstractEnv):
         other_vehicles_type = utils.class_from_path(self.config["other_vehicles_type"])
         other_per_controlled = near_split(self.config["vehicles_count"], num_bins=self.config["controlled_vehicles"])
 
+        # reset impossibility condition of avoiding collision
+        self.is_impossible = False
+
         self.controlled_vehicles = []
         for others in other_per_controlled:
 
@@ -131,8 +134,18 @@ class Environment(AbstractEnv):
                 
                 self.road.vehicles.append(other_vehicle)
 
+                # currently only checks impossible to avoid collision scenarios with only front mio vehicles
+                self.is_impossible = validation_utils.is_impossible_2_stop(
+                    initial_distance=other_vehicle.position[0] - controlled_vehicle.position[0],
+                    ego_velocity=controlled_vehicle.speed,
+                    front_velocity=other_vehicle.speed,
+                    ego_acceleration=controlled_vehicle.action["acceleration"],
+                    front_acceleration=other_vehicles_type.COMFORT_ACC_MAX * \
+                        (1 - np.power(max(other_vehicle.speed, 0) / other_vehicle.target_speed, other_vehicles_type.DELTA))
+                )
+    
     def _is_terminal(self) -> bool:
-        return self.vehicle.crashed or \
+        return self.vehicle.crashed or self.is_impossible or \
             self.steps >= self.config["episode_length"] or \
                 self.config["offroad_terminal"] and not self.vehicle.on_road
 
@@ -149,6 +162,7 @@ class Environment(AbstractEnv):
             "ttc": self.observation_type.raw_obs["ttc"],
             "reward": reward,
             "collision": self.vehicle.crashed,
+            "impossible": self.is_impossible,
             "terminated": terminated
         }
 
@@ -222,7 +236,13 @@ class Environment(AbstractEnv):
         else:
             jerk_rew = 0.0
         
-        reward = float(speed_rew + tgap_rew + ttc_rew + eco_rew + jerk_rew + too_slow)
+        # collision punishment
+        if self.vehicle.crashed and not self.is_impossible:
+            collision_rew = self.config["collision_reward"]
+        else:
+            collision_rew = 0.0
+        
+        reward = float(speed_rew + tgap_rew + ttc_rew + eco_rew + jerk_rew + too_slow + collision_rew)
         
         return reward
     

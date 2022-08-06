@@ -138,16 +138,20 @@ class MainAgent:
                 episode_min_ttc = info["ttc"]
             
             is_collision = info["collision"]
+            is_impossible = info["impossible"]
             is_terminated = info["terminated"]
+
+            if is_impossible:
+                print("\n[INFO]-> Collision is Impossible to Avoid!")
             
             if done:
                 if is_collision:
                     print("\n[INFO]-> Vehicle is Crashed!")
                 else:
-                    print("\n[INFO]-> Episode is Finished! Length of Episode:\t", step_idx, "steps")
+                    print("\n[INFO]-> Episode is Finished! Length of Episode:\t", step_idx, "steps and Episode Reward:\t", episode_reward)
                 break
         
-        return step_idx, is_collision, episode_reward, episode_min_ttc, statistics
+        return step_idx, is_collision, is_impossible, episode_reward, episode_min_ttc, statistics
 
     def simulate(self, search_config: dict, is_tune_report: Optional[bool] = True):
         # recall trained model configurations within environment parameters
@@ -168,7 +172,7 @@ class MainAgent:
         )
 
         # run one simulation and obtain returning parameters
-        episode_steps, is_collision, total_episode_reward, episode_min_ttc, statistics = self.run_episode(
+        episode_steps, is_collision, is_impossible, total_episode_reward, episode_min_ttc, statistics = self.run_episode(
                     env         =   env,
                     agent       =   model
         )
@@ -178,6 +182,7 @@ class MainAgent:
             # report results to optimize a minimization or a maximization metric variable
             tune.report(
                 collision       =   is_collision,
+                impossible      =   is_impossible,
                 episode_length  =   episode_steps,
                 episode_min_ttc =   episode_min_ttc,
                 reward          =   total_episode_reward,

@@ -1,6 +1,7 @@
 import os
 import yaml
 import argparse
+import numpy as np
 import pandas as pd
 
 from typing import Optional
@@ -75,6 +76,7 @@ def extract_results_csv(file_path: str) -> pd.DataFrame:
     # parameters should be included in tune.report
     filtered_df = file_df[[
             "collision",
+            "impossible",
             "episode_length",
             "episode_min_ttc",
             "reward",
@@ -94,3 +96,56 @@ def extract_results_csv(file_path: str) -> pd.DataFrame:
         ]
     ]
     return filtered_df
+
+
+def is_impossible_2_stop(initial_distance: float, ego_velocity: float, front_velocity: float, ego_acceleration: float, front_acceleration: float) -> bool:
+        threshold_hard_crash = 4.0 # meters (lenght of the vehicles)
+        max_deceleration = 4 # TODO: get from global config
+        reaction_time = 0.0 # reaction time is 0 for now, but in reality most alert driver has reation time of 1 seconds
+        friction = 1.0  # TODO: include friction when dynamical model is running
+        dt = 1 # seconds (time for forward simulation)
+
+        # speeds of ego vehicle and front vehicle after reaction time is passed
+        velocity_ego_think = ego_velocity + (ego_acceleration * friction * reaction_time)
+        velocity_front_think = front_velocity + (front_acceleration * friction * reaction_time)
+
+        # distance ego vehicle and front vehicle should travel while thinking time is being ellapsed
+        ego_distance_think = (ego_velocity * reaction_time) + (0.5 * ego_acceleration * friction * reaction_time**2)
+        front_distance_think = (front_velocity * reaction_time) + (0.5 * front_acceleration * friction * reaction_time**2)
+
+        # total amount of ego vehicle's braking time with maximum deceleration for given friction
+        brake_time = velocity_ego_think / (max_deceleration * friction)
+
+        # current velocity of the vehicles after reation time is passed
+        ego_instant_velocity = velocity_ego_think
+        front_instant_velocity = velocity_front_think
+
+        ego_instant_position = ego_distance_think
+        front_instant_position = front_distance_think + initial_distance
+
+        # when crashed during reaction time
+        if abs(ego_instant_position - front_instant_position) <= threshold_hard_crash:
+            return True
+
+        # loop every second during braking time
+        sim_steps = np.linspace(reaction_time + dt, reaction_time + brake_time + dt, int(np.ceil(brake_time / dt)))
+
+        for i in range(len(sim_steps)):
+
+            # distance traveled for vehicles while applying maximum deceleration
+            ego_instant_velocity = max((ego_instant_velocity - (max_deceleration * dt)), 0.0)
+            front_instant_velocity = max((front_instant_velocity + (front_acceleration * dt)), 0.0)
+            
+            ego_instant_distance = max(((ego_instant_velocity * dt) - (0.5 * max_deceleration * friction * dt**2)), 0.0)
+            front_instant_distance = max(((front_instant_velocity * dt) + (0.5 * front_acceleration * friction * dt**2)), 0.0)
+
+            # total distance all vehicles travel while ego vehicle brakes
+            ego_instant_position += ego_instant_distance
+            front_instant_position += front_instant_distance
+
+            if abs(ego_instant_position - front_instant_position) <= threshold_hard_crash:
+                return True
+            else:
+                continue
+        
+        return False
