@@ -35,6 +35,8 @@ conda activate highway
 pip install -r requirements.txt
 ```
 
+In order to successfully use GPUs, please install CUDA by following the site : https://pytorch.org/get-started/locally/
+
 ---
 ## Environment Installation
 
@@ -59,7 +61,7 @@ python create_env.py
 ```
 
 > install custom highway environment globally
-```python
+```sh
 cd highway_environment
 
 python setup.py install
