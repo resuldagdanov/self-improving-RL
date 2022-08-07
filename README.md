@@ -176,3 +176,13 @@ cd experiments/training
 
 python self_healing.py
 ```
+
+## Analyse & Visualize Validation Scenarios
+
+> after training and running a verification algorithm, visualize validation and failure scenarios
+
+```sh
+cd experiments/analyses
+
+python3 -m notebook
+```
