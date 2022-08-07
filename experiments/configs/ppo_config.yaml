@@ -162,7 +162,6 @@ vf_loss_coeff:                                  1.0
 evaluation_config:                              {}
 evaluation_duration:                            10
 evaluation_duration_unit:                       episodes
-evaluation_num_episodes:                        50
 evaluation_num_workers:                         0
 evaluation_parallel_to_training:                false
 
