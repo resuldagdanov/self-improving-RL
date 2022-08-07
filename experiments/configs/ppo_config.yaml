@@ -21,7 +21,7 @@ eager_max_retraces:                             20
 eager_tracing:                                  false
 entropy_coeff:                                  0.001
 
-log_level:                                      WARN
+log_level:                                      INFO
 log_sys_usage:                                  true
 monitor:                                        -1
 
