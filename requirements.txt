@@ -8,7 +8,6 @@ backcall==0.2.0
 bleach==5.0.0
 bondpy==1.8.5
 cachetools==5.2.0
-carla==0.9.10
 catkin==0.7.29
 certifi==2021.10.8
 cffi==1.15.0
