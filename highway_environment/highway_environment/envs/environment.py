@@ -134,14 +134,16 @@ class Environment(AbstractEnv):
                 
                 self.road.vehicles.append(other_vehicle)
 
+                # make extra first action to compute an initial acceleration of the other vehicle
+                other_vehicle.act()
+                
                 # currently only checks impossible to avoid collision scenarios with only front mio vehicles
                 self.is_impossible = validation_utils.is_impossible_2_stop(
                     initial_distance=other_vehicle.position[0] - controlled_vehicle.position[0],
                     ego_velocity=controlled_vehicle.speed,
                     front_velocity=other_vehicle.speed,
                     ego_acceleration=controlled_vehicle.action["acceleration"],
-                    front_acceleration=other_vehicles_type.COMFORT_ACC_MAX * \
-                        (1 - np.power(max(other_vehicle.speed, 0) / other_vehicle.target_speed, other_vehicles_type.DELTA))
+                    front_acceleration=other_vehicle.action["acceleration"]
                 )
     
     def _is_terminal(self) -> bool:

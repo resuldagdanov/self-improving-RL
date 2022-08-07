@@ -29,9 +29,9 @@ if __name__ == "__main__":
 
     # set-up initial configurations with given parameters
     initial_conditions = {
-        'ego_v1'    : eval_config["evaluation_state"]["velocity"]["min"],
-        'front_v1'  : eval_config["evaluation_state"]["velocity"]["min"],
-        'front_v2'  : eval_config["evaluation_state"]["velocity"]["max"],
+        'ego_v1'    : eval_config["evaluation_state"]["ego_velocity"]["initial_value"],
+        'front_v1'  : eval_config["evaluation_state"]["front_velocity"]["initial_value"],
+        'front_v2'  : eval_config["evaluation_state"]["front_velocity"]["target_value"],
         'delta_dist': eval_config["evaluation_state"]["distance"]
     }
     print("\n[INFO]-> Initial Conditions:\t", pretty_print(initial_conditions))

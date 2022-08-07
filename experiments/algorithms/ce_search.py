@@ -63,14 +63,19 @@ class CEOptimizer:
         for _ in range(self.algorithm_config["check_impossible_count"]):
             # check and do not include impossible configurations
             parameters = self.uniformly_sample()
-
+            
+            # TODO: initial ego vehicle acceleration could be added to parameter space
+            ego_acceleration = 0.0
+            front_acceleration = np.clip(self.algorithm_config["desired_comfort_accel"] * \
+                (1 - np.power(max(parameters["front_v1"], 0) / parameters["front_v2"], self.algorithm_config["velocity_exponent"])), \
+                    self.algorithm_config["front_accel_range"][0], self.algorithm_config["front_accel_range"][1])
+            
             if validation_utils.is_impossible_2_stop(
                 initial_distance    =   parameters["delta_dist"],
                 ego_velocity        =   parameters["ego_v1"],
                 front_velocity      =   parameters["front_v1"],
-                ego_acceleration    =   0.0, # TODO: initial ego vehicle acceleration could be added to parameter space
-                front_acceleration  =   self.algorithm_config["desired_comfort_accel"] * \
-                    (1 - np.power(max(parameters["front_v1"], 0) / parameters["front_v2"], self.algorithm_config["velocity_exponent"]))
+                ego_acceleration    =   ego_acceleration, 
+                front_acceleration  =   front_acceleration
             ):
                 continue
             else:
