@@ -186,3 +186,46 @@ cd experiments/analyses
 
 python3 -m notebook
 ```
+
+## Slurm Training & Verification
+
+> submit a batch script to slurm for training an RL model
+
+```sh
+cd experiments/training
+
+conda activate highway
+
+# checkout resource allocations before submitting a slurm batch
+sbatch slurm_train.sh
+```
+
+> submit a batch script to slurm for applying selected verification algorithm
+
+```sh
+cd experiments/algorithms
+
+conda activate highway
+
+# checkout selected algorithm and resource allocations before submitting a slurm batch
+sbatch slurm_verification.sh
+```
+
+> basic slurm commands
+
+```sh
+# submit a batch script to Slurm for processing
+sbatch <job-id>
+
+# show information about your job(s) in the queue
+squeue
+
+# show information about current and previous jobs
+sacct
+
+# end or cancel a queued job
+scancel <job-id>
+
+# read lats lines of terminal logs (.err or .out)
+tail -f <job-id>.out
+```
