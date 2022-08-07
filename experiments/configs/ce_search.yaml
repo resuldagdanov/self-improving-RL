@@ -32,3 +32,4 @@ check_impossible_count: 1000    # [number of counting steps for avoiding impossi
 
 velocity_exponent:      4.0     # [IDM vehicle eponent of the velocity term for acceleration calculation (highway_env.vehicle.behavior.IDMVehicle)]
 desired_comfort_accel:  3.0     # [m/s^2 desired maximum acceleration for IDM vehicle (highway_env.vehicle.behavior.IDMVehicle)]
+front_accel_range:      [-6, 6] # [front acceleration range for IDM vehicle (highway_env.vehicle.behavior.IDMVehicle) ACC_MAX]

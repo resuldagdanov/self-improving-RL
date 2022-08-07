@@ -226,6 +226,6 @@ sacct
 # end or cancel a queued job
 scancel <job-id>
 
-# read lats lines of terminal logs (.err or .out)
+# read last lines of terminal logs (.err or .out)
 tail -f <job-id>.out
 ```
