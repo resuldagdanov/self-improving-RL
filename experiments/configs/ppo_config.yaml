@@ -56,7 +56,7 @@ horizon:                                        250
 seed:                                           12
 
 render_env:                                     false
-rollout_fragment_length:                        200
+rollout_fragment_length:                        256
 
 model:
     _disable_action_flattening:                 false
@@ -153,7 +153,7 @@ tf_session_args:
     log_device_placement:                       false
 
 timesteps_per_iteration:                        0
-train_batch_size:                               4000
+train_batch_size:                               3072
 use_critic:                                     true
 use_gae:                                        true
 vf_clip_param:                                  10.0
