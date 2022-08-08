@@ -56,7 +56,7 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
     return env, general_config, train_config
 
 
-def ppo_model_initialize(general_config: dict) -> object:
+def ppo_model_initialize(general_config: dict) -> PPOTrainer:
     ray.init()
     ppo_trainer = PPOTrainer(
         config=general_config,
@@ -86,7 +86,7 @@ def extract_progress_csv(file_path: str) -> pd.DataFrame:
     return filtered_df
 
 
-def custom_log_creator(custom_path, custom_str):
+def custom_log_creator(custom_path: str, custom_str: str) -> UnifiedLogger:
     timestr = datetime.datetime.today().strftime("%Y-%m-%d_%H-%M-%S")
     logdir_prefix = "{}_{}".format(custom_str, timestr)
 
@@ -98,3 +98,12 @@ def custom_log_creator(custom_path, custom_str):
         return UnifiedLogger(config, logdir, loggers=None)
     
     return logger_creator
+
+
+def get_latest_folder_path(given_directory: str) -> str:
+    all_dirs = [os.path.join(given_directory,d) for d in os.listdir(given_directory)]
+    
+    if len(all_dirs) == 0:
+        return None
+    else:
+        return max(all_dirs, key=os.path.getmtime)
