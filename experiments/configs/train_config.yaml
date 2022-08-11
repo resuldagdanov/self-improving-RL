@@ -16,4 +16,4 @@ num_envs_per_worker:                1
 num_gpus:                           0.60       # [number of GPUs to be allocated]
 num_gpus_per_worker:                0.20       # [number of GPUs to be used by each worker]
 
-use_custom_torch_model:             true       # [true: use custom model in ./experiments/models/ folder]
+use_custom_torch_model:             false      # [true: use custom model in ./experiments/models/ folder]
