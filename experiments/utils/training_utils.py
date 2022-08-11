@@ -1,9 +1,11 @@
 import os
 import yaml
 import ray
+import datetime
+import tempfile
 import pandas as pd
 
-from ray.tune.logger import pretty_print
+from ray.tune.logger import pretty_print, UnifiedLogger
 from ray.rllib.agents.ppo import PPOTrainer
 
 from highway_environment.envs import Environment
@@ -11,10 +13,10 @@ from highway_environment.envs import Environment
 repo_path = os.path.join(os.environ["BLACK_BOX"], "experiments")
 configs_path = os.path.join(repo_path, "configs")
 
-from experiments.models.custom_torch_model import CustomTorchModel
-
 
 def initialize_config(env_config_path: str, model_config_path: str, train_config_path: str) -> tuple:
+    from experiments.models.custom_torch_model import CustomTorchModel
+
     # highway environment configirations
     with open(configs_path + env_config_path) as f:
         env_configs = yaml.safe_load(f)
@@ -70,8 +72,13 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
 
 def ppo_model_initialize(general_config: dict) -> object:
     ray.init()
-    ppo_trainer = PPOTrainer(config=general_config, env=general_config["env"])
 
+    ppo_trainer = PPOTrainer(
+        config=general_config,
+        env=general_config["env"],
+        logger_creator=custom_log_creator(os.path.expanduser(repo_path + "/results/trained_models/"), "PPOTrainer_" + str(general_config["env"]))
+    )
+    
     print("\n[INFO]-> PPO Trainer:\t", ppo_trainer)
     return ppo_trainer
 
@@ -92,3 +99,26 @@ def extract_progress_csv(file_path: str) -> pd.DataFrame:
         ]
     ]
     return filtered_df
+
+
+def custom_log_creator(custom_path: str, custom_str: str) -> UnifiedLogger:
+    timestr = datetime.datetime.today().strftime("%Y-%m-%d_%H-%M-%S")
+    logdir_prefix = "{}_{}".format(custom_str, timestr)
+
+    def logger_creator(config):
+        if not os.path.exists(custom_path):
+            os.makedirs(custom_path)
+        logdir = tempfile.mkdtemp(prefix=logdir_prefix, dir=custom_path)
+
+        return UnifiedLogger(config, logdir, loggers=None)
+    
+    return logger_creator
+
+
+def get_latest_folder_path(given_directory: str) -> str:
+    all_dirs = [os.path.join(given_directory,d) for d in os.listdir(given_directory)]
+    
+    if len(all_dirs) == 0:
+        return None
+    else:
+        return max(all_dirs, key=os.path.getmtime)
