@@ -107,7 +107,12 @@ class MainAgent:
             "front_positions":  [],
             "front_speeds"   :  [],
             "tgap"           :  [],
-            "ttc"            :  []
+            "ttc"            :  [],
+            "is_collision"   :  [],
+            "is_impossible"  :  [],
+            "episode_steps"  :  [],
+            "episode_min_ttc":  [],
+            "eps_sum_reward" :  [],
         }
         is_collision = False
         episode_reward = 0.0
@@ -155,7 +160,13 @@ class MainAgent:
                     print("\n[INFO]-> Episode is Finished! Length of Episode:\t", step_idx, "steps and Episode Reward:\t", episode_reward)
                 break
         
-        return step_idx, is_collision, is_impossible, episode_reward, episode_min_ttc, statistics
+        statistics["is_collision"] = [is_collision]
+        statistics["is_impossible"] = [is_impossible]
+        statistics["episode_steps"] = [step_idx]
+        statistics["episode_min_ttc"] = [episode_min_ttc]
+        statistics["eps_sum_reward"] = [episode_reward]
+
+        return statistics
 
     def simulate(self, search_config: dict, is_tune_report: Optional[bool] = True):
         # recall trained model configurations within environment parameters
@@ -176,7 +187,7 @@ class MainAgent:
         )
 
         # run one simulation and obtain returning parameters
-        episode_steps, is_collision, is_impossible, total_episode_reward, episode_min_ttc, statistics = self.run_episode(
+        statistics = self.run_episode(
                     env         =   env,
                     agent       =   model
         )
@@ -185,11 +196,11 @@ class MainAgent:
         if is_tune_report:
             # report results to optimize a minimization or a maximization metric variable
             tune.report(
-                collision       =   is_collision,
-                impossible      =   is_impossible,
-                episode_length  =   episode_steps,
-                episode_min_ttc =   episode_min_ttc,
-                reward          =   total_episode_reward,
+                collision       =   statistics["is_collision"].item(),
+                impossible      =   statistics["is_impossible"].item(),
+                episode_length  =   statistics["episode_steps"].item(),
+                episode_min_ttc =   statistics["episode_min_ttc"].item(),
+                reward          =   statistics["eps_sum_reward"].item(),
                 statistics      =   statistics
             )
         

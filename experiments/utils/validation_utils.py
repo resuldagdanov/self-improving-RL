@@ -75,9 +75,10 @@ def save_eval_to_csv(folder_name: str, file_name: str, experiment_stats: dict) -
 
     if os.path.exists(stats_path) is False:
         os.makedirs(stats_path)
-
+    
     df = pd.DataFrame.from_dict(experiment_stats, orient="index").transpose()
     df.to_csv(stats_path + file_name)
+    print("\n[INFO]-> Evaluation Stats are Saved:\t", stats_path + file_name)
 
 
 def load_eval_from_csv(file_name: str) -> pd.DataFrame:
@@ -87,7 +88,10 @@ def load_eval_from_csv(file_name: str) -> pd.DataFrame:
     if os.path.exists(stats_path) is False:
         raise Exception("[ERROR]-> File Does Not Exist in './experiments/results/evaluation_statistics': ", stats_path)
     
-    return pd.read_csv(stats_path)
+    stats_df = pd.read_csv(stats_path)
+    print("\n[INFO]-> Evaluation Stats are Loaded:\t", stats_path)
+    
+    return stats_df
 
 
 def extract_results_csv(file_path: str) -> pd.DataFrame:

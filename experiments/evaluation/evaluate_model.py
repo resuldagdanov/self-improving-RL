@@ -67,8 +67,10 @@ if __name__ == "__main__":
     env.seed(eval_config["seed"])
 
     for eps in range(eval_config["simulation_loops"]):
+        print("\n[INFO]-> Episode Number:\t", eps)
+
         # run one simulation (episode) loop for defined amount of steps
-        episode_steps, is_collision, is_impossible, total_episode_reward, episode_min_ttc, statistics = agent.run_episode(
+        statistics = agent.run_episode(
                 env         =   env,
                 agent       =   model
         )
@@ -80,5 +82,5 @@ if __name__ == "__main__":
         validation_utils.save_eval_to_csv(
             folder_name     =   eval_folder_name,
             file_name       =   "/eval_episode_" + str(eps) + ".csv",
-            experiment_stats=   statistics,
+            experiment_stats=   statistics
         )
