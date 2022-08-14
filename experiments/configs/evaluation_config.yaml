@@ -7,7 +7,7 @@ load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_20
 
 checkpoint_number:      100     # [trained model saved checkpoint number]
 
-simulation_loops:       2       # [each simulation has max_eps_length number of steps]
+simulation_loops:       1000    # [each simulation has max_eps_length number of steps]
 max_eps_length:         250     # [maximum number of steps in each episode without collision]
 
 evaluate_randomly:      true    # [true: selects initial conditions with random uniforms sampling;  false: selects "evaluation_state"]
