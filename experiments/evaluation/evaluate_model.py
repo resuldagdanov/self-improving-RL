@@ -72,3 +72,13 @@ if __name__ == "__main__":
                 env         =   env,
                 agent       =   model
         )
+
+        # create a folder to store the simulation results at each episode separately
+        eval_folder_name = eval_config["experiment_name"] + "_" + eval_config["load_agent_name"]
+
+        # saving statistics dictionary to folder in ./experiments/results/evaluation_statistics/
+        validation_utils.save_eval_to_csv(
+            folder_name     =   eval_folder_name,
+            file_name       =   "/eval_episode_" + str(eps) + ".csv",
+            experiment_stats=   statistics,
+        )

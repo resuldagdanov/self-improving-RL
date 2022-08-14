@@ -31,11 +31,10 @@ def run_search_algorithm(agent: object, validation_config: dict, seach_config: O
         )
 
     except KeyboardInterrupt:
-        print("\n[EXIT]-> Keyboard Interrupted")
-        pass
+        raise Exception("[EXIT]-> Keyboard Interrupted")
 
     except Exception as e:
-        print("\n[ERROR]-> Exception:\t", e)
+        raise Exception("[ERROR]-> Exception Occured:\t", e)
 
     finally:
         if analysis is not None:
@@ -48,7 +47,7 @@ def run_search_algorithm(agent: object, validation_config: dict, seach_config: O
             experiment_data.to_csv(csv_path, index=False)
         
         else:
-            print("\n[ERROR]-> Analysis is None")
+            raise Exception("[ERROR]-> Analysis is None")
 
 
 def argument_parser() -> argparse:
@@ -68,6 +67,27 @@ def get_algorithm_config(args: argparse) -> dict:
 
 def sort_samples(list_sample_results: list, metric: str) -> list:
     return sorted(list_sample_results, key=lambda value: value.get(metric), reverse=False)
+
+
+def save_eval_to_csv(folder_name: str, file_name: str, experiment_stats: dict) -> None:
+    results_dir = os.path.join(repo_path, "results/evaluation_statistics")
+    stats_path = os.path.join(results_dir, folder_name)
+
+    if os.path.exists(stats_path) is False:
+        os.makedirs(stats_path)
+
+    df = pd.DataFrame.from_dict(experiment_stats, orient="index").transpose()
+    df.to_csv(stats_path + file_name)
+
+
+def load_eval_from_csv(file_name: str) -> pd.DataFrame:
+    results_dir = os.path.join(repo_path, "results/evaluation_statistics")
+    stats_path = os.path.join(results_dir, file_name)
+    
+    if os.path.exists(stats_path) is False:
+        raise Exception("[ERROR]-> File Does Not Exist in './experiments/results/evaluation_statistics': ", stats_path)
+    
+    return pd.read_csv(stats_path)
 
 
 def extract_results_csv(file_path: str) -> pd.DataFrame:
