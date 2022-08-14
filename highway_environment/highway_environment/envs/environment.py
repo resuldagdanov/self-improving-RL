@@ -92,7 +92,7 @@ class Environment(AbstractEnv):
                     target_speed=self.config["set_manually"]["ego_target_speed"]
                 )
                 controlled_vehicle = self.action_type.vehicle_class.create_from(vehicle=vehicle)
-
+            
             # randomly set ego vehicle position and initial velocity
             else:
                 ego_speed = self.np_random.normal(np.random.uniform(*(self.config["speed_range"])), self.config["speed_std"])

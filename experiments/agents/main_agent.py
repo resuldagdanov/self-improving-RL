@@ -48,16 +48,20 @@ class MainAgent:
         with open(validation_utils.configs_path + env_config_path) as f:
             env_configs = yaml.safe_load(f)
         
-        # change vehicle initialization parameters according to search space configuration
-        env_configs["config"]["set_manually"]["ego_position"] = [ 0.0, 0.0 ]
-        env_configs["config"]["set_manually"]["ego_heading"] = 0.0
-        env_configs["config"]["set_manually"]["ego_speed"] = search_config["ego_v1"]
-        env_configs["config"]["set_manually"]["ego_target_speed"] = 40.0
+        # sample random uniformly when initial conditions are not set
+        if search_config == {}:
+            pass
+        else:
+            # change vehicle initialization parameters according to search space configuration
+            env_configs["config"]["set_manually"]["ego_position"] = [ 0.0, 0.0 ]
+            env_configs["config"]["set_manually"]["ego_heading"] = 0.0
+            env_configs["config"]["set_manually"]["ego_speed"] = search_config["ego_v1"]
+            env_configs["config"]["set_manually"]["ego_target_speed"] = 40.0
 
-        env_configs["config"]["set_manually"]["front_position"] = [ search_config["delta_dist"], 0.0 ]
-        env_configs["config"]["set_manually"]["front_heading"] = 0.0
-        env_configs["config"]["set_manually"]["front_speed"] = search_config["front_v1"]
-        env_configs["config"]["set_manually"]["front_target_speed"] = search_config["front_v2"]
+            env_configs["config"]["set_manually"]["front_position"] = [ search_config["delta_dist"], 0.0 ]
+            env_configs["config"]["set_manually"]["front_heading"] = 0.0
+            env_configs["config"]["set_manually"]["front_speed"] = search_config["front_v1"]
+            env_configs["config"]["set_manually"]["front_target_speed"] = search_config["front_v2"]
 
         # training algorithms configurations
         with open(validation_utils.configs_path + model_config_path) as f:
@@ -89,7 +93,7 @@ class MainAgent:
 
     def initialize_environment(self, env_configs: dict) -> Environment:
         env = Environment(config=env_configs["config"])
-        
+
         print("\n[INFO]-> Environment:\t", env)
         return env
 
