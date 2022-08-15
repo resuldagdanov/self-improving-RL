@@ -3,7 +3,7 @@
 experiment_name:        ce_search
 
 # [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
-load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-05_19-02-38we2wyenm
+load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-07_21-22-18mdgw9lf4_Agent0
 
 checkpoint_number:      100      # [trained model saved checkpoint number]
 
