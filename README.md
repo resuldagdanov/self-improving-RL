@@ -162,6 +162,25 @@ python ce_search.py
 ```
 
 ---
+## Bayesian-Optimization-Search Validation
+
+> apply bayesian-optimization-search algorithm verification on a trained rl model
+
+> install package
+```sh
+pip install bayesian-optimization
+```
+
+NOTE:
+* check _load-agent-name_ key inside **/experiments/configs/bayesian_search.yaml** config and make sure that the model is located in **/experiments/results/trained_models/** folder
+
+```sh
+cd experiments/algorithms
+
+python bayesian_search.py
+```
+
+---
 ## Train RL on Custom Verification Scenarios
 
 > after applying verification algorithm, RL agent could be trained again on validation results
