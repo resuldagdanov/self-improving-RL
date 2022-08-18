@@ -65,6 +65,11 @@ def get_algorithm_config(args: argparse) -> dict:
     return algo_config
 
 
+def make_float(config: dict) -> dict:
+    for _, feature_name in enumerate(config): config[feature_name] = float(config[feature_name])
+    return config
+
+
 def sort_samples(list_sample_results: list, metric: str) -> list:
     return sorted(list_sample_results, key=lambda value: value.get(metric), reverse=False)
 

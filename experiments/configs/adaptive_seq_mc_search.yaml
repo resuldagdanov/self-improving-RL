@@ -1,0 +1,40 @@
+# config for -> python ./experiments/algorithms/adaptive_seq_mc_search.py
+
+experiment_name:        adaptive_seq_mc_search
+
+# [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
+load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-07_21-22-18mdgw9lf4_Agent0
+
+checkpoint_number:      100      # [trained model saved checkpoint number]
+
+resume:                 False
+num_samples:            8192
+
+search_space:
+    distance: 
+        min:            10.0    # [m]
+        max:            120.0   # [m]
+    
+    velocity:
+        min:            10.0    # [m/s]
+        max:            40.0    # [m/s]
+
+ray_tune_resources:
+    cpu:                2       # [number of CPUs to allocate to the trial]
+    gpu:                0.20    # [number of GPUs to allocate to the trial]
+
+metric:                 reward  # [metric to optimize (should be in tune.report() arguments)]
+mode:                   min     # [objective to apply ([maximize -> max] or [minimize -> min])]
+
+check_impossible_count: 1000    # [number of counting steps for avoiding impossible to prevent collision scenarios]
+
+velocity_exponent:      4.0     # [IDM vehicle eponent of the velocity term for acceleration calculation (highway_env.vehicle.behavior.IDMVehicle)]
+desired_comfort_accel:  3.0     # [m/s^2 desired maximum acceleration for IDM vehicle (highway_env.vehicle.behavior.IDMVehicle)]
+front_accel_range:      [-6, 6] # [front acceleration range for IDM vehicle (highway_env.vehicle.behavior.IDMVehicle) ACC_MAX]
+
+space_type:             log     # [search space type (linear -> lin or logarithmic -> log)]
+eps_init:               0.5     # [initial logarithmic epsilon value]
+eps_final:              0.1     # [final logarithmic epsilon value]
+J:                      5       # [number of steps to reach final epsilon value]
+Ne:                     100     # [number of countering loops to sample from search space and check impossibility scenarios]
+noise_level:            1       # [range of applied noise to samples range(-noise_level, +noise_level)]

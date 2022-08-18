@@ -181,6 +181,20 @@ python bayesian_search.py
 ```
 
 ---
+## Adaptive-Sequential-Monto-Carlo-Search Validation
+
+> apply adaptive-sequential-monte-carlo-search algorithm verification on a trained rl model
+
+NOTE:
+* check _load-agent-name_ key inside **/experiments/configs/adaptive_seq_mc_search.yaml** config and make sure that the model is located in **/experiments/results/trained_models/** folder
+
+```sh
+cd experiments/algorithms
+
+python adaptive_seq_mc_search.py
+```
+
+---
 ## Train RL on Custom Verification Scenarios
 
 > after applying verification algorithm, RL agent could be trained again on validation results
