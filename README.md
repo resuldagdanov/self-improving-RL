@@ -245,8 +245,17 @@ cd experiments/training
 python self_healing.py
 ```
 
+> to include specific verification results into sampling container, read the following note
+
+NOTE:
+- change _validation-type_ key inside **/experiments/configs/self_healing.yaml** config to "mixture"
+- take a look at _scenario-mixer_ key parameters and specify which validation results to include
+- each validation comes with probability of sampling which should sum up to **1.0**
+- folder names in _scenario-mixer_ key should be **null** if not specified and total sum _percentage-probability_ of existing folders should be 100 (1.0)
+
 # Analyse Results
 
+---
 ## Analyse & Visualize Validation Scenarios
 
 > after training and running a verification algorithm, visualize validation and failure scenarios
@@ -259,6 +268,7 @@ python3 -m notebook
 
 # Sbatch Slurm
 
+---
 ## Slurm Training & Verification
 
 > submit a batch script to slurm for training an RL model
