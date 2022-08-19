@@ -247,6 +247,7 @@ python self_healing.py
 
 # Analyse Results
 
+---
 ## Analyse & Visualize Validation Scenarios
 
 > after training and running a verification algorithm, visualize validation and failure scenarios
@@ -259,6 +260,7 @@ python3 -m notebook
 
 # Sbatch Slurm
 
+---
 ## Slurm Training & Verification
 
 > submit a batch script to slurm for training an RL model
