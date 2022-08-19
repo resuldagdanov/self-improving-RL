@@ -4,6 +4,7 @@ import ray
 
 from ray import tune
 from ray.tune.logger import pretty_print
+from ray.tune.suggest.bayesopt import BayesOptSearch
 
 parent_directory = os.path.join(os.environ["BLACK_BOX"])
 sys.path.append(parent_directory)
@@ -16,7 +17,7 @@ if __name__ == "__main__":
 
     # get arguments
     args = validation_utils.argument_parser()
-    args.algo_config_file = "grid_search.yaml"
+    args.algo_config_file = "bayesian_search.yaml"
 
     # config for specified algorithm
     algorithm_config = validation_utils.get_algorithm_config(args=args)
@@ -35,6 +36,14 @@ if __name__ == "__main__":
     print("\n[INFO]-> Distance Space:\t", distance_space)
     print("\n[INFO]-> Velocity Space:\t", velocity_space)
 
+    # create build-in bayesian search algorithm object
+    searcher = BayesOptSearch(
+        random_state=algorithm_config["seed"],
+        metric=algorithm_config["metric"],
+        mode=algorithm_config["mode"]
+    )
+    print("\n[INFO]-> Searcher:\t", searcher)
+
     # set project directory for all ray workers
     runtime_env = {
         "working_dir": parent_directory
@@ -49,11 +58,11 @@ if __name__ == "__main__":
         'delta_dist': tune.uniform(distance_space[0], distance_space[-1])
     }
     print("\n[INFO]-> Search Space:\t", pretty_print(search_configs))
-    
+
     # execute validation search algorithm and save results to csv
     validation_utils.run_search_algorithm(
         agent=agent,
         validation_config=algorithm_config,
         seach_config=search_configs,
-        search_alg=None
+        search_alg=searcher
     )

@@ -1,0 +1,32 @@
+# config for -> python ./experiments/algorithms/beyesian_search.py
+
+experiment_name:        beyesian_search
+
+# [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
+load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-07_21-22-18mdgw9lf4_Agent0
+
+checkpoint_number:      100     # [trained model saved checkpoint number]
+
+resume:                 False
+num_samples:            8192
+max_eps_length:         250
+
+search_space:
+    distance: 
+        min:            10.0    # [m]
+        max:            40.0    # [m]
+        steps:          2       # [discrete number]
+    
+    velocity:
+        min:            10.0    # [m/s]
+        max:            40.0    # [m/s]
+        steps:          2       # [discrete number]
+
+ray_tune_resources:
+    cpu:                2       # [number of CPUs to allocate to the trial]
+    gpu:                0.25    # [number of GPUs to allocate to the trial]
+
+metric:                 reward  # [str metric to optimize (should be in tune.report() arguments)]
+mode:                   min     # [str objective to apply ([maximize -> max] or [minimize -> min])]
+
+seed:                   12      # [int random state seed]
