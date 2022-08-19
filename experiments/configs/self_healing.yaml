@@ -4,8 +4,8 @@ experiment_name:                    healing
 max_eps_length:                     250        # [number of steps in each episode without collision]
 
 # [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
-load_agent_name:                    PPOTrainer_highway_environment:highway-environment-v0_2022-07-11_20-22-38rk0yqtp9
-checkpoint_number:                  30
+load_agent_name:                    PPOTrainer_highway_environment:highway-environment-v0_2022-08-08_02-51-55m7b6hzze_Agent2
+checkpoint_number:                  300
 
 stop:
     training_iteration:             100        # [total number of training episodes]
@@ -20,4 +20,15 @@ num_gpus_per_worker:                0.20       # [number of GPUs to be used by e
 # [validated model's results folder inside ./results/validation_checkpoints/ folder]
 validation_folder_name:             ce_search_PPOTrainer_highway_environment:highway-environment-v0_2022-07-14_21-53-33jw2m0yb4_Chkpt30
 validation_file_name:               "results.csv"
-validation_type:                    "uniform"  # [custom name -> related to ./experiments/utils/scenarios.py]
+validation_type:                    "mixture"  # [custom name -> related to ./experiments/utils/scenarios.py]
+
+# [the following parameters are used when validation_type is NOT "uniform", (check out ./experiments/utils/scenarios.py)]
+scenario_mixer:
+    validation_folder_1:            ce_search_PPOTrainer_highway_environment:highway-environment-v0_2022-08-07_21-22-18mdgw9lf4_Agent0
+    percent_probability_1:          0.20       # [randomly select percentage of scenarios from validation_folder_1]
+    
+    validation_folder_2:            ce_search_PPOTrainer_highway_environment:highway-environment-v0_2022-08-07_23-09-35a21jjv22_Agent1
+    percent_probability_2:          0.30       # [randomly select percentage of scenarios from validation_folder_2]
+    
+    validation_folder_3:            ce_search_PPOTrainer_highway_environment:highway-environment-v0_2022-08-08_02-51-55m7b6hzze_Agent2
+    percent_probability_3:          0.50       # [randomly select percentage of scenarios from validation_folder_2]
