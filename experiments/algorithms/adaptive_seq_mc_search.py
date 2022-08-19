@@ -209,7 +209,7 @@ if __name__ == "__main__":
 
     # get arguments
     args = validation_utils.argument_parser()
-    args.algo_config_file = "adaptive_seq_mc.yaml"
+    args.algo_config_file = "adaptive_seq_mc_search.yaml"
 
     # config for specified algorithm
     algorithm_config = validation_utils.get_algorithm_config(args=args)
