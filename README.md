@@ -245,6 +245,13 @@ cd experiments/training
 python self_healing.py
 ```
 
+> to include specific verification results into sampling container, read the following note
+
+NOTE:
+- change _validation-type_ key inside **/experiments/configs/self_healing.yaml** config to "mixture"
+- take a look at _scenario-mixer_ key parameters and specify which validation results to include
+- each validation comes with probability of sampling which should sum up to **1.0**
+
 # Analyse Results
 
 ---
