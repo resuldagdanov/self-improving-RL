@@ -2,6 +2,31 @@
 
 Test Verification Algorithms on Gym Highway Environment using Ray RLlib
 
+* [Installation](#installation)
+    - [Export Repository Path](#export-repository-path)
+    - [Anaconda Environment Creation](#anaconda-environment-creation)
+    - [Environment Installation](#environment-installation)
+    - [Package Installation](#package-installation)
+* [Tests](#tests)
+    - [Test Training Example](#test-training-example)
+    - [Train RL Agent](#train-rl-agent)
+* [Evaluation](#evaluation)
+    - [Evaluate RL Agent](#evaluate-rl-agent)
+* [Verification Algorithms](#verification-algorithms)
+    - [Grid-Search Validation](#grid-search-validation)
+    - [Monte-Carlo-Search Validation](#monte-carlo-search-validation)
+    - [Cross-Entropy-Search Validation](#cross-entropy-search-validation)
+    - [Bayesian-Optimization-Search Validation](#bayesian-optimization-search-validation)
+    - [Adaptive-Sequential-Monto-Carlo-Search Validation](#adaptive-sequential-monto-Carlo-search-validation)
+* [Self Healing](#self-healing)
+    - [Train RL on Custom Verification Scenarios](#train-rl-on-custom-verification-scenarios)
+* [Analyse Results](#analyse-results)
+    - [Analyse & Visualize Validation Scenarios](#analyse-&-visualize-validation-scenarios)
+* [Sbatch Slurm](#sbatch-slurm)
+    - [Slurm Training & Verification](#slurm-training-&-verification)
+
+# Installation
+
 ---
 ## Export Repository Path
 
@@ -81,6 +106,8 @@ pip install -U "ray[tune]"
 pip install -U "ray[rllib]"
 ```
 
+# Tests
+
 ---
 ## Test Training Example
 
@@ -104,6 +131,8 @@ cd experiments/training
 python ppo_train.py
 ```
 
+# Evaluation
+
 ---
 ## Evaluate RL Agent
 
@@ -117,6 +146,8 @@ cd experiments/evaluation
 
 python evaluate_model.py
 ```
+
+# Verification Algorithms
 
 ---
 ## Grid-Search Validation
@@ -194,6 +225,8 @@ cd experiments/algorithms
 python adaptive_seq_mc_search.py
 ```
 
+# Self-Healing
+
 ---
 ## Train RL on Custom Verification Scenarios
 
@@ -212,6 +245,8 @@ cd experiments/training
 python self_healing.py
 ```
 
+# Analyse Results
+
 ## Analyse & Visualize Validation Scenarios
 
 > after training and running a verification algorithm, visualize validation and failure scenarios
@@ -221,6 +256,8 @@ cd experiments/analyses
 
 python3 -m notebook
 ```
+
+# Sbatch Slurm
 
 ## Slurm Training & Verification
 
