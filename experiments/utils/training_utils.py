@@ -3,18 +3,22 @@ import yaml
 import ray
 import datetime
 import tempfile
+import datetime
+import tempfile
 import pandas as pd
 
-from ray.tune.logger import pretty_print, UnifiedLogger
+from ray.tune.logger import pretty_print, UnifiedLogger, UnifiedLogger
 from ray.rllib.agents.ppo import PPOTrainer
+
+from highway_environment.envs import Environment
 
 repo_path = os.path.join(os.environ["BLACK_BOX"], "experiments")
 configs_path = os.path.join(repo_path, "configs")
 
-from experiments.models.custom_torch_model import CustomTorchModel
-
 
 def initialize_config(env_config_path: str, model_config_path: str, train_config_path: str) -> tuple:
+    from experiments.models.custom_torch_model import CustomTorchModel
+
     from highway_environment.envs import Environment
 
     # highway environment configirations
@@ -104,12 +108,13 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
 
 def ppo_model_initialize(general_config: dict) -> PPOTrainer:
     ray.init()
+
     ppo_trainer = PPOTrainer(
         config=general_config,
         env=general_config["env"],
         logger_creator=custom_log_creator(os.path.expanduser(repo_path + "/results/trained_models/"), "PPOTrainer_" + str(general_config["env"]))
     )
-
+    
     print("\n[INFO]-> PPO Trainer:\t", ppo_trainer)
     return ppo_trainer
 

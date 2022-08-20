@@ -16,7 +16,7 @@ from highway_environment.envs import Environment
 parent_directory = os.path.join(os.environ["BLACK_BOX"])
 sys.path.append(parent_directory)
 
-from experiments.utils import validation_utils
+from experiments.utils import validation_utils, training_utils
 from experiments.models.custom_torch_model import CustomTorchModel
 
 
@@ -91,7 +91,12 @@ class MainAgent:
         return general_config
 
     def initialize_model(self, general_config: dict) -> object:
-        trainer = PPOTrainer(config=general_config, env=general_config["env"]) # NOTE: change this line when model different than PPO is used
+        trainer = PPOTrainer( # NOTE: change this line when model different than PPO is used
+            config          =   general_config,
+            env             =   general_config["env"],
+            logger_creator  =   training_utils.custom_log_creator(
+                os.path.expanduser(self.repo_path + "/results/trained_models/"), "validation_PPOTrainer_" + str(general_config["env"]))
+        )
         print("\n[INFO]-> Trainer:\t", trainer)
 
         agent_path = os.path.join(self.repo_path, "results/trained_models/" + self.algorithm_config["load_agent_name"])
@@ -99,6 +104,7 @@ class MainAgent:
 
         checkpoint_num = self.algorithm_config["checkpoint_number"]
         checkpoint_path = agent_path + "/checkpoint_%06i"%(checkpoint_num) + "/checkpoint-" + str(checkpoint_num)
+
         trainer.restore(checkpoint_path)
 
         print("\n[INFO]-> Restore Checkpoint:\t", checkpoint_path)

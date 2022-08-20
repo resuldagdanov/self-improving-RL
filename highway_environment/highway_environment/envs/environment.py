@@ -202,6 +202,24 @@ class Environment(AbstractEnv):
         self.enable_auto_render = True
 
     def _reward(self, action: Action) -> float:
+        neighbours = self.road.network.all_side_lanes(self.vehicle.lane_index)
+        lane = self.vehicle.target_lane_index[2] if isinstance(self.vehicle, ControlledVehicle) else self.vehicle.lane_index[2]
+        
+        # use forward speed rather than speed, see https://github.com/eleurent/highway-env/issues/268
+        forward_speed = self.vehicle.speed * np.cos(self.vehicle.heading)
+        scaled_speed = utils.lmap(forward_speed, self.config["speed_range"], [0, 1])
+        
+        reward = \
+            + self.config["collision_reward"] * self.vehicle.crashed \
+            + self.config["right_lane_reward"] * lane / max(len(neighbours) - 1, 1) \
+            + self.config["high_speed_reward"] * np.clip(scaled_speed, 0, 1)
+        
+        reward = utils.lmap(reward, [self.config["collision_reward"], self.config["high_speed_reward"] + self.config["right_lane_reward"]], [0, 1])
+        reward = 0 if not self.vehicle.on_road else reward
+        
+        return reward
+
+    def custom_reward(self, action: Action) -> float:
         # get observation dictionary elements without normalizations
         raw_obs = self.observation_type.raw_obs
 
