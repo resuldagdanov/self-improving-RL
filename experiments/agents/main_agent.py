@@ -107,6 +107,9 @@ class MainAgent:
     def initialize_environment(self, env_configs: dict) -> Environment:
         env = Environment(config=env_configs["config"])
 
+        if env_configs["config"]["record_video"]:
+            env = validation_utils.record_video(env=env)
+
         print("\n[INFO]-> Environment:\t", env)
         return env
 
@@ -208,11 +211,11 @@ class MainAgent:
         if is_tune_report:
             # report results to optimize a minimization or a maximization metric variable
             tune.report(
-                collision       =   statistics["is_collision"].item(),
-                impossible      =   statistics["is_impossible"].item(),
-                episode_length  =   statistics["episode_steps"].item(),
-                episode_min_ttc =   statistics["episode_min_ttc"].item(),
-                reward          =   statistics["eps_sum_reward"].item(),
+                collision       =   statistics["is_collision"][0],
+                impossible      =   statistics["is_impossible"][0],
+                episode_length  =   statistics["episode_steps"][0],
+                episode_min_ttc =   statistics["episode_min_ttc"][0],
+                reward          =   statistics["eps_sum_reward"][0],
                 statistics      =   statistics
             )
         

@@ -1,9 +1,14 @@
 import os
 import yaml
+import base64
 import argparse
 import numpy as np
 import pandas as pd
 
+from gym.wrappers import RecordVideo
+from pyvirtualdisplay import Display
+from IPython import display as ipythondisplay
+from pathlib import Path
 from typing import Optional
 from ray import tune
 
@@ -63,6 +68,11 @@ def get_algorithm_config(args: argparse) -> dict:
     algo_config = yaml.load(open(algo_yaml_path), Loader=yaml.FullLoader)
 
     return algo_config
+
+
+def make_float(config: dict) -> dict:
+    for _, feature_name in enumerate(config): config[feature_name] = float(config[feature_name])
+    return config
 
 
 def sort_samples(list_sample_results: list, metric: str) -> list:
@@ -173,3 +183,32 @@ def is_impossible_2_stop(initial_distance: float, ego_velocity: float, front_vel
             continue
     
     return False
+
+
+def start_video_display(visible: int = 0, size: tuple = (1400, 900)) -> Display:
+    display = Display(visible=visible, size=size)
+    display.start()
+
+    return display
+
+
+def record_video(env: object, video_folder: str = "videos") -> RecordVideo:
+    wrapped = RecordVideo(env, video_folder=video_folder, episode_trigger=lambda e: True)
+    # capture intermediate frames
+    env.unwrapped.set_record_video_wrapper(wrapped)
+
+    return wrapped
+
+
+def show_video(video_path: str = "videos") -> None:
+    html = []
+    
+    for mp4 in Path(video_path).glob("*.mp4"):
+        video_b64 = base64.b64encode(mp4.read_bytes())
+        
+        html.append('''<video alt="{}" autoplay
+                      loop controls style="height: 400px;">
+                      <source src="data:video/mp4;base64,{}" type="video/mp4" />
+                 </video>'''.format(mp4, video_b64.decode('ascii')))
+    
+    ipythondisplay.display(ipythondisplay.HTML(data="<br>".join(html)))

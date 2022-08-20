@@ -52,10 +52,40 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
     # set custom scenario loader attributes
     if "validation_folder_name" in train_config:
         env_configs["config"]["scenario_config"]["type"] = train_config["validation_type"]
+
+        # fixed path to stored all verification results
+        base_validation_path = repo_path + "/results/validation_checkpoints/"
         
-        env_configs["config"]["scenario_config"]["file_name"] = \
-            os.path.join(repo_path + "/results/validation_checkpoints/" \
-                + train_config["validation_folder_name"], train_config["validation_file_name"])
+        # make sure that single verification scenario folder is used or all scenarios folders are used (take a look at self_healing.yaml)
+        if train_config["validation_type"] != "mixture":
+            verifications_list = [(os.path.join(base_validation_path + train_config["validation_folder_name"], train_config["validation_file_name"]), 1.0)]
+        
+        else:
+            verifications_list = []
+
+            # NOTE: please add new verified scenario and probabiliry percentange tuples with if-else statements if required
+            if train_config["scenario_mixer"]["validation_folder_1"] is not None:
+                verifications_list.append(
+                    (os.path.join(base_validation_path + train_config["scenario_mixer"]["validation_folder_1"], train_config["validation_file_name"]),
+                        float(train_config["scenario_mixer"]["percent_probability_1"])
+                    )
+                )
+            if train_config["scenario_mixer"]["validation_folder_2"] is not None:
+                verifications_list.append(
+                    (os.path.join(base_validation_path + train_config["scenario_mixer"]["validation_folder_2"], train_config["validation_file_name"]),
+                        float(train_config["scenario_mixer"]["percent_probability_2"])
+                    )
+                )
+            if train_config["scenario_mixer"]["validation_folder_3"] is not None:
+                verifications_list.append(
+                    (os.path.join(base_validation_path + train_config["scenario_mixer"]["validation_folder_3"], train_config["validation_file_name"]),
+                        float(train_config["scenario_mixer"]["percent_probability_3"])
+                    )
+                )
+            if len(verifications_list) == 0:
+                raise NotImplementedError("[ERROR]-> make sure that 'validation_type!=mixture' or add 'more scenarios to the mixing' if-else above!")
+        
+        env_configs["config"]["scenario_config"]["file_name"] = verifications_list
     
     # add environment configurations to training config
     general_config = model_configs.copy()
