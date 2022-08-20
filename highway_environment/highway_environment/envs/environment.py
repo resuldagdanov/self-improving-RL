@@ -16,7 +16,7 @@ from highway_environment.envs.observation import Observation
 parent_directory = os.path.join(os.environ["BLACK_BOX"])
 sys.path.append(parent_directory)
 
-from experiments.utils import scenarios
+from experiments.utils import scenarios, validation_utils
 
 
 class Environment(AbstractEnv):
@@ -71,6 +71,9 @@ class Environment(AbstractEnv):
         other_vehicles_type = utils.class_from_path(self.config["other_vehicles_type"])
         other_per_controlled = near_split(self.config["vehicles_count"], num_bins=self.config["controlled_vehicles"])
 
+        # reset impossibility condition of avoiding collision
+        self.is_impossible = False
+
         self.controlled_vehicles = []
         for others in other_per_controlled:
 
@@ -85,7 +88,7 @@ class Environment(AbstractEnv):
                     target_lane_index=None
                 )
                 controlled_vehicle = self.action_type.vehicle_class.create_from(vehicle=vehicle)
-
+            
             # randomly set ego vehicle position and initial velocity
             else:
                 ego_speed = self.np_random.normal(np.random.uniform(*(self.config["speed_range"])), self.config["speed_std"])
@@ -139,8 +142,20 @@ class Environment(AbstractEnv):
                 
                 self.road.vehicles.append(other_vehicle)
 
+                # make extra first action to compute an initial acceleration of the other vehicle
+                other_vehicle.act()
+                
+                # currently only checks impossible to avoid collision scenarios with only front mio vehicles
+                self.is_impossible = validation_utils.is_impossible_2_stop(
+                    initial_distance=other_vehicle.position[0] - controlled_vehicle.position[0],
+                    ego_velocity=controlled_vehicle.speed,
+                    front_velocity=other_vehicle.speed,
+                    ego_acceleration=controlled_vehicle.action["acceleration"],
+                    front_acceleration=other_vehicle.action["acceleration"]
+                )
+    
     def _is_terminal(self) -> bool:
-        return self.vehicle.crashed or \
+        return self.vehicle.crashed or self.is_impossible or \
             self.steps >= self.config["episode_length"] or \
                 self.config["offroad_terminal"] and not self.vehicle.on_road
 
@@ -157,6 +172,7 @@ class Environment(AbstractEnv):
             "ttc": self.observation_type.raw_obs["ttc"],
             "reward": reward,
             "collision": self.vehicle.crashed,
+            "impossible": self.is_impossible,
             "terminated": terminated
         }
 

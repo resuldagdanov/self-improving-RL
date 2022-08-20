@@ -106,7 +106,7 @@ class MainAgent:
 
     def initialize_environment(self, env_configs: dict) -> Environment:
         env = Environment(config=env_configs["config"])
-        
+
         print("\n[INFO]-> Environment:\t", env)
         return env
 
@@ -120,7 +120,12 @@ class MainAgent:
             "front_positions":  [],
             "front_speeds"   :  [],
             "tgap"           :  [],
-            "ttc"            :  []
+            "ttc"            :  [],
+            "is_collision"   :  [],
+            "is_impossible"  :  [],
+            "episode_steps"  :  [],
+            "episode_min_ttc":  [],
+            "eps_sum_reward" :  [],
         }
         is_collision = False
         episode_reward = 0.0
@@ -155,15 +160,8 @@ class MainAgent:
                 episode_min_ttc = info["ttc"]
             
             is_collision = info["collision"]
+            is_impossible = info["impossible"]
             is_terminated = info["terminated"]
-
-            # print("agent : ", agent.get_policy().model)
-            # print("\n")
-            # print("action : ", info["ego_action"])
-            # print("accel : ", info["ego_accel"])
-            # print("speed : ", info["ego_speed"])
-            # print("position : ",  env.road.vehicles[0].position)
-            # print("heading : ",  env.road.vehicles[0].heading, env.road.vehicles[0].heading * 57.2958)
             
             if done:
                 if is_collision:
@@ -171,10 +169,16 @@ class MainAgent:
                 elif is_terminated:
                     print("\n[INFO]-> Vehicle is Out of Track! Length of Episode:\t", step_idx, "steps", " Reward:", episode_reward)
                 else:
-                    print("\n[INFO]-> Episode is Finished! Length of Episode:\t", step_idx, "steps", " Reward:", episode_reward)
+                    print("\n[INFO]-> Episode is Finished! Length of Episode:\t", step_idx, "steps and Episode Reward:\t", episode_reward)
                 break
         
-        return step_idx, is_collision, episode_reward, episode_min_ttc, statistics
+        statistics["is_collision"] = [is_collision]
+        statistics["is_impossible"] = [is_impossible]
+        statistics["episode_steps"] = [step_idx]
+        statistics["episode_min_ttc"] = [episode_min_ttc]
+        statistics["eps_sum_reward"] = [episode_reward]
+
+        return statistics
 
     def simulate(self, search_config: dict, is_tune_report: Optional[bool] = True):
         # recall trained model configurations within environment parameters
@@ -195,7 +199,7 @@ class MainAgent:
         )
 
         # run one simulation and obtain returning parameters
-        episode_steps, is_collision, total_episode_reward, episode_min_ttc, statistics = self.run_episode(
+        statistics = self.run_episode(
                     env         =   env,
                     agent       =   model
         )
@@ -204,10 +208,11 @@ class MainAgent:
         if is_tune_report:
             # report results to optimize a minimization or a maximization metric variable
             tune.report(
-                collision       =   is_collision,
-                episode_length  =   episode_steps,
-                episode_min_ttc =   episode_min_ttc,
-                reward          =   total_episode_reward,
+                collision       =   statistics["is_collision"].item(),
+                impossible      =   statistics["is_impossible"].item(),
+                episode_length  =   statistics["episode_steps"].item(),
+                episode_min_ttc =   statistics["episode_min_ttc"].item(),
+                reward          =   statistics["eps_sum_reward"].item(),
                 statistics      =   statistics
             )
         

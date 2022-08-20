@@ -18,6 +18,6 @@ if __name__ == "__main__":
         entry_point='highway_environment.envs.environment:Environment',
     )
 
-    env = gym.make("highway_environment:highway-environment-v0")
+    env = gym.make("highway-environment-v0")
 
     print("\n Environment is successfully created as : ", env)

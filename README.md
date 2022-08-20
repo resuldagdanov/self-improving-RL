@@ -35,6 +35,8 @@ conda activate highway
 pip install -r requirements.txt
 ```
 
+In order to successfully use GPUs, please install CUDA by following the site : https://pytorch.org/get-started/locally/
+
 ---
 ## Environment Installation
 
@@ -59,7 +61,7 @@ python create_env.py
 ```
 
 > install custom highway environment globally
-```python
+```sh
 cd highway_environment
 
 python setup.py install
@@ -175,4 +177,57 @@ NOTE:
 cd experiments/training
 
 python self_healing.py
+```
+
+## Analyse & Visualize Validation Scenarios
+
+> after training and running a verification algorithm, visualize validation and failure scenarios
+
+```sh
+cd experiments/analyses
+
+python3 -m notebook
+```
+
+## Slurm Training & Verification
+
+> submit a batch script to slurm for training an RL model
+
+```sh
+cd experiments/training
+
+conda activate highway
+
+# checkout resource allocations before submitting a slurm batch
+sbatch slurm_train.sh
+```
+
+> submit a batch script to slurm for applying selected verification algorithm
+
+```sh
+cd experiments/algorithms
+
+conda activate highway
+
+# checkout selected algorithm and resource allocations before submitting a slurm batch
+sbatch slurm_verification.sh
+```
+
+> basic slurm commands
+
+```sh
+# submit a batch script to Slurm for processing
+sbatch <job-id>
+
+# show information about your job(s) in the queue
+squeue
+
+# show information about current and previous jobs
+sacct
+
+# end or cancel a queued job
+scancel <job-id>
+
+# read last lines of terminal logs (.err or .out)
+tail -f <job-id>.out
 ```
