@@ -3,9 +3,9 @@
 experiment_name:        ce_search
 
 # [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
-load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-07_21-22-18mdgw9lf4_Agent0
+load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-19_23-31-04_y6fkw_8_Agent2
 
-checkpoint_number:      100      # [trained model saved checkpoint number]
+checkpoint_number:      300      # [trained model saved checkpoint number]
 
 resume:                 False
 num_samples:            8192    # [iteration_number x sample_size = num_samples]

@@ -3,9 +3,9 @@
 experiment_name:        evaluation
 
 # [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
-load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-07_21-22-18mdgw9lf4_Agent0
+load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-08_09-45-04y_mw9iyt_Agent0123
 
-checkpoint_number:      100     # [trained model saved checkpoint number]
+checkpoint_number:      400     # [trained model saved checkpoint number]
 
 simulation_loops:       1000    # [each simulation has max_eps_length number of steps]
 max_eps_length:         250     # [maximum number of steps in each episode without collision]

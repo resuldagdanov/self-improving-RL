@@ -94,6 +94,9 @@ class MainAgent:
     def initialize_environment(self, env_configs: dict) -> Environment:
         env = Environment(config=env_configs["config"])
 
+        if env_configs["config"]["record_video"]:
+            env = validation_utils.record_video(env=env)
+
         print("\n[INFO]-> Environment:\t", env)
         return env
 

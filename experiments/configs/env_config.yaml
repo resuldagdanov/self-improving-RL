@@ -38,6 +38,7 @@ config:
     offscreen_rendering:      false             # [instruction allows the drawing to be done on surfaces without handling a screen display]
     rendering_mode:           rgb_array         # ['human', 'rgb_array']
     render_agent:             true
+    record_video:             false             # [true: record video of the simulation (automatically opens rendering while recording)]
     real_time_rendering:      false             # [true: when manual control or evaluation with rendering is done]
     rendering:                false             # [true: to visualize each episode]
     
