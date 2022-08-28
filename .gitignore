@@ -140,3 +140,9 @@ dmypy.json
 
 # ignore archive of results and models
 /experiments/results/archive/
+
+# ignore ray results and logs of reward function tuning
+/experiments/results/tuning_reward_function/
+
+# make Eatron driving dataset private (used for reward function tuning)
+/experiments/dataset/eatron_dataset
