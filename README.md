@@ -119,6 +119,19 @@ cd highway_environment/highway_environment
 python test_train.py
 ```
 
+---
+## Train RL Agent
+
+NOTE:
+* parameters of a trained model will be saved at **~/ray_results/** folder
+* please change _train-or-eval_ parameter to _true_ inside **/experiments/configs/train_config.yaml** config
+
+```sh
+cd experiments/training
+
+python ppo_train.py
+```
+
 # Tune Reward Function
 
 ---
@@ -134,19 +147,6 @@ NOTE:
 cd experiments/utils
 
 python reward_tuning.py
-```
-
----
-## Train RL Agent
-
-NOTE:
-* parameters of a trained model will be saved at **~/ray_results/** folder
-* please change _train-or-eval_ parameter to _true_ inside **/experiments/configs/train_config.yaml** config
-
-```sh
-cd experiments/training
-
-python ppo_train.py
 ```
 
 # Evaluation
