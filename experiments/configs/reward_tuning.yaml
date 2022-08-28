@@ -7,7 +7,7 @@ dataset_folder_path:    "dataset/eatron_dataset"
 
 resume:                 False
 num_samples:            1
-num_tune_scenarios:     1       # [number of how many different ACC scenarios going to be used from real driving trajectories]
+num_tune_scenarios:     100     # [number of how many different ACC scenarios going to be used from real driving trajectories]
 
 search_space:
     velocity_multiplier: 
@@ -31,8 +31,8 @@ search_space:
         steps:          20
 
 ray_tune_resources:
-    cpu:                2       # [number of CPUs to allocate to the trial]
-    gpu:                0.20    # [number of GPUs to allocate to the trial]
+    cpu:                3       # [number of CPUs to allocate to the trial]
+    gpu:                0.1     # [number of GPUs to allocate to the trial]
 
 metric:                 reward  # [metric to optimize (should be in tune.report() arguments)]
 mode:                   max     # [objective to apply ([maximize -> max] or [minimize -> min])]
