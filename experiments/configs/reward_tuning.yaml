@@ -7,6 +7,7 @@ dataset_folder_path:    "dataset/eatron_dataset"
 
 resume:                 False
 num_samples:            1
+num_tune_scenarios:     1       # [number of how many different ACC scenarios going to be used from real driving trajectories]
 
 search_space:
     velocity_multiplier: 

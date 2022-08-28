@@ -65,9 +65,6 @@ class RewardTuner(object):
         # update reward parameters of the reward function
         env.config.update(searching_config)
 
-        # number of how many different ACC scenarios going to be used
-        n_episodes = 1
-        
         idx = 0
         # loop through different ACC scenarios
         for _name, trajectory in self.trajectories:
@@ -107,7 +104,7 @@ class RewardTuner(object):
             statistics[idx] = stats
 
             idx += 1
-            if idx == n_episodes:
+            if idx == self.reward_config["num_tune_scenarios"]:
                 break
         
         return statistics
@@ -159,35 +156,35 @@ if __name__ == "__main__":
     save_folder_name = reward_config["experiment_name"] + "_" + datetime.datetime.today().strftime("%Y-%m-%d_%H-%M-%S")
     print("\n[INFO]-> Running Results Path:\t", local_directory + "/" + save_folder_name)
 
-    #try:
-    analysis = tune.run(
-        run_or_experiment   =   reward_tuner.run_tuner,
-        num_samples         =   reward_config["num_samples"],
-        resources_per_trial =   reward_config["ray_tune_resources"],
-        metric              =   reward_config["metric"],
-        mode                =   reward_config["mode"],
-        config              =   searching_config,
-        search_alg          =   None,
-        local_dir           =   local_directory, 
-        name                =   save_folder_name,
-        sync_config         =   tune.SyncConfig(),
-        resume              =   reward_config["resume"]
-    )
-    # except KeyboardInterrupt:
-    #     raise Exception("[EXIT]-> Keyboard Interrupted")
+    try:
+        analysis = tune.run(
+            run_or_experiment   =   reward_tuner.run_tuner,
+            num_samples         =   reward_config["num_samples"],
+            resources_per_trial =   reward_config["ray_tune_resources"],
+            metric              =   reward_config["metric"],
+            mode                =   reward_config["mode"],
+            config              =   searching_config,
+            search_alg          =   None,
+            local_dir           =   local_directory, 
+            name                =   save_folder_name,
+            sync_config         =   tune.SyncConfig(),
+            resume              =   reward_config["resume"]
+        )
+    except KeyboardInterrupt:
+        raise Exception("[EXIT]-> Keyboard Interrupted")
 
-    # except Exception as e:
-    #     raise Exception("[ERROR]-> Exception Occured:\t", e)
+    except Exception as e:
+        raise Exception("[ERROR]-> Exception Occured:\t", e)
 
-    # finally:
-    #     if analysis is not None:
-    #         experiment_data = analysis.results_df
+    finally:
+        if analysis is not None:
+            experiment_data = analysis.results_df
 
-    #         print("\n[INFO]-> Results Head:\t", experiment_data.head())
-    #         print("\n[INFO]-> Results Shape:\t", experiment_data.shape)
+            print("\n[INFO]-> Results Head:\t", experiment_data.head())
+            print("\n[INFO]-> Results Shape:\t", experiment_data.shape)
 
-    #         csv_path = os.path.join(os.path.join(local_directory, save_folder_name), "results.csv")
-    #         experiment_data.to_csv(csv_path, index=False)
+            csv_path = os.path.join(os.path.join(local_directory, save_folder_name), "results.csv")
+            experiment_data.to_csv(csv_path, index=False)
         
-    #     else:
-    #         raise Exception("[ERROR]-> Analysis is None")
+        else:
+            raise Exception("[ERROR]-> Analysis is None")
