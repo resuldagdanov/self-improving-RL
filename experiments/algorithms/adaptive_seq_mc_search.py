@@ -98,11 +98,12 @@ class AdapSeqMCOptimizer:
         if self.Fj_counter != self.J:
             
             if len(self.result_buffer) < self.Ne and self.trial_counter < self.Ne:
-                self.trial_counter += 1
-
+                
                 search_configs = validation_utils.make_float(self.current_trials[self.trial_counter])
                 print("\n[INFO]-> Search Space:\t", pretty_print(search_configs))
 
+                self.trial_counter += 1
+                
                 return search_configs
             else:
                 return None
