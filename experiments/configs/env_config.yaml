@@ -21,7 +21,7 @@ config:
     rew_tgap_coef:            0.6               # [time-gap punishment multiplier coeficient]
     rew_ttc_coef:             1.2               # [ttc reward is inversely multiplied with rew_ttc_coef]
     rew_u_range:              [ -0.50, 0.5 ]    # [throttle-brake action reward for being between this range]
-    rew_u_coefs:              [ 0.075, 0.3 ]    # [1 idx: positive reward coeficient for throttle-brake in rew_u_range]
+    rew_u_coef:               0.3               # [positive reward coeficient for throttle-brake in rew_u_range]
     rew_speed_coef:           4.0               # [velocity multiplier for reward function]
     rew_jerk_lim:             3.0               # [negative reward is given when abs(ego jerk) > rew_jerk_lim]
     rew_jerk_coef:            0.05              # [jerk punishment multiplier]

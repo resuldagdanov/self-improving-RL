@@ -10,6 +10,7 @@ Test Verification Algorithms on Gym Highway Environment using Ray RLlib
 * [Tests](#tests)
     - [Test Training Example](#test-training-example)
     - [Train RL Agent](#train-rl-agent)
+* [Tune Reward Function](#tune-reward-function)
 * [Evaluation](#evaluation)
     - [Evaluate RL Agent](#evaluate-rl-agent)
 * [Verification Algorithms](#verification-algorithms)
@@ -116,6 +117,23 @@ pip install -U "ray[rllib]"
 cd highway_environment/highway_environment
 
 python test_train.py
+```
+
+# Tune Reward Function
+
+---
+NOTE:
+* custom reward function for RL agent training is calculated in **/highway_environment/highway_environment/envs/environment.py** as __compute_reward()__
+* energy weights of the function is computed by analysing real driving scenarios
+* grid search algorith is applied to find weight multipliers of the function that maximizes reward obtained in real driving scenarios
+* tuning logs and results are saved in **/experiments/results/tuning_reward_function/** folder
+* currently Eatron driving dataset is used for tuning
+* before tuning, please take a look at **/experiments/configs/reward_tuning.yaml** configuration file
+
+```sh
+cd experiments/utils
+
+python reward_tuning.py
 ```
 
 ---

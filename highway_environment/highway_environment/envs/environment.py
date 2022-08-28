@@ -196,20 +196,22 @@ class Environment(AbstractEnv):
     def _reward(self, action: Action) -> float:
         # get observation dictionary elements without normalizations
         raw_obs = self.observation_type.raw_obs
-
+        return self.compute_reward(obs = raw_obs, action = action)
+    
+    def compute_reward(self, obs: dict, action: Action) -> float:
         # desired speed reward
-        speed_ratio = min(1, raw_obs["ego_speed"] / self.config["speed_range"][1])
+        speed_ratio = min(1, obs["ego_speed"] / self.config["speed_range"][1])
         speed_rew = speed_ratio * self.config["rew_speed_coef"]
         
         # too slow ego vehicle punishment
-        if raw_obs["ego_speed"] < 1.0:
+        if obs["ego_speed"] < 1.0:
             too_slow = -0.5
         else:
             too_slow = 0.0
         
         # calculate time-gap and time-to-collision with reward function configuration limits
-        tgap = np.clip(raw_obs["mio_pos"] / (raw_obs["ego_speed"] + 1e-5), 0, self.config["max_tgap"])
-        ttc = -raw_obs["mio_pos"] / (raw_obs["mio_vel"] - 1e-5) if raw_obs["mio_vel"] < 0 else self.config["max_ttc"]
+        tgap = np.clip(obs["mio_pos"] / (obs["ego_speed"] + 1e-5), 0, self.config["max_tgap"])
+        ttc = -obs["mio_pos"] / (obs["mio_vel"] - 1e-5) if obs["mio_vel"] < 0 else self.config["max_ttc"]
         
         # time-gap punishment
         if 0 < tgap < self.config["rew_tgap_range"][0]:
@@ -228,13 +230,13 @@ class Environment(AbstractEnv):
         
         # input action cost
         if not (self.config["rew_u_range"][0] < action[0] < self.config["rew_u_range"][1]):
-            eco_rew = -abs(action[0]) * self.config["rew_u_coefs"][1]
+            eco_rew = -abs(action[0]) * self.config["rew_u_coef"]
         else:
-            eco_rew = -abs(action[0]) * self.config["rew_u_coefs"][0]
+            eco_rew = -abs(action[0]) * (self.config["rew_u_coef"] / 4)
         
         # jerk punishment
-        if abs(raw_obs["ego_jerk"]) > self.config["rew_jerk_lim"]:
-            jerk_rew = -abs(raw_obs["ego_jerk"]) * self.config["rew_jerk_coef"]
+        if abs(obs["ego_jerk"]) > self.config["rew_jerk_lim"]:
+            jerk_rew = -abs(obs["ego_jerk"]) * self.config["rew_jerk_coef"]
         else:
             jerk_rew = 0.0
         
