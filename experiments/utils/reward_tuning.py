@@ -84,7 +84,7 @@ class RewardTuner(object):
             }
 
             # loop through each row step in selected trajectory to calculate reward at each step
-            for step, row in trajectory.iterrows():
+            for step in range(trajectory.shape[0]):
 
                 action = stats["throttle_position"][step] - stats["brake_position"][step]
                 raw_obs = {
@@ -99,10 +99,10 @@ class RewardTuner(object):
                     action  =   [action]
                 )
                 sum_reward += reward
-
+            
             stats["avg_rewards"] = sum_reward / (step + 1)
             statistics[idx] = stats
-
+            
             idx += 1
             if idx == self.reward_config["num_tune_scenarios"]:
                 break
