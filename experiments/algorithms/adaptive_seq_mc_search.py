@@ -109,7 +109,8 @@ class AdapSeqMCOptimizer:
                 return None
             
         else:
-            return "[INFO]-> FINISHED!"
+            print("[INFO]-> FINISHED!")
+            return None
     
     # get uniformly sampled initial conditions
     def uniformly_sample(self) -> dict:
