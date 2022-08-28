@@ -130,7 +130,6 @@ output_compress_columns:
 placement_strategy:                             PACK
 postprocess_inputs:                             false
 preprocessor_pref:                              deepmind
-record_env:                                     false
 recreate_failed_workers:                        false
 remote_env_batch_wait_ms:                       0
 remote_worker_envs:                             false
