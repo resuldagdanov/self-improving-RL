@@ -20,6 +20,7 @@ def run_search_algorithm(agent: object, validation_config: dict, seach_config: O
     local_directory = os.path.join(repo_path, "results/validation_checkpoints")
     save_folder_name = validation_config["experiment_name"] + "_" + validation_config["load_agent_name"] + "_Chkpt" + str(validation_config["checkpoint_number"])
 
+    analysis = None
     try:
         analysis = tune.run(
             run_or_experiment   =   agent.simulate,
@@ -39,7 +40,7 @@ def run_search_algorithm(agent: object, validation_config: dict, seach_config: O
         raise Exception("[EXIT]-> Keyboard Interrupted")
 
     except Exception as e:
-        raise Exception("[ERROR]-> Exception Occured:\t", e)
+        raise Exception("[ERROR]-> Exception Occured:", e)
 
     finally:
         if analysis is not None:
