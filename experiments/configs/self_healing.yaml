@@ -26,10 +26,10 @@ validation_type:                    "mixture"  # [custom name -> related to ./ex
 scenario_mixer:
     # [folder names should be null if not specified and total sum percentage_probability of existing folders should be 100 (1.0)]
     validation_folder_1:            ce_search_PPOTrainer_highway_environment:highway-environment-v0_2022-08-07_21-22-18mdgw9lf4_Agent0_Chkpt100
-    percent_probability_1:          0.20       # [randomly select percentage of scenarios from validation_folder_1]
+    percent_probability_1:          0.17       # [randomly select percentage of scenarios from validation_folder_1]
     
     validation_folder_2:            ce_search_PPOTrainer_highway_environment:highway-environment-v0_2022-08-19_19-34-16_a2cqydg_Agent1_Chkpt200
-    percent_probability_2:          0.30       # [randomly select percentage of scenarios from validation_folder_2]
+    percent_probability_2:          0.33       # [randomly select percentage of scenarios from validation_folder_2]
     
     validation_folder_3:            ce_search_PPOTrainer_highway_environment:highway-environment-v0_2022-08-19_23-31-04_y6fkw_8_Agent2_Chkpt300
     percent_probability_3:          0.50       # [randomly select percentage of scenarios from validation_folder_2]
