@@ -212,3 +212,28 @@ def show_video(video_path: str = "videos") -> None:
                  </video>'''.format(mp4, video_b64.decode('ascii')))
     
     ipythondisplay.display(ipythondisplay.HTML(data="<br>".join(html)))
+
+
+def trajectory_extraction(dataset_path: str) -> pd.DataFrame.groupby:
+    folder_path = os.path.join(repo_path, dataset_path)
+    
+    # making sure that real driving trajectory dataset path do exist
+    if os.path.exists(folder_path) is False:
+        raise Exception("[EXIT]-> Dataset Folder Does Not Exist in './experiments/dataset': ", folder_path)
+    
+    # get all trajectory files inside given dataset path folder
+    csv_files = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith(".csv")]
+    if len(csv_files) == 0:
+        raise Exception("[EXIT]-> Real Driving Dataset Folder Does Not Contain Any Trajectories @", folder_path)
+    
+    trajectories = pd.DataFrame()
+    
+    # dataset is priorly grouped by unique IDs for each different trajectory
+    for csv_file in csv_files:
+        data = pd.read_csv(csv_file)
+        trajectories = pd.concat([trajectories, data])
+    
+    # grouping different trajectories by unique IDs
+    grouped = trajectories.groupby("ID")
+
+    return grouped
