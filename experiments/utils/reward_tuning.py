@@ -156,6 +156,7 @@ if __name__ == "__main__":
     save_folder_name = reward_config["experiment_name"] + "_" + datetime.datetime.today().strftime("%Y-%m-%d_%H-%M-%S")
     print("\n[INFO]-> Running Results Path:\t", local_directory + "/" + save_folder_name)
 
+    analysis = None
     try:
         analysis = tune.run(
             run_or_experiment   =   reward_tuner.run_tuner,
@@ -174,7 +175,7 @@ if __name__ == "__main__":
         raise Exception("[EXIT]-> Keyboard Interrupted")
 
     except Exception as e:
-        raise Exception("[ERROR]-> Exception Occured:\t", e)
+        raise Exception("[ERROR]-> Exception Occured:", e)
 
     finally:
         if analysis is not None:

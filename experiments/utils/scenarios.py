@@ -32,13 +32,13 @@ class Scenarios(object):
         manual_scenario = {
             "ego_position"      :   [ 0.0, 0.0 ],
             "ego_heading"       :   0.0,
-            "ego_speed"         :   single_row_df["config.ego_v1"].values[0],
+            "ego_speed"         :   single_row_df["config/ego_v1"].values[0],
             "ego_target_speed"  :   40.0,
 
-            "front_position"    :   [ single_row_df["config.delta_dist"].values[0], 0.0 ],
+            "front_position"    :   [ single_row_df["config/delta_dist"].values[0], 0.0 ],
             "front_heading"     :   0.0,
-            "front_speed"       :   single_row_df["config.front_v1"].values[0],
-            "front_target_speed":   single_row_df["config.front_v2"].values[0]
+            "front_speed"       :   single_row_df["config/front_v1"].values[0],
+            "front_target_speed":   single_row_df["config/front_v2"].values[0]
         }
         return manual_scenario
 

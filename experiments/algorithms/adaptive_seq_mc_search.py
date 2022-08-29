@@ -67,26 +67,29 @@ class AdapSeqMCOptimizer:
 
         # check and do not include impossible configurations
         while counter < self.Ne:
-            parameters = self.uniformly_sample()
+            # loop until 'possible to avoid collision' configuration is found
+            for _ in range(self.algorithm_config["check_impossible_count"]):
+                parameters = self.uniformly_sample()
+                
+                # TODO: initial ego vehicle acceleration could be added to parameter space
+                ego_acceleration = 0.0
+                front_acceleration = np.clip(self.algorithm_config["desired_comfort_accel"] * \
+                    (1 - np.power(max(parameters["front_v1"], 0) / parameters["front_v2"], self.algorithm_config["velocity_exponent"])), \
+                        self.algorithm_config["front_accel_range"][0], self.algorithm_config["front_accel_range"][1])
+                
+                if validation_utils.is_impossible_2_stop(
+                    initial_distance    =   parameters["delta_dist"],
+                    ego_velocity        =   parameters["ego_v1"],
+                    front_velocity      =   parameters["front_v1"],
+                    ego_acceleration    =   ego_acceleration, 
+                    front_acceleration  =   front_acceleration
+                ):
+                    continue
+                else:
+                    break
             
-            # TODO: initial ego vehicle acceleration could be added to parameter space
-            ego_acceleration = 0.0
-            front_acceleration = np.clip(self.algorithm_config["desired_comfort_accel"] * \
-                (1 - np.power(max(parameters["front_v1"], 0) / parameters["front_v2"], self.algorithm_config["velocity_exponent"])), \
-                    self.algorithm_config["front_accel_range"][0], self.algorithm_config["front_accel_range"][1])
-            
-            if validation_utils.is_impossible_2_stop(
-                initial_distance    =   parameters["delta_dist"],
-                ego_velocity        =   parameters["ego_v1"],
-                front_velocity      =   parameters["front_v1"],
-                ego_acceleration    =   ego_acceleration, 
-                front_acceleration  =   front_acceleration
-            ):
-                continue
-
-            else:
-                counter += 1
-                self.current_trials.append(copy.deepcopy(parameters))
+            counter += 1
+            self.current_trials.append(copy.deepcopy(parameters))
         
         self.Fj = [self.current_trials]
 
@@ -95,17 +98,19 @@ class AdapSeqMCOptimizer:
         if self.Fj_counter != self.J:
             
             if len(self.result_buffer) < self.Ne and self.trial_counter < self.Ne:
-                self.trial_counter += 1
-
+                
                 search_configs = validation_utils.make_float(self.current_trials[self.trial_counter])
                 print("\n[INFO]-> Search Space:\t", pretty_print(search_configs))
 
+                self.trial_counter += 1
+                
                 return search_configs
             else:
                 return None
             
         else:
-            return "[INFO]-> FINISHED!"
+            print("[INFO]-> FINISHED!")
+            return None
     
     # get uniformly sampled initial conditions
     def uniformly_sample(self) -> dict:
@@ -167,15 +172,15 @@ class AdapSeqMCOptimizer:
                 
                 # check and do not include impossible configurations
                 for _ in range(self.Ne):
-                    sampled_config = np.random.choice(a=sampling_buffer)
-                    
-                    parameters = self.apply_noise(
-                        params=copy.deepcopy(sampled_config),
-                        noise_level=self.noise_level
-                    )
-
                     # loop until 'possible to avoid collision' configuration is found
                     for _ in range(self.algorithm_config["check_impossible_count"]):
+                        sampled_config = np.random.choice(a=sampling_buffer)
+                        
+                        parameters = self.apply_noise(
+                            params=copy.deepcopy(sampled_config),
+                            noise_level=self.noise_level
+                        )
+
                         # TODO: initial ego vehicle acceleration could be added to parameter space
                         ego_acceleration = 0.0
                         front_acceleration = np.clip(self.algorithm_config["desired_comfort_accel"] * \
