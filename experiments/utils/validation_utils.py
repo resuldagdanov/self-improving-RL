@@ -110,24 +110,24 @@ def extract_results_csv(file_path: str) -> pd.DataFrame:
 
     # parameters should be included in tune.report
     filtered_df = file_df[[
-            "collision",
-            "impossible",
-            "episode_length",
-            "episode_min_ttc",
-            "reward",
-            "statistics.ego_speeds",
-            "statistics.ego_accels",
-            "statistics.ego_jerks",
-            "statistics.ego_actions",
-            "statistics.ego_rewards",
-            "statistics.front_positions",
-            "statistics.front_speeds",
-            "statistics.tgap",
-            "statistics.ttc",
-            "config.ego_v1",
-            "config.front_v1",
-            "config.front_v2",
-            "config.delta_dist"
+        "collision",
+        "impossible",
+        "episode_length",
+        "episode_min_ttc",
+        "reward",
+        "statistics/ego_speeds",
+        "statistics/ego_accels",
+        "statistics/ego_jerks",
+        "statistics/ego_actions",
+        "statistics/ego_rewards",
+        "statistics/front_positions",
+        "statistics/front_speeds",
+        "statistics/tgap",
+        "statistics/ttc",
+        "config/ego_v1",
+        "config/front_v1",
+        "config/front_v2",
+        "config/delta_dist"
         ]
     ]
     return filtered_df
