@@ -152,7 +152,7 @@ if __name__ == "__main__":
     runtime_env = {
         "working_dir": parent_directory
     }
-    ray.init(runtime_env=runtime_env)    
+    ray.init(runtime_env=runtime_env)
 
     # execute validation search algorithm and save results to csv
     validation_utils.run_search_algorithm(

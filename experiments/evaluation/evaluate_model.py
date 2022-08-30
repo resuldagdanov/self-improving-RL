@@ -46,6 +46,14 @@ if __name__ == "__main__":
     }
     ray.init(runtime_env=runtime_env)
 
+    # create a folder to store the simulation results at each episode separately
+    eval_folder_name = eval_config["experiment_name"] + "_" + eval_config["load_agent_name"]
+    results_dir = os.path.join(validation_utils.repo_path, "results/evaluation_statistics")
+
+    stats_path = os.path.join(results_dir, eval_folder_name)
+    if os.path.exists(stats_path) is False:
+        os.makedirs(stats_path)
+
     # recall trained model configurations within environment parameters
     general_config = agent.initialize_config(
         env_config_path     =   "/env_config.yaml",
@@ -60,7 +68,8 @@ if __name__ == "__main__":
     
     # load trained rl model checkpoint
     model = agent.initialize_model(
-        general_config      =   general_config
+        general_config      =   general_config,
+        log_folder_path     =   stats_path
     )
 
     # set seed to numpy array of environment randomness
@@ -75,12 +84,9 @@ if __name__ == "__main__":
                 agent       =   model
         )
 
-        # create a folder to store the simulation results at each episode separately
-        eval_folder_name = eval_config["experiment_name"] + "_" + eval_config["load_agent_name"]
-
         # saving statistics dictionary to folder in ./experiments/results/evaluation_statistics/
         validation_utils.save_eval_to_csv(
-            folder_name     =   eval_folder_name,
+            stats_path      =   stats_path,
             file_name       =   "/eval_episode_" + str(eps) + ".csv",
             experiment_stats=   statistics
         )

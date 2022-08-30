@@ -63,6 +63,12 @@ pip install -r requirements.txt
 
 In order to successfully use GPUs, please install CUDA by following the site : https://pytorch.org/get-started/locally/
 
+- Trained and tested the repository with the following versions:
+    * Python  ->  3.7.13
+    * Pytorch ->  1.11.0
+    * Ray  ->  2.0.0
+    * Gym  ->  0.22.0
+
 ---
 ## Environment Installation
 

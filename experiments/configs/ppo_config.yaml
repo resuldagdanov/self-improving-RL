@@ -151,23 +151,23 @@ tf_session_args:
     intra_op_parallelism_threads:               2
     log_device_placement:                       false
 
-timesteps_per_iteration:                        0
+min_sample_timesteps_per_iteration:             0
 train_batch_size:                               3072
 use_critic:                                     true
 use_gae:                                        true
 vf_clip_param:                                  10.0
 vf_loss_coeff:                                  1.0
 
-evaluation_config:                              {}
+input:                                          sampler
+input_config:                                   {}
+
+evaluation_config:
+    off_policy_estimation_methods:
+        - ray.rllib.offline.estimators.importance_sampling.ImportanceSampling
+        - ray.rllib.offline.estimators.weighted_importance_sampling.WeightedImportanceSampling
 evaluation_duration:                            10
 evaluation_duration_unit:                       episodes
 evaluation_num_workers:                         0
 evaluation_parallel_to_training:                false
-
-input:                                          sampler
-input_evaluation:
-    - is
-    - wis
-input_config:                                   {}
 
 env_config:                                     {}
