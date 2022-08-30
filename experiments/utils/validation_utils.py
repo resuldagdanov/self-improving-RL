@@ -80,13 +80,7 @@ def sort_samples(list_sample_results: list, metric: str) -> list:
     return sorted(list_sample_results, key=lambda value: value.get(metric), reverse=False)
 
 
-def save_eval_to_csv(folder_name: str, file_name: str, experiment_stats: dict) -> None:
-    results_dir = os.path.join(repo_path, "results/evaluation_statistics")
-    stats_path = os.path.join(results_dir, folder_name)
-
-    if os.path.exists(stats_path) is False:
-        os.makedirs(stats_path)
-    
+def save_eval_to_csv(stats_path: str, file_name: str, experiment_stats: dict) -> None:
     df = pd.DataFrame.from_dict(experiment_stats, orient="index").transpose()
     df.to_csv(stats_path + file_name)
     print("\n[INFO]-> Evaluation Stats are Saved:\t", stats_path + file_name)
