@@ -86,7 +86,8 @@ class MainAgent:
 
         checkpoint_num = self.algorithm_config["checkpoint_number"]
         checkpoint_path = agent_path + "/checkpoint_%06i"%(checkpoint_num) + "/checkpoint-" + str(checkpoint_num)
-        trainer.restore(checkpoint_path)
+        trainer.load_checkpoint(checkpoint_path)
+        # trainer.restore(checkpoint_path) # has issue with ray version 2.0.0
 
         print("\n[INFO]-> Restore Checkpoint:\t", checkpoint_path)
         return trainer
