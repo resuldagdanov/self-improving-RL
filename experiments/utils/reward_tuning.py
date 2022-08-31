@@ -186,6 +186,13 @@ if __name__ == "__main__":
 
             csv_path = os.path.join(os.path.join(local_directory, save_folder_name), "results.csv")
             experiment_data.to_csv(csv_path, index=False)
+
+            # list of lists: one list per checkpoint; each checkpoint list contains 1st the path, 2nd the metric value
+            checkpoints = analysis.get_trial_checkpoints_paths(
+                    trial=analysis.get_best_trial("reward"), metric="reward")
+            
+            with open(os.path.join(os.path.join(local_directory, save_folder_name), "best_checkpoints.txt"), "w") as f:
+                f.write(checkpoints)
         
         else:
             raise Exception("[ERROR]-> Analysis is None")
