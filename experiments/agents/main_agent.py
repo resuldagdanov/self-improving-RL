@@ -77,11 +77,16 @@ class MainAgent:
         print("\n[CONFIG]-> General Configurations:\t", pretty_print(general_config))
         return general_config
 
-    def initialize_model(self, general_config: dict, log_folder_path: str) -> object:
+    def initialize_model(self, general_config: dict, log_folder_path: Optional[str] = None) -> object:
+        if log_folder_path is None:
+            logger_creator = None
+        else:
+            logger_creator = training_utils.custom_log_creator(log_folder_path, "evaluation_PPOTrainer_" + str(general_config["env"]))
+        
         trainer = PPOTrainer(
             config=general_config,
             env=general_config["env"],
-            logger_creator=training_utils.custom_log_creator(log_folder_path, "evaluation_PPOTrainer_" + str(general_config["env"]))
+            logger_creator=logger_creator
         )
         print("\n[INFO]-> Trainer:\t", trainer)
 
@@ -191,7 +196,8 @@ class MainAgent:
         
         # load trained rl model checkpoint
         model = self.initialize_model(
-            general_config      =   general_config
+            general_config      =   general_config,
+            log_folder_path     =   None
         )
 
         # run one simulation and obtain returning parameters
