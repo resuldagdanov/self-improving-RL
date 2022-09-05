@@ -15,12 +15,12 @@ search_space:
     distance: 
         min:            10.0    # [m]
         max:            120.0   # [m]
-        steps:          12      # [discrete number]
+        steps:          11      # [discrete number]
     
     velocity:
         min:            10.0    # [m/s]
         max:            40.0    # [m/s]
-        steps:          12      # [discrete number]
+        steps:          9       # [discrete number]
 
 ray_tune_resources:
     cpu:                2       # [number of CPUs to allocate to the trial]
