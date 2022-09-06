@@ -180,19 +180,15 @@ if __name__ == "__main__":
     finally:
         if analysis is not None:
             experiment_data = analysis.results_df
-
+            
             print("\n[INFO]-> Results Head:\t", experiment_data.head())
             print("\n[INFO]-> Results Shape:\t", experiment_data.shape)
 
             csv_path = os.path.join(os.path.join(local_directory, save_folder_name), "results.csv")
-            experiment_data.to_csv(csv_path, index=False)
-
-            # list of lists: one list per checkpoint; each checkpoint list contains 1st the path, 2nd the metric value
-            checkpoints = analysis.get_trial_checkpoints_paths(
-                    trial=analysis.get_best_trial("reward"), metric="reward")
-            
-            with open(os.path.join(os.path.join(local_directory, save_folder_name), "best_checkpoints.txt"), "w") as f:
-                f.write(checkpoints)
+            experiment_data[["reward", "experiment_id", "experiment_tag",
+                            "config/rew_speed_coef", "config/rew_u_coef",
+                            "config/rew_tgap_coef", "config/rew_ttc_coef",
+                            "stats/0/avg_rewards"]].to_csv(csv_path, index=False)
         
         else:
             raise Exception("[ERROR]-> Analysis is None")
