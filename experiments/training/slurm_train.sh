@@ -13,4 +13,5 @@ conda list | grep cuda
 
 # uncomment one the following lines to run the corresponding script
 python ppo_train.py                 # [default vanilla PPO training]
+# python sac_train.py                 # [default vanilla SAC training]
 # python self_healing.py            # [PPO training from validation samples]

@@ -9,7 +9,9 @@ Test Verification Algorithms on Gym Highway Environment using Ray RLlib
     - [Package Installation](#package-installation)
 * [Tests](#tests)
     - [Test Training Example](#test-training-example)
-    - [Train RL Agent](#train-rl-agent)
+* [Train Reinforcement Learning Agent](#train-rl-agent)
+    - [Proximal Policy Optimization (PPO)](#proximal-policy-optimization)
+    - [Soft Actor-Critic (SAC)](#soft-actor-critic)
 * [Tune Reward Function](#tune-reward-function)
 * [Evaluation](#evaluation)
     - [Evaluate RL Agent](#evaluate-rl-agent)
@@ -125,17 +127,26 @@ cd highway_environment/highway_environment
 python test_train.py
 ```
 
+# Train RL Agent
+
 ---
-## Train RL Agent
-
 NOTE:
-* parameters of a trained model will be saved at **~/ray_results/** folder
-* please change _train-or-eval_ parameter to _true_ inside **/experiments/configs/train_config.yaml** config
+* parameters of a trained model will be saved at **/experiments/results/trained_models** folder
+* please specify _training-iteration_ parameter inside **/experiments/configs/train_config.yaml** config for how many iteration to train model
+* training model parameters could be changed from **/experiments/configs/ppo_train.yaml** for PPO or **/experiments/configs/sac_train.yaml** for SAC algorithms
 
+## Proximal Policy Optimization
 ```sh
 cd experiments/training
 
 python ppo_train.py
+```
+
+## Soft Actor-Critic
+```sh
+cd experiments/training
+
+python sac_train.py
 ```
 
 # Tune Reward Function

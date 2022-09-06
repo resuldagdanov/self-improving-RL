@@ -6,7 +6,9 @@ import tempfile
 import pandas as pd
 
 from ray.tune.logger import pretty_print, UnifiedLogger
-from ray.rllib.agents.ppo import PPOTrainer
+from ray.rllib.algorithms.callbacks import DefaultCallbacks
+from ray.rllib.algorithms.ppo import PPO
+from ray.rllib.algorithms.sac import SAC
 
 repo_path = os.path.join(os.environ["BLACK_BOX"], "experiments")
 configs_path = os.path.join(repo_path, "configs")
@@ -22,6 +24,7 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
     # training algorithms configurations
     with open(configs_path + model_config_path) as f:
         model_configs = yaml.safe_load(f)
+        model_configs["callbacks"] = DefaultCallbacks
     
     # general parameters for training
     with open(configs_path + train_config_path) as f:
@@ -74,7 +77,7 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
     # add environment configurations to training config
     general_config = model_configs.copy()
     general_config["env_config"] = env_configs
-
+    
     # initialize environment
     env = Environment(
         config=env_configs["config"]
@@ -86,9 +89,9 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
     return env, general_config, train_config
 
 
-def ppo_model_initialize(general_config: dict) -> PPOTrainer:
+def ppo_model_initialize(general_config: dict) -> PPO:
     ray.init()
-    ppo_trainer = PPOTrainer(
+    ppo_trainer = PPO(
         config=general_config,
         env=general_config["env"],
         logger_creator=custom_log_creator(os.path.expanduser(repo_path + "/results/trained_models/"), "PPOTrainer_" + str(general_config["env"]))
@@ -96,6 +99,18 @@ def ppo_model_initialize(general_config: dict) -> PPOTrainer:
 
     print("\n[INFO]-> PPO Trainer:\t", ppo_trainer)
     return ppo_trainer
+
+
+def sac_model_initialize(general_config: dict) -> SAC:
+    ray.init()
+    sac_trainer = SAC(
+        config=general_config,
+        env=general_config["env"],
+        logger_creator=custom_log_creator(os.path.expanduser(repo_path + "/results/trained_models/"), "SACTrainer_" + str(general_config["env"]))
+    )
+    
+    print("\n[INFO]-> SAC Trainer:\t", sac_trainer)
+    return sac_trainer
 
 
 def extract_progress_csv(file_path: str) -> pd.DataFrame:

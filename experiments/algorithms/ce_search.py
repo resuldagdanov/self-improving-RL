@@ -150,7 +150,8 @@ if __name__ == "__main__":
 
     # set project directory for all ray workers
     runtime_env = {
-        "working_dir": parent_directory
+        "working_dir": parent_directory,
+        "excludes": ["*.err", "*.out"] # exclude error and output files (relative path from "parent_directory")
     }
     ray.init(runtime_env=runtime_env)
 

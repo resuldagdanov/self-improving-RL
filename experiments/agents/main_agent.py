@@ -6,7 +6,8 @@ import numpy as np
 from typing import Optional
 from ray import tune
 from ray.tune.logger import pretty_print
-from ray.rllib.agents.ppo import PPOTrainer
+from ray.rllib.algorithms.ppo import PPO
+from ray.rllib.algorithms.sac import SAC
 
 from highway_environment.envs import Environment
 
@@ -21,6 +22,16 @@ class MainAgent:
     def __init__(self, algorithm_config: dict) -> None:
         self.repo_path = validation_utils.repo_path
         self.algorithm_config = algorithm_config
+        
+        # get either 'SAC' or 'PPO' others are not implemented
+        self.agent_model_name = self.algorithm_config["load_agent_name"][:3]
+
+        if self.agent_model_name == "SAC":
+            self.model_config_name = "/sac_config.yaml"
+        elif self.agent_model_name == "PPO":
+            self.model_config_name = "/ppo_config.yaml"
+        else:
+            raise NotImplementedError("[ERROR]-> only SAC and PPO are implemented so far!")
     
     @staticmethod
     def create_search_space(params: dict) -> tuple:
@@ -78,16 +89,24 @@ class MainAgent:
         return general_config
 
     def initialize_model(self, general_config: dict, log_folder_path: Optional[str] = None) -> object:
+        if self.agent_model_name == "SAC":
+            log_folder_name = "evaluation_SACTrainer_" + str(general_config["env"])
+        elif self.agent_model_name == "PPO":
+            log_folder_name = "evaluation_PPOTrainer_" + str(general_config["env"])
+        else:
+            raise NotImplementedError("[ERROR]-> only SAC and PPO are implemented so far (PPOTrainer or SACTrainer)!")
+        
         if log_folder_path is None:
             logger_creator = None
         else:
-            logger_creator = training_utils.custom_log_creator(log_folder_path, "evaluation_PPOTrainer_" + str(general_config["env"]))
+            logger_creator = training_utils.custom_log_creator(log_folder_path, log_folder_name)
         
-        trainer = PPOTrainer(
-            config=general_config,
-            env=general_config["env"],
-            logger_creator=logger_creator
-        )
+        if self.agent_model_name == "SAC":
+            trainer = SAC(config=general_config, env=general_config["env"], logger_creator=logger_creator)
+        elif self.agent_model_name == "PPO":
+            trainer = PPO(config=general_config, env=general_config["env"], logger_creator=logger_creator)
+        else:
+            raise NotImplementedError("[ERROR]-> only SAC and PPO are implemented so far (PPOTrainer or SACTrainer)!")
         print("\n[INFO]-> Trainer:\t", trainer)
 
         agent_path = os.path.join(self.repo_path, "results/trained_models/" + self.algorithm_config["load_agent_name"])
@@ -186,7 +205,7 @@ class MainAgent:
         general_config = self.initialize_config(
             env_config_path     =   "/env_config.yaml",
             search_config       =   search_config,
-            model_config_path   =   "/ppo_config.yaml", # NOTE: change this line when model different than PPO is used
+            model_config_path   =   self.model_config_name,
         )
 
         # create environment object with default parameters
