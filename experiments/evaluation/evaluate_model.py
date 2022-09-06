@@ -21,6 +21,12 @@ if __name__ == "__main__":
     eval_config = validation_utils.get_algorithm_config(args=args)
     print("\n[CONFIG]-> Evalution Configuration:\t", pretty_print(eval_config))
 
+    # get either 'SAC' or 'PPO' others are not implemented
+    agent_model_name = eval_config["load_agent_name"][:3]
+    if agent_model_name == "SAC": model_config_name = "/sac_config.yaml"
+    elif agent_model_name == "PPO": model_config_name = "/ppo_config.yaml"
+    else: raise NotImplementedError("[ERROR]-> only SAC and PPO are implemented so far!")
+
     # initialize main agent class
     agent = MainAgent(
         algorithm_config=eval_config
@@ -33,10 +39,10 @@ if __name__ == "__main__":
     else:
         # set-up initial configurations with given parameters
         initial_conditions = {
-            'ego_v1'    : eval_config["evaluation_state"]["ego_velocity"]["initial_value"],
-            'front_v1'  : eval_config["evaluation_state"]["front_velocity"]["initial_value"],
-            'front_v2'  : eval_config["evaluation_state"]["front_velocity"]["target_value"],
-            'delta_dist': eval_config["evaluation_state"]["distance"]
+            "ego_v1"    : eval_config["evaluation_state"]["ego_velocity"]["initial_value"],
+            "front_v1"  : eval_config["evaluation_state"]["front_velocity"]["initial_value"],
+            "front_v2"  : eval_config["evaluation_state"]["front_velocity"]["target_value"],
+            "delta_dist": eval_config["evaluation_state"]["distance"]
         }
         print("\n[INFO]-> Initial Conditions:\t", pretty_print(initial_conditions))
 
@@ -59,7 +65,7 @@ if __name__ == "__main__":
     general_config = agent.initialize_config(
         env_config_path     =   "/env_config.yaml",
         search_config       =   initial_conditions,
-        model_config_path   =   "/ppo_config.yaml", # NOTE: change this line when model different than PPO is used
+        model_config_path   =   model_config_name
     )
 
     # create environment object with default parameters
