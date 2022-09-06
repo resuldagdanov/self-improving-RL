@@ -12,10 +12,10 @@ stop:
 
 is_restore:                         true       # [true: load trained checkpoint: load_agent_name]
 
-num_cpus_per_worker:                1
-num_envs_per_worker:                1
-num_gpus:                           0.20       # [number of GPUs to be allocated]
-num_gpus_per_worker:                0.20       # [number of GPUs to be used by each worker]
+num_cpus_per_worker:                4          # [number of workers are defined in "num_workers" key in ppo_config.yaml]
+num_envs_per_worker:                1          # [number of environments per worker -> default is 1]
+num_gpus:                           0.90       # [number of GPUs to be allocated]
+num_gpus_per_worker:                0.30       # [number of GPUs to be used by each worker]
 
 # [validated model's results folder inside ./results/validation_checkpoints/ folder]
 validation_folder_name:             ce_search_PPOTrainer_highway_environment:highway-environment-v0_2022-07-14_21-53-33jw2m0yb4_Chkpt30

@@ -23,10 +23,10 @@ search_space:
         steps:          2       # [discrete number]
 
 ray_tune_resources:
-    cpu:                2       # [number of CPUs to allocate to the trial]
-    gpu:                0.25    # [number of GPUs to allocate to the trial]
+    cpu:                8       # [number of CPUs to allocate to the trial]
+    gpu:                0.0     # [number of GPUs to allocate to the trial]
 
-metric:                 reward  # [str metric to optimize (should be in tune.report() arguments)]
+metric:                 episode_min_ttc  # [str metric to optimize (should be in tune.report() arguments)]
 mode:                   min     # [str objective to apply ([maximize -> max] or [minimize -> min])]
 
 seed:                   12      # [int random state seed]
