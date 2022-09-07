@@ -7,13 +7,13 @@ load_agent_name:                    PPOTrainer_highway_environment:highway-envir
 checkpoint_number:                  30
 
 stop:
-    training_iteration:             5000
+    training_iteration:             50
 
 is_restore:                         false      # [true: load trained checkpoint: load_agent_name]
 
-num_cpus_per_worker:                3
-num_envs_per_worker:                1
-num_gpus:                           0.60       # [number of GPUs to be allocated]
-num_gpus_per_worker:                0.20       # [number of GPUs to be used by each worker]
+num_cpus_per_worker:                4          # [number of workers are defined in "num_workers" key in ppo_config.yaml]
+num_envs_per_worker:                1          # [number of environments per worker -> default is 1]
+num_gpus:                           0.90       # [number of GPUs to be allocated]
+num_gpus_per_worker:                0.30       # [number of GPUs to be used by each worker]
 
 use_custom_torch_model:             false      # [true: use custom model in ./experiments/models/ folder]

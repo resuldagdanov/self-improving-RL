@@ -33,14 +33,30 @@ if __name__ == "__main__":
         checkpoint_path = agent_path + "/checkpoint_%06i"%(checkpoint_num) + "/checkpoint-" + str(checkpoint_num)
         trainer.restore(checkpoint_path)
         print("\n[INFO]-> Restore Checkpoint:\t", checkpoint_path)
+    
+    best_reward = 0.0
 
     # default training loop
-    for _ in range(train_config["stop"]["training_iteration"]):
+    for idx in range(train_config["stop"]["training_iteration"]):
         # perform one iteration of training the policy
         result = trainer.train()
         print("\n[INFO]-> Training Results:\t", pretty_print(result))
 
         checkpoint = trainer.save()
-        print("\n[INFO]-> Checkpoint Saved:\t", checkpoint)
+        print("\n[INFO]-> Checkpoint is Saved:\t", checkpoint)
 
+        # save best performing model to defined checkpoint
+        avg_eps_reward = result["episode_reward_mean"]
+        if avg_eps_reward > best_reward:
+            best_reward = avg_eps_reward
+            print("\n[INFO]-> Best Average Reward:\t", best_reward)
+
+            model_path = "/" + "/".join(checkpoint.split("/")[1:-1])
+            checkpoint_folder = model_path + "/best_checkpoints"
+            if os.path.exists(checkpoint_folder) is False:
+                os.makedirs(checkpoint_folder)
+            
+            best_checkpoint = trainer.save_checkpoint(checkpoint_folder)
+            print("\n[INFO]-> Best Checkpoint is Saved:\t", best_checkpoint)
+        
         print("\n\n-------------------------------------------------------------------------------------------")

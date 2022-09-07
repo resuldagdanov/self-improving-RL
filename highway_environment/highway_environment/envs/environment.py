@@ -16,7 +16,7 @@ from highway_environment.envs.observation import Observation
 parent_directory = os.path.join(os.environ["BLACK_BOX"])
 sys.path.append(parent_directory)
 
-from experiments.utils import scenarios
+from experiments.utils import scenarios, validation_utils
 
 
 class Environment(AbstractEnv):
@@ -71,6 +71,9 @@ class Environment(AbstractEnv):
         other_vehicles_type = utils.class_from_path(self.config["other_vehicles_type"])
         other_per_controlled = near_split(self.config["vehicles_count"], num_bins=self.config["controlled_vehicles"])
 
+        # reset impossibility condition of avoiding collision
+        self.is_impossible = False
+
         self.controlled_vehicles = []
         for others in other_per_controlled:
 
@@ -85,7 +88,7 @@ class Environment(AbstractEnv):
                     target_lane_index=None
                 )
                 controlled_vehicle = self.action_type.vehicle_class.create_from(vehicle=vehicle)
-
+            
             # randomly set ego vehicle position and initial velocity
             else:
                 ego_speed = self.np_random.normal(np.random.uniform(*(self.config["speed_range"])), self.config["speed_std"])
@@ -139,8 +142,20 @@ class Environment(AbstractEnv):
                 
                 self.road.vehicles.append(other_vehicle)
 
+                # make extra first action to compute an initial acceleration of the other vehicle
+                other_vehicle.act()
+                
+                # currently only checks impossible to avoid collision scenarios with only front mio vehicles
+                self.is_impossible = validation_utils.is_impossible_2_stop(
+                    initial_distance=other_vehicle.position[0] - controlled_vehicle.position[0],
+                    ego_velocity=controlled_vehicle.speed,
+                    front_velocity=other_vehicle.speed,
+                    ego_acceleration=controlled_vehicle.action["acceleration"],
+                    front_acceleration=other_vehicle.action["acceleration"]
+                )
+    
     def _is_terminal(self) -> bool:
-        return self.vehicle.crashed or \
+        return self.vehicle.crashed or self.is_impossible or \
             self.steps >= self.config["episode_length"] or \
                 self.config["offroad_terminal"] and not self.vehicle.on_road
 
@@ -157,6 +172,7 @@ class Environment(AbstractEnv):
             "ttc": self.observation_type.raw_obs["ttc"],
             "reward": reward,
             "collision": self.vehicle.crashed,
+            "impossible": self.is_impossible,
             "terminated": terminated
         }
 
@@ -205,7 +221,7 @@ class Environment(AbstractEnv):
 
     def custom_reward(self, action: Action) -> float:
         # get observation dictionary elements without normalizations
-        raw_obs = self.observation_type.raw_obs
+        obs = self.observation_type.raw_obs
 
         # split action into steering and throttle-brake
         if self.config["action"]["lateral"] and self.config["action"]["longitudinal"]:
@@ -218,18 +234,18 @@ class Environment(AbstractEnv):
             accel_action, steer_action = 0.0, 0.0
         
         # desired speed reward
-        speed_ratio = min(1, raw_obs["ego_speed"] / self.config["speed_range"][1])
+        speed_ratio = min(1, obs["ego_speed"] / self.config["speed_range"][1])
         speed_rew = speed_ratio * self.config["rew_speed_coef"]
         
         # too slow ego vehicle punishment
-        if raw_obs["ego_speed"] < 1.0:
+        if obs["ego_speed"] < 1.0:
             too_slow = -0.5
         else:
             too_slow = 0.0
         
         # calculate time-gap and time-to-collision with reward function configuration limits
-        tgap = np.clip(raw_obs["mio_pos"] / (raw_obs["ego_speed"] + 1e-5), 0, self.config["max_tgap"])
-        ttc = -raw_obs["mio_pos"] / (raw_obs["mio_vel"] - 1e-5) if raw_obs["mio_vel"] < 0 else self.config["max_ttc"]
+        tgap = np.clip(obs["mio_pos"] / (obs["ego_speed"] + 1e-5), 0, self.config["max_tgap"])
+        ttc = -obs["mio_pos"] / (obs["mio_vel"] - 1e-5) if obs["mio_vel"] < 0 else self.config["max_ttc"]
         
         # time-gap punishment
         if 0 < tgap < self.config["rew_tgap_range"][0]:
@@ -246,9 +262,9 @@ class Environment(AbstractEnv):
         else:
             ttc_rew = 0.0
         
-        # input acceleration action cost
-        if not (self.config["rew_u_range"][0] < accel_action < self.config["rew_u_range"][1]):
-            eco_rew = abs(accel_action) * self.config["rew_u_coefs"][1]
+        # input action cost
+        if not (self.config["rew_u_range"][0] < action[0] < self.config["rew_u_range"][1]):
+            eco_rew = -abs(action[0]) * self.config["rew_u_coef"]
         else:
             eco_rew = abs(accel_action) * self.config["rew_u_coefs"][0]
         
@@ -256,8 +272,8 @@ class Environment(AbstractEnv):
         steer_rew = abs(steer_action) * self.config["rew_steer_coef"]
 
         # jerk punishment
-        if abs(raw_obs["ego_jerk"]) > self.config["rew_jerk_lim"]:
-            jerk_rew = abs(raw_obs["ego_jerk"]) * self.config["rew_jerk_coef"]
+        if abs(obs["ego_jerk"]) > self.config["rew_jerk_lim"]:
+            jerk_rew = abs(obs["ego_jerk"]) * self.config["rew_jerk_coef"]
         else:
             jerk_rew = 0.0
         

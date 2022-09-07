@@ -7,7 +7,10 @@ import ray
 from typing import Optional
 from ray import tune
 from ray.tune.logger import pretty_print
-from ray.rllib.agents.ppo import PPOTrainer
+from ray.rllib.algorithms.ppo import PPO
+from ray.rllib.algorithms.sac import SAC
+
+from highway_env.road.lane import AbstractLane
 
 from highway_env.road.lane import AbstractLane
 
@@ -25,6 +28,16 @@ class MainAgent:
     def __init__(self, algorithm_config: dict) -> None:
         self.repo_path = validation_utils.repo_path
         self.algorithm_config = algorithm_config
+        
+        # get either 'SAC' or 'PPO' others are not implemented
+        self.agent_model_name = self.algorithm_config["load_agent_name"][:3]
+
+        if self.agent_model_name == "SAC":
+            self.model_config_name = "/sac_config.yaml"
+        elif self.agent_model_name == "PPO":
+            self.model_config_name = "/ppo_config.yaml"
+        else:
+            raise NotImplementedError("[ERROR]-> only SAC and PPO are implemented so far!")
     
     @staticmethod
     def create_search_space(params: dict) -> tuple:
@@ -90,13 +103,25 @@ class MainAgent:
         print("\n[CONFIG]-> General Configurations:\t", pretty_print(general_config))
         return general_config
 
-    def initialize_model(self, general_config: dict) -> object:
-        trainer = PPOTrainer( # NOTE: change this line when model different than PPO is used
-            config          =   general_config,
-            env             =   general_config["env"],
-            logger_creator  =   training_utils.custom_log_creator(
-                os.path.expanduser(self.repo_path + "/results/trained_models/"), "validation_PPOTrainer_" + str(general_config["env"]))
-        )
+    def initialize_model(self, general_config: dict, log_folder_path: Optional[str] = None) -> object:
+        if self.agent_model_name == "SAC":
+            log_folder_name = "evaluation_SACTrainer_" + str(general_config["env"])
+        elif self.agent_model_name == "PPO":
+            log_folder_name = "evaluation_PPOTrainer_" + str(general_config["env"])
+        else:
+            raise NotImplementedError("[ERROR]-> only SAC and PPO are implemented so far (PPOTrainer or SACTrainer)!")
+        
+        if log_folder_path is None:
+            logger_creator = None
+        else:
+            logger_creator = training_utils.custom_log_creator(log_folder_path, log_folder_name)
+        
+        if self.agent_model_name == "SAC":
+            trainer = SAC(config=general_config, env=general_config["env"], logger_creator=logger_creator)
+        elif self.agent_model_name == "PPO":
+            trainer = PPO(config=general_config, env=general_config["env"], logger_creator=logger_creator)
+        else:
+            raise NotImplementedError("[ERROR]-> only SAC and PPO are implemented so far (PPOTrainer or SACTrainer)!")
         print("\n[INFO]-> Trainer:\t", trainer)
 
         agent_path = os.path.join(self.repo_path, "results/trained_models/" + self.algorithm_config["load_agent_name"])
@@ -104,15 +129,18 @@ class MainAgent:
 
         checkpoint_num = self.algorithm_config["checkpoint_number"]
         checkpoint_path = agent_path + "/checkpoint_%06i"%(checkpoint_num) + "/checkpoint-" + str(checkpoint_num)
-
-        trainer.restore(checkpoint_path)
+        trainer.load_checkpoint(checkpoint_path)
+        # trainer.restore(checkpoint_path) # has issue with ray version 2.0.0
 
         print("\n[INFO]-> Restore Checkpoint:\t", checkpoint_path)
         return trainer
 
     def initialize_environment(self, env_configs: dict) -> Environment:
         env = Environment(config=env_configs["config"])
-        
+
+        if env_configs["config"]["record_video"]:
+            env = validation_utils.record_video(env=env)
+
         print("\n[INFO]-> Environment:\t", env)
         return env
 
@@ -126,7 +154,12 @@ class MainAgent:
             "front_positions":  [],
             "front_speeds"   :  [],
             "tgap"           :  [],
-            "ttc"            :  []
+            "ttc"            :  [],
+            "is_collision"   :  [],
+            "is_impossible"  :  [],
+            "episode_steps"  :  [],
+            "episode_min_ttc":  [],
+            "eps_sum_reward" :  [],
         }
         is_collision = False
         episode_reward = 0.0
@@ -161,15 +194,11 @@ class MainAgent:
                 episode_min_ttc = info["ttc"]
             
             is_collision = info["collision"]
+            is_impossible = info["impossible"]
             is_terminated = info["terminated"]
 
-            # print("agent : ", agent.get_policy().model)
-            # print("\n")
-            # print("action : ", info["ego_action"])
-            # print("accel : ", info["ego_accel"])
-            # print("speed : ", info["ego_speed"])
-            # print("position : ",  env.road.vehicles[0].position)
-            # print("heading : ",  env.road.vehicles[0].heading, env.road.vehicles[0].heading * 57.2958)
+            if is_impossible:
+                print("\n[INFO]-> Collision is Impossible to Avoid!")
             
             if done:
                 if is_collision:
@@ -177,17 +206,23 @@ class MainAgent:
                 elif is_terminated:
                     print("\n[INFO]-> Vehicle is Out of Track! Length of Episode:\t", step_idx, "steps", " Reward:", episode_reward)
                 else:
-                    print("\n[INFO]-> Episode is Finished! Length of Episode:\t", step_idx, "steps", " Reward:", episode_reward)
+                    print("\n[INFO]-> Episode is Finished! Length of Episode:\t", step_idx, "steps and Episode Reward:\t", episode_reward)
                 break
         
-        return step_idx, is_collision, episode_reward, episode_min_ttc, statistics
+        statistics["is_collision"] = [is_collision]
+        statistics["is_impossible"] = [is_impossible]
+        statistics["episode_steps"] = [step_idx]
+        statistics["episode_min_ttc"] = [episode_min_ttc]
+        statistics["eps_sum_reward"] = [episode_reward]
+
+        return statistics
 
     def simulate(self, search_config: dict, is_tune_report: Optional[bool] = True):
         # recall trained model configurations within environment parameters
         general_config = self.initialize_config(
             env_config_path     =   "/env_config.yaml",
             search_config       =   search_config,
-            model_config_path   =   "/ppo_config.yaml", # NOTE: change this line when model different than PPO is used
+            model_config_path   =   self.model_config_name,
         )
 
         # create environment object with default parameters
@@ -197,11 +232,12 @@ class MainAgent:
         
         # load trained rl model checkpoint
         model = self.initialize_model(
-            general_config      =   general_config
+            general_config      =   general_config,
+            log_folder_path     =   None
         )
 
         # run one simulation and obtain returning parameters
-        episode_steps, is_collision, total_episode_reward, episode_min_ttc, statistics = self.run_episode(
+        statistics = self.run_episode(
                     env         =   env,
                     agent       =   model
         )
@@ -210,10 +246,11 @@ class MainAgent:
         if is_tune_report:
             # report results to optimize a minimization or a maximization metric variable
             tune.report(
-                collision       =   is_collision,
-                episode_length  =   episode_steps,
-                episode_min_ttc =   episode_min_ttc,
-                reward          =   total_episode_reward,
+                collision       =   statistics["is_collision"][0],
+                impossible      =   statistics["is_impossible"][0],
+                episode_length  =   statistics["episode_steps"][0],
+                episode_min_ttc =   statistics["episode_min_ttc"][0],
+                reward          =   statistics["eps_sum_reward"][0],
                 statistics      =   statistics
             )
         

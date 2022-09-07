@@ -24,8 +24,8 @@ config:
     rew_tgap_range:           [ 0.8, 2.0 ]      # [negative reward is given then time-gap is outside this range]
     rew_tgap_coef:            0.6               # [time-gap punishment multiplier coefficient]
     rew_ttc_coef:             1.2               # [ttc reward is inversely multiplied with rew_ttc_coef]
-    rew_u_range:              [ -0.500, 0.50 ]  # [throttle-brake action reward for being between this range]
-    rew_u_coefs:              [ -0.075, -0.3 ]  # [1 idx: positive reward coefficient for throttle-brake in rew_u_range]
+    rew_u_range:              [ -0.50, 0.5 ]    # [throttle-brake action reward for being between this range]
+    rew_u_coef:               0.3               # [positive reward coeficient for throttle-brake in rew_u_range]
     rew_speed_coef:           4.0               # [velocity multiplier for reward function]
     rew_jerk_lim:             3.0               # [negative reward is given when abs(ego jerk) > rew_jerk_lim]
     rew_jerk_coef:            -0.05             # [jerk punishment multiplier when jerk is higher than rew_jerk_lim]
@@ -43,13 +43,14 @@ config:
     offscreen_rendering:      false             # [instruction allows the drawing to be done on surfaces without handling a screen display]
     rendering_mode:           rgb_array         # ['human', 'rgb_array']
     render_agent:             true
-    real_time_rendering:      false             # [true: when manual control or evaluation with rendering is true]
+    record_video:             false             # [true: record video of the simulation (automatically opens rendering while recording)]
+    real_time_rendering:      false             # [true: when manual control or evaluation with rendering is done]
     rendering:                false             # [true: to visualize each episode]
     
     set_manually:             {}                # [search space -> when initial speed and positions are set manually, especially during verifications]
     scenario_config:
-        type:                 null              # [custom scenario evaluation class -> experiments.utils.scenarios.py (works with self_healing.yaml config)]
-        file_name:            null              # [csv file name of verification results (works with self_healing.yaml config)]
+        type:                 null              # [custom scenario evaluation class -> experiments.utils.scenarios.py (please modify self_healing.yaml config)]
+        file_name:            null              # [csv file names of verification results (please modify self_healing.yaml config)]
     
     observation:
         type:                 Kinematics

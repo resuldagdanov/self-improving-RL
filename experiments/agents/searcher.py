@@ -1,4 +1,4 @@
-from ray.tune.suggest import Searcher
+from ray.tune.search import Searcher
 
 
 class SearchAgent(Searcher):

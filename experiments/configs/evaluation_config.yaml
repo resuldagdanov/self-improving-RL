@@ -3,18 +3,24 @@
 experiment_name:        evaluation
 
 # [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
-load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-07-23_22-44-067tk36u3f
+load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-08_09-45-04y_mw9iyt_Agent0123
 
-checkpoint_number:      100     # [trained model saved checkpoint number]
+checkpoint_number:      400     # [trained model saved checkpoint number]
 
-simulation_loops:       1       # [each simulation has max_eps_length number of steps]
+simulation_loops:       1000    # [each simulation has max_eps_length number of steps]
 max_eps_length:         250     # [maximum number of steps in each episode without collision]
 
+evaluate_randomly:      true    # [true: selects initial conditions with random uniforms sampling;  false: selects "evaluation_state"]
+seed:                   12      # [random seed for initial conditions sampling (used when evaluate_randomly is true)]
+
 evaluation_state:
-    distance:           40.0    # [m: this will define initial relative distance of front vehicle]
+    distance:           19.5    # [m: this will define initial relative distance of front vehicle]
+
+    ego_velocity:
+        initial_value:  38.5    # [m/s; this will also be used for ego vehicle initial velocity]
     
-    velocity:
-        min:            10.0    # [m/s; this will also be used for ego and front vehicle initial velocities]
-        max:            25.0    # [m/s; this will define front vehicle target velocity]
+    front_velocity:
+        initial_value:  33.5    # [m/s; this will also be used for front vehicle initial velocity]
+        target_value:   20.5    # [m/s; this will define front vehicle target velocity]
 
 use_custom_torch_model: true    # [true: use custom model in ./experiments/models/ folder]
