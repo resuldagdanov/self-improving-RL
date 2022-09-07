@@ -13,7 +13,7 @@ conda list | grep cuda
 
 # uncomment one the following lines to run the corresponding script
 python grid_search.py
-# python monte_carlo_seach.py
+# python monte_carlo_search.py
 # python bayesian_search.py
 # python ce_search.py
 # python adaptive_seq_mc_search.py

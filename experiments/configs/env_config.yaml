@@ -61,6 +61,6 @@ config:
         steering_range:       [ -1.0, 1.0 ]     # [radian]
         speed_range:          [ 10.0, 40.0 ]    # [m/s]
         longitudinal:         true              # [whether to enable throttle control]
-        lateral:              true              # [whether to enable steering control]
+        lateral:              false              # [whether to enable steering control]
         dynamical:            false             # [whether to simulate dynamics (i.e. friction) rather than kinematics]
         clip:                 true              # [clip action to the defined range]

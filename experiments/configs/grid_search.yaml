@@ -28,3 +28,5 @@ ray_tune_resources:
 
 metric:                 null    # [str metric to optimize (should be in tune.report() arguments)]
 mode:                   null    # [str objective to apply ([maximize -> max] or [minimize -> min])]
+
+use_custom_torch_model: false   # [true: use custom model in ./experiments/models/ folder]

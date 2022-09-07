@@ -203,8 +203,6 @@ class MainAgent:
             if done:
                 if is_collision:
                     print("\n[INFO]-> Vehicle is Crashed! Length of Episode:\t", step_idx, "steps", " Reward:", episode_reward)
-                elif is_terminated:
-                    print("\n[INFO]-> Vehicle is Out of Track! Length of Episode:\t", step_idx, "steps", " Reward:", episode_reward)
                 else:
                     print("\n[INFO]-> Episode is Finished! Length of Episode:\t", step_idx, "steps and Episode Reward:\t", episode_reward)
                 break
