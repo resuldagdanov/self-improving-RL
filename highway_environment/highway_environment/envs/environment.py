@@ -200,8 +200,33 @@ class Environment(AbstractEnv):
 
         # true: render each step; false: render only initial state
         self.enable_auto_render = True
-
+    
     def _reward(self, action: Action) -> float:
+        # get observation dictionary elements without normalizations
+        obs = self.observation_type.raw_obs
+
+        # desired speed reward
+        speed_ratio = min(1, obs["ego_speed"] / self.config["speed_range"][1])
+        speed_rew = speed_ratio * self.config["rew_speed_coef"]
+        
+        # calculate time-gap in seconds
+        tgap = np.clip(obs["mio_pos"] / (obs["ego_speed"] + 1e-5), 0, self.config["max_tgap"])
+        
+        # time-gap punishment
+        if 0 <= tgap <= self.config["rew_tgap_range"][0]:
+            tgap_rew = max(-1 / tgap, -10)
+        elif tgap > self.config["rew_tgap_range"][1]:
+            tgap_rew = max(-tgap, -10)
+        else:
+            tgap_rew = 1.0
+        
+        # collision punishment
+        reward = self.config["collision_reward"] if self.vehicle.crashed else self.config["rew_tgap_coef"] * tgap_rew * speed_rew
+
+        return reward
+
+
+    def default_reward(self, action: Action) -> float:
         neighbours = self.road.network.all_side_lanes(self.vehicle.lane_index)
         lane = self.vehicle.target_lane_index[2] if isinstance(self.vehicle, ControlledVehicle) else self.vehicle.lane_index[2]
         
