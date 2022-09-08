@@ -3,9 +3,9 @@
 experiment_name:        beyesian_search
 
 # [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
-load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-07_21-22-18mdgw9lf4_Agent0
+load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-09-08_10-55-47es7uo_wq
 
-checkpoint_number:      100     # [trained model saved checkpoint number]
+checkpoint_number:      50      # [trained model saved checkpoint number]
 
 resume:                 False
 num_samples:            8192
@@ -23,8 +23,8 @@ search_space:
         steps:          2       # [discrete number]
 
 ray_tune_resources:
-    cpu:                8       # [number of CPUs to allocate to the trial]
-    gpu:                0.0     # [number of GPUs to allocate to the trial]
+    cpu:                2       # [number of CPUs to allocate to the trial -> total cpu allocation = cpu * (1/gpu)]
+    gpu:                0.2     # [number of GPUs to allocate to the trial]
 
 metric:                 episode_min_ttc  # [str metric to optimize (should be in tune.report() arguments)]
 mode:                   min     # [str objective to apply ([maximize -> max] or [minimize -> min])]

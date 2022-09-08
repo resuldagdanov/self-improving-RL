@@ -31,8 +31,8 @@ search_space:
         steps:          20
 
 ray_tune_resources:
-    cpu:                12      # [number of CPUs to allocate to the trial]
-    gpu:                0.0     # [number of GPUs to allocate to the trial]
+    cpu:                2       # [number of CPUs to allocate to the trial -> total cpu allocation = cpu * (1/gpu)]
+    gpu:                0.2     # [number of GPUs to allocate to the trial]
 
 metric:                 reward  # [metric to optimize (should be in tune.report() arguments)]
 mode:                   max     # [objective to apply ([maximize -> max] or [minimize -> min])]
