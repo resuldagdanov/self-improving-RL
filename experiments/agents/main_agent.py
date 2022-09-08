@@ -68,16 +68,20 @@ class MainAgent:
         # initialize vehicles with lateral offset for corresponding lane
         lateral_offset = env_configs["config"]["initial_lane_id"] * AbstractLane.DEFAULT_WIDTH # 4m default lane width
         
-        # change vehicle initialization parameters according to search space configuration
-        env_configs["config"]["set_manually"]["ego_position"] = [ 0.0, lateral_offset ]  # [x, y] -> x: longitudinal, y: lateral
-        env_configs["config"]["set_manually"]["ego_heading"] = 0.0 # radians
-        env_configs["config"]["set_manually"]["ego_speed"] = search_config["ego_v1"] # m/s ego vehicle initial speed
-        env_configs["config"]["set_manually"]["ego_target_speed"] = 40.0 # ego vehicle target speed (is not important)
+        # sample random uniformly when initial conditions are not set
+        if search_config == {}:
+            pass
+        else:
+            # change vehicle initialization parameters according to search space configuration
+            env_configs["config"]["set_manually"]["ego_position"] = [ 0.0, lateral_offset ]  # [x, y] -> x: longitudinal, y: lateral
+            env_configs["config"]["set_manually"]["ego_heading"] = 0.0 # radians
+            env_configs["config"]["set_manually"]["ego_speed"] = search_config["ego_v1"] # m/s ego vehicle initial speed
+            env_configs["config"]["set_manually"]["ego_target_speed"] = 40.0 # ego vehicle target speed (is not important)
 
-        env_configs["config"]["set_manually"]["front_position"] = [ search_config["delta_dist"], lateral_offset ]
-        env_configs["config"]["set_manually"]["front_heading"] = 0.0 # radians
-        env_configs["config"]["set_manually"]["front_speed"] = search_config["front_v1"]
-        env_configs["config"]["set_manually"]["front_target_speed"] = search_config["front_v2"]
+            env_configs["config"]["set_manually"]["front_position"] = [ search_config["delta_dist"], lateral_offset ]
+            env_configs["config"]["set_manually"]["front_heading"] = 0.0 # radians
+            env_configs["config"]["set_manually"]["front_speed"] = search_config["front_v1"]
+            env_configs["config"]["set_manually"]["front_target_speed"] = search_config["front_v2"]
 
         # training algorithms configurations
         with open(validation_utils.configs_path + model_config_path) as f:
