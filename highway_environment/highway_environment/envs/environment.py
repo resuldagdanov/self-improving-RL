@@ -213,7 +213,7 @@ class Environment(AbstractEnv):
         tgap = np.clip(obs["mio_pos"] / (obs["ego_speed"] + 1e-5), 0, self.config["max_tgap"])
         
         # time-gap punishment
-        if 0 <= tgap <= self.config["rew_tgap_range"][0]:
+        if 0 < tgap < self.config["rew_tgap_range"][0]:
             tgap_rew = max(-1 / tgap, -10)
         elif tgap > self.config["rew_tgap_range"][1]:
             tgap_rew = max(-tgap, -10)
