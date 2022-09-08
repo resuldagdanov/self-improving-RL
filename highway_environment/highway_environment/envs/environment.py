@@ -218,13 +218,12 @@ class Environment(AbstractEnv):
         elif tgap > self.config["rew_tgap_range"][1]:
             tgap_rew = max(-tgap, -10)
         else:
-            tgap_rew = 1.0
+            tgap_rew = tgap
         
-        # collision punishment
-        reward = self.config["collision_reward"] if self.vehicle.crashed else self.config["rew_tgap_coef"] * tgap_rew * speed_rew
+        # collision punishment or time-gap and speed reward
+        reward = self.config["collision_reward"] if self.vehicle.crashed else (self.config["rew_tgap_coef"] * tgap_rew) + speed_rew
 
         return reward
-
 
     def default_reward(self, action: Action) -> float:
         neighbours = self.road.network.all_side_lanes(self.vehicle.lane_index)
@@ -291,7 +290,7 @@ class Environment(AbstractEnv):
         if not (self.config["rew_u_range"][0] < action[0] < self.config["rew_u_range"][1]):
             eco_rew = -abs(action[0]) * self.config["rew_u_coef"]
         else:
-            eco_rew = abs(accel_action) * self.config["rew_u_coefs"][0]
+            eco_rew = abs(accel_action) * self.config["rew_u_coef"]
         
         # input steering action cost
         steer_rew = abs(steer_action) * self.config["rew_steer_coef"]

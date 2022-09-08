@@ -1,11 +1,11 @@
 config:
-    lanes_count:              3
-    initial_lane_id:          1                 # [change this to start agent from spesific lane id]
+    lanes_count:              1                 # [number of lanes on the track; minimum 1 is required]
+    initial_lane_id:          0                 # [change this to start agent from spesific lane id (if lane could is 1 -> initial_lane_id = 0)]
     vehicles_count:           1                 # [number of IDM vehicles (not controlled vehicles)]
     controlled_vehicles:      1                 # [number of controlled vehicles]
     episode_length:           250               # [steps]
     duration:                 60                # [s]
-    simulation_frequency:     1                 # [hz]
+    simulation_frequency:     10                # [hz]
     policy_frequency:         1                 # [hz]
     
     collision_reward:         -10.0              # [reward received when colliding with a vehicle (default -> -1.0)]
@@ -26,7 +26,7 @@ config:
     rew_ttc_coef:             1.2               # [ttc reward is inversely multiplied with rew_ttc_coef]
     rew_u_range:              [ -0.50, 0.5 ]    # [throttle-brake action reward for being between this range]
     rew_u_coef:               0.3               # [positive reward coeficient for throttle-brake in rew_u_range]
-    rew_speed_coef:           1.0               # [velocity multiplier for reward function (default -> 4.0)]
+    rew_speed_coef:           5.0               # [velocity multiplier for reward function (default -> 4.0)]
     rew_jerk_lim:             3.0               # [negative reward is given when abs(ego jerk) > rew_jerk_lim]
     rew_jerk_coef:            -0.05             # [jerk punishment multiplier when jerk is higher than rew_jerk_lim]
     rew_steer_coef:           -5.0              # [steering action punishment coefficient]
