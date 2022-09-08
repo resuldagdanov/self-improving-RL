@@ -220,9 +220,10 @@ class Environment(AbstractEnv):
         else:
             tgap_rew = tgap
         
-        # collision punishment or time-gap and speed reward
-        reward = self.config["collision_reward"] if self.vehicle.crashed else (self.config["rew_tgap_coef"] * tgap_rew) + speed_rew
-
+        # collision punishment or time-gap and speed reward jerk punishment
+        reward = self.config["collision_reward"] if self.vehicle.crashed else \
+            (self.config["rew_tgap_coef"] * tgap_rew) + speed_rew + (abs(obs["ego_jerk"]) * self.config["rew_jerk_coef"])
+            
         return reward
 
     def default_reward(self, action: Action) -> float:

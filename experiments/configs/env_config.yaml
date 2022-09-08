@@ -28,7 +28,7 @@ config:
     rew_u_coef:               0.3               # [positive reward coeficient for throttle-brake in rew_u_range]
     rew_speed_coef:           5.0               # [velocity multiplier for reward function (default -> 4.0)]
     rew_jerk_lim:             3.0               # [negative reward is given when abs(ego jerk) > rew_jerk_lim]
-    rew_jerk_coef:            -0.05             # [jerk punishment multiplier when jerk is higher than rew_jerk_lim]
+    rew_jerk_coef:            -0.5              # [jerk punishment multiplier when jerk is higher than rew_jerk_lim (default -> -0.05)]
     rew_steer_coef:           -5.0              # [steering action punishment coefficient]
     
     screen_width:             600               # [px]
