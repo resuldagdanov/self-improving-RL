@@ -134,6 +134,7 @@ dmypy.json
 *.json
 *.pkl
 *.txt
+*.mp4
 *.events.
 
 # ignore training, validation, and evaluation checkpoints
