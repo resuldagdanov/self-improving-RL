@@ -29,6 +29,7 @@ ray_tune_resources:
 metric:                 episode_min_ttc  # [str metric to optimize (should be in tune.report() arguments)]
 mode:                   min     # [str objective to apply ([maximize -> max] or [minimize -> min])]
 
-use_custom_torch_model: false   # [true: use custom model in ./experiments/models/ folder]
-
 seed:                   12      # [int random state seed]
+random_search_steps:    100     # [necessary to avoid initial local overfitting of the Bayesian process]
+
+use_custom_torch_model: false   # [true: use custom model in ./experiments/models/ folder]

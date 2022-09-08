@@ -36,11 +36,22 @@ if __name__ == "__main__":
     print("\n[INFO]-> Distance Space:\t", distance_space)
     print("\n[INFO]-> Velocity Space:\t", velocity_space)
 
+    # uniform search space configurations from given parameters
+    search_configs = {
+        'ego_v1'    : tune.uniform(velocity_space[0], velocity_space[-1]),
+        'front_v1'  : tune.uniform(velocity_space[0], velocity_space[-1]),
+        'front_v2'  : tune.uniform(velocity_space[0], velocity_space[-1]),
+        'delta_dist': tune.uniform(distance_space[0], distance_space[-1])
+    }
+    print("\n[INFO]-> Search Space:\t", pretty_print(search_configs))
+    
     # create build-in bayesian search algorithm object
     searcher = BayesOptSearch(
-        random_state=algorithm_config["seed"],
+        space=search_configs,
         metric=algorithm_config["metric"],
-        mode=algorithm_config["mode"]
+        mode=algorithm_config["mode"],
+        random_state=algorithm_config["seed"],
+        random_search_steps=algorithm_config["random_search_steps"]
     )
     print("\n[INFO]-> Searcher:\t", searcher)
 
@@ -51,19 +62,10 @@ if __name__ == "__main__":
     }
     ray.init(runtime_env=runtime_env)
 
-    # uniform search space configurations from given parameters
-    search_configs = {
-        'ego_v1'    : tune.uniform(velocity_space[0], velocity_space[-1]),
-        'front_v1'  : tune.uniform(velocity_space[0], velocity_space[-1]),
-        'front_v2'  : tune.uniform(velocity_space[0], velocity_space[-1]),
-        'delta_dist': tune.uniform(distance_space[0], distance_space[-1])
-    }
-    print("\n[INFO]-> Search Space:\t", pretty_print(search_configs))
-
     # execute validation search algorithm and save results to csv
     validation_utils.run_search_algorithm(
         agent=agent,
         validation_config=algorithm_config,
-        seach_config=search_configs,
+        seach_config=None,
         search_alg=searcher
     )
