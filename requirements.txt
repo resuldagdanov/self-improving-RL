@@ -91,6 +91,7 @@ pathtools==0.1.2
 pexpect==4.8.0
 pickleshare==0.7.5
 Pillow==9.1.0
+plotly==5.10.0
 prometheus-client==0.14.1
 promise==2.3
 prompt-toolkit==3.0.29
