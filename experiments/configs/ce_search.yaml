@@ -22,8 +22,8 @@ search_space:
         max:            40.0    # [m/s]
 
 ray_tune_resources:
-    cpu:                8       # [number of CPUs to allocate to the trial]
-    gpu:                0.0     # [number of GPUs to allocate to the trial]
+    cpu:                2       # [number of CPUs to allocate to the trial -> total cpu allocation = cpu * (1/gpu)]
+    gpu:                0.2     # [number of GPUs to allocate to the trial]
 
 metric:                 episode_min_ttc  # [metric to optimize (should be in tune.report() arguments)]
 mode:                   min     # [objective to apply ([maximize -> max] or [minimize -> min])]
@@ -33,3 +33,5 @@ check_impossible_count: 1000    # [number of counting steps for avoiding impossi
 velocity_exponent:      4.0     # [IDM vehicle eponent of the velocity term for acceleration calculation (highway_env.vehicle.behavior.IDMVehicle)]
 desired_comfort_accel:  3.0     # [m/s^2 desired maximum acceleration for IDM vehicle (highway_env.vehicle.behavior.IDMVehicle)]
 front_accel_range:      [-6, 6] # [front acceleration range for IDM vehicle (highway_env.vehicle.behavior.IDMVehicle) ACC_MAX]
+
+use_custom_torch_model: false   # [true: use custom model in ./experiments/models/ folder]

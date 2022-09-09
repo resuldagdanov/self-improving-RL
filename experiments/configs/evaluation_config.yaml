@@ -22,3 +22,5 @@ evaluation_state:
     front_velocity:
         initial_value:  33.5    # [m/s; this will also be used for front vehicle initial velocity]
         target_value:   20.5    # [m/s; this will define front vehicle target velocity]
+
+use_custom_torch_model: false   # [true: use custom model in ./experiments/models/ folder]

@@ -17,6 +17,8 @@ num_envs_per_worker:                1          # [number of environments per wor
 num_gpus:                           0.90       # [number of GPUs to be allocated]
 num_gpus_per_worker:                0.30       # [number of GPUs to be used by each worker]
 
+use_custom_torch_model:             false      # [true: use custom model in ./experiments/models/ folder]
+
 # [validated model's results folder inside ./results/validation_checkpoints/ folder]
 validation_folder_name:             ce_search_PPOTrainer_highway_environment:highway-environment-v0_2022-07-14_21-53-33jw2m0yb4_Chkpt30
 validation_file_name:               "results.csv"

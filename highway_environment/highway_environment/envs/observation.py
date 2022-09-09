@@ -63,8 +63,6 @@ class Observation(ObservationType):
 
         ego_speed = self.observer_vehicle.to_dict()["vx"]
 
-        # df = pd.DataFrame.from_records({"ego_speed": ego_speed}, index=[0])
-        
         if self.initial:
             accel = 0.0
             jerk = 0.0
@@ -101,8 +99,8 @@ class Observation(ObservationType):
         mio_speed = mio_vel + ego_speed
         
         # calculate time-gap and time-to-collision
-        tgap = mio_pos / (ego_speed + 1e-5) if (ego_speed + 1e-5) != 0.0 else 9999
-        ttc = mio_pos / (mio_vel - 1e-5) if (mio_vel - 1e-5) != 0.0 else 9999
+        tgap = mio_pos / (ego_speed + 1e-5) if ego_speed != 1e-5 else 99.0
+        ttc = -mio_pos / (mio_vel - 1e-5) if mio_vel < 0.0 else 99.0
 
         self.raw_obs = {
             "ego_speed": ego_speed,

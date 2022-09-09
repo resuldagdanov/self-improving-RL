@@ -1,5 +1,6 @@
 config:
     lanes_count:              1
+    initial_lane_id:          0                 # [change this to start agent from spesific lane id]
     vehicles_count:           1                 # [number of IDM vehicles (not controlled vehicles)]
     controlled_vehicles:      1                 # [number of controlled vehicles]
     episode_length:           250               # [steps]
@@ -7,24 +8,26 @@ config:
     simulation_frequency:     15                # [hz]
     policy_frequency:         1                 # [hz]
     
-    collision_reward:         -10               # [reward received when colliding with a vehicle]
-    offroad_terminal:         false             # [create termination condition for road deviation]
+    collision_reward:         -10.0             # [reward received when colliding with a vehicle]
+    offroad_terminal:         true              # [create termination condition for road deviation]
+    offroad_reward:           -5.0              # [punishment received when agent gets out of road]
     speed_range:              [ 10.0, 40.0 ]    # [m/s]
     speed_std:                2.5
-    min_tgap:                 0.5
-    max_tgap:                 5.0
+    min_tgap:                 0.5               # [minimum time gap limit seconds for reward configuration]
+    max_tgap:                 5.0               # [maximum time gap limit seconds for reward configuration]
     tgap_mean:                1.2
     tgap_std:                 0.25
     min_ttc:                  6.0               # [ttc reward is given when ttc < min_ttc]
     max_ttc:                  99.0              # [ttc is normalized by deviding ttc by max_ttc]
     rew_tgap_range:           [ 0.8, 2.0 ]      # [negative reward is given then time-gap is outside this range]
-    rew_tgap_coef:            0.6               # [time-gap punishment multiplier coeficient]
+    rew_tgap_coef:            0.6               # [time-gap punishment multiplier coefficient]
     rew_ttc_coef:             1.2               # [ttc reward is inversely multiplied with rew_ttc_coef]
     rew_u_range:              [ -0.50, 0.5 ]    # [throttle-brake action reward for being between this range]
     rew_u_coef:               0.3               # [positive reward coeficient for throttle-brake in rew_u_range]
     rew_speed_coef:           4.0               # [velocity multiplier for reward function]
     rew_jerk_lim:             3.0               # [negative reward is given when abs(ego jerk) > rew_jerk_lim]
-    rew_jerk_coef:            0.05              # [jerk punishment multiplier]
+    rew_jerk_coef:            -0.05             # [jerk punishment multiplier when jerk is higher than rew_jerk_lim]
+    rew_steer_coef:           -2.0              # [steering action punishment coefficient]
     
     screen_width:             600               # [px]
     screen_height:            150               # [px]
@@ -33,12 +36,12 @@ config:
     
     other_vehicles_type:      "highway_env.vehicle.behavior.IDMVehicle"
     show_trajectories:        false
-    manual_control:           false
+    manual_control:           false             # [true: manual control is enabled (make sure that real_time_rendering=true)]
     
     offscreen_rendering:      false             # [instruction allows the drawing to be done on surfaces without handling a screen display]
     rendering_mode:           rgb_array         # ['human', 'rgb_array']
     render_agent:             true
-    real_time_rendering:      true
+    real_time_rendering:      false             # [true: when manual control or evaluation with rendering is true]
     rendering:                false             # [true: to visualize each episode]
     
     set_manually:             {}                # [search space -> when initial speed and positions are set manually, especially during verifications]

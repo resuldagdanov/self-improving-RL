@@ -35,12 +35,7 @@ class Environment(AbstractEnv):
     
     @classmethod
     def default_config(cls) -> dict:
-        config = super().default_config()
-        config.update({
-            "initial_lane_id": None # change this to start agent from spesific lane id
-        })
-        
-        return config
+        return super().default_config()
     
     def define_spaces(self) -> None:
         self.action_type = action_factory(self, self.config["action"])
@@ -89,7 +84,8 @@ class Environment(AbstractEnv):
                     position=self.config["set_manually"]["ego_position"],
                     heading=self.config["set_manually"]["ego_heading"],
                     speed=self.config["set_manually"]["ego_speed"],
-                    target_speed=self.config["set_manually"]["ego_target_speed"]
+                    target_speed=self.config["set_manually"]["ego_target_speed"],
+                    target_lane_index=None
                 )
                 controlled_vehicle = self.action_type.vehicle_class.create_from(vehicle=vehicle)
             
@@ -106,28 +102,40 @@ class Environment(AbstractEnv):
             self.controlled_vehicles.append(controlled_vehicle)
             self.road.vehicles.append(controlled_vehicle)
 
-            for _ in range(others):
+            for idx in range(others):
                 # manually set other vehicle position and speed for verification algorithms
                 if len(self.config["set_manually"]) != 0:
+                    # TODO: should be inside search space
+                    lane_index = ("0", "1", self.config["initial_lane_id"]) if idx == 0 else None
+                    
                     vehicle = ControlledVehicle(
                         road=self.road,
                         position=self.config["set_manually"]["front_position"],
                         heading=self.config["set_manually"]["front_heading"],
                         speed=self.config["set_manually"]["front_speed"],
-                        target_speed=self.config["set_manually"]["front_target_speed"]
+                        target_speed=self.config["set_manually"]["front_target_speed"],
+                        target_lane_index=lane_index
                     )
                     other_vehicle = other_vehicles_type.create_from(vehicle=vehicle)
                 
                 # randomly set other vehicle position and initial velocity
                 else:
+                    # assign lane id same with the ego vehicle's for the first mio vehicle
+                    lane_id = self.config["initial_lane_id"] if idx == 0 else None
+
+                    # randomly select initial conditions
                     tgap = self.np_random.normal(self.config["tgap_mean"], self.config["tgap_std"])
                     tgap = np.clip(tgap, self.config["min_tgap"], self.config["max_tgap"])
                     speed = self.np_random.normal(ego_speed, self.config["speed_std"])
                     
+                    # spawn other vehicle
                     other_vehicle = other_vehicles_type.create_random(
                         road=self.road,
                         spacing=tgap,
-                        speed=speed
+                        speed=speed, # other vehicle velocity in m/s
+                        lane_from=None, # start node of the lane to spawn in
+                        lane_to=None,   # end node of the lane to spawn in
+                        lane_id=lane_id # id of the lane to spawn in
                     )
                     target_speed = self.np_random.normal(speed, self.config["speed_std"])
                     other_vehicle.target_speed = target_speed
@@ -192,13 +200,64 @@ class Environment(AbstractEnv):
 
         # true: render each step; false: render only initial state
         self.enable_auto_render = True
-
+    
     def _reward(self, action: Action) -> float:
         # get observation dictionary elements without normalizations
-        raw_obs = self.observation_type.raw_obs
-        return self.compute_reward(obs = raw_obs, action = action)
-    
-    def compute_reward(self, obs: dict, action: Action) -> float:
+        obs = self.observation_type.raw_obs
+
+        # desired speed reward
+        speed_ratio = min(1, obs["ego_speed"] / self.config["speed_range"][1])
+        speed_rew = speed_ratio * self.config["rew_speed_coef"]
+        
+        # calculate time-gap in seconds
+        tgap = np.clip(obs["mio_pos"] / (obs["ego_speed"] + 1e-5), 0, self.config["max_tgap"])
+        
+        # time-gap punishment
+        if 0 < tgap < self.config["rew_tgap_range"][0]:
+            tgap_rew = max(-1 / tgap, -10)
+        elif tgap > self.config["rew_tgap_range"][1]:
+            tgap_rew = max(-tgap, -10)
+        else:
+            tgap_rew = tgap
+        
+        # collision punishment or time-gap and speed reward jerk punishment
+        reward = self.config["collision_reward"] if self.vehicle.crashed else \
+            (self.config["rew_tgap_coef"] * tgap_rew) + speed_rew + (abs(obs["ego_jerk"]) * self.config["rew_jerk_coef"])
+            
+        return reward
+
+    def default_reward(self, action: Action) -> float:
+        neighbours = self.road.network.all_side_lanes(self.vehicle.lane_index)
+        lane = self.vehicle.target_lane_index[2] if isinstance(self.vehicle, ControlledVehicle) else self.vehicle.lane_index[2]
+        
+        # use forward speed rather than speed, see https://github.com/eleurent/highway-env/issues/268
+        forward_speed = self.vehicle.speed * np.cos(self.vehicle.heading)
+        scaled_speed = utils.lmap(forward_speed, self.config["speed_range"], [0, 1])
+        
+        reward = \
+            + self.config["collision_reward"] * self.vehicle.crashed \
+            + self.config["right_lane_reward"] * lane / max(len(neighbours) - 1, 1) \
+            + self.config["high_speed_reward"] * np.clip(scaled_speed, 0, 1)
+        
+        reward = utils.lmap(reward, [self.config["collision_reward"], self.config["high_speed_reward"] + self.config["right_lane_reward"]], [0, 1])
+        reward = 0 if not self.vehicle.on_road else reward
+        
+        return reward
+
+    def custom_reward(self, action: Action) -> float:
+        # get observation dictionary elements without normalizations
+        obs = self.observation_type.raw_obs
+
+        # split action into steering and throttle-brake
+        if self.config["action"]["lateral"] and self.config["action"]["longitudinal"]:
+            accel_action, steer_action = action
+        elif self.config["action"]["lateral"]:
+            accel_action, steer_action = 0.0, action[0]
+        elif self.config["action"]["longitudinal"]:
+            accel_action, steer_action = action[0], 0.0
+        else:
+            accel_action, steer_action = 0.0, 0.0
+        
         # desired speed reward
         speed_ratio = min(1, obs["ego_speed"] / self.config["speed_range"][1])
         speed_rew = speed_ratio * self.config["rew_speed_coef"]
@@ -232,21 +291,30 @@ class Environment(AbstractEnv):
         if not (self.config["rew_u_range"][0] < action[0] < self.config["rew_u_range"][1]):
             eco_rew = -abs(action[0]) * self.config["rew_u_coef"]
         else:
-            eco_rew = -abs(action[0]) * (self.config["rew_u_coef"] / 4)
+            eco_rew = abs(accel_action) * self.config["rew_u_coef"]
         
+        # input steering action cost
+        steer_rew = abs(steer_action) * self.config["rew_steer_coef"]
+
         # jerk punishment
         if abs(obs["ego_jerk"]) > self.config["rew_jerk_lim"]:
-            jerk_rew = -abs(obs["ego_jerk"]) * self.config["rew_jerk_coef"]
+            jerk_rew = abs(obs["ego_jerk"]) * self.config["rew_jerk_coef"]
         else:
             jerk_rew = 0.0
         
         # collision punishment
-        if self.vehicle.crashed and not self.is_impossible:
+        if self.vehicle.crashed:
             collision_rew = self.config["collision_reward"]
         else:
             collision_rew = 0.0
         
-        reward = float(speed_rew + tgap_rew + ttc_rew + eco_rew + jerk_rew + too_slow + collision_rew)
+        # out of track punishment
+        if not self.vehicle.on_road:
+            track_rew = self.config["offroad_reward"]
+        else:
+            track_rew = 0.0
+        
+        reward = float(speed_rew + tgap_rew + ttc_rew + eco_rew + steer_rew + jerk_rew + too_slow + collision_rew + track_rew)
         
         return reward
     

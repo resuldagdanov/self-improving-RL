@@ -1,5 +1,6 @@
 config:
-    lanes_count:              1
+    lanes_count:              1                 # [number of lanes on the track; minimum 1 is required]
+    initial_lane_id:          0                 # [change this to start agent from spesific lane id (if lane could is 1 -> initial_lane_id = 0)]
     vehicles_count:           1                 # [number of IDM vehicles (not controlled vehicles)]
     controlled_vehicles:      1                 # [number of controlled vehicles]
     episode_length:           250               # [steps]
@@ -7,8 +8,11 @@ config:
     simulation_frequency:     10                # [hz]
     policy_frequency:         1                 # [hz]
     
-    collision_reward:         -10.0             # [reward received when colliding with a vehicle]
-    offroad_terminal:         false             # [create termination condition for road deviation]
+    collision_reward:         -10.0              # [reward received when colliding with a vehicle (default -> -1.0)]
+    right_lane_reward:        0.1               # [reward received when driving on the right-most lanes, linearly mapped to zero for other lanes]
+    high_speed_reward:        0.4               # [reward received when driving at full speed, linearly mapped to zero for lower speeds according to speed_range]
+    offroad_terminal:         true              # [create termination condition for road deviation]
+    offroad_reward:           -10.0             # [punishment received when agent gets out of road]
     speed_range:              [ 10.0, 40.0 ]    # [m/s]
     speed_std:                2.5
     min_tgap:                 0.5               # [minimum time gap limit seconds for reward configuration]
@@ -18,13 +22,14 @@ config:
     min_ttc:                  6.0               # [ttc reward is given when ttc < min_ttc]
     max_ttc:                  99.0              # [ttc is normalized by deviding ttc by max_ttc]
     rew_tgap_range:           [ 0.8, 2.0 ]      # [negative reward is given then time-gap is outside this range]
-    rew_tgap_coef:            0.6               # [time-gap punishment multiplier coeficient]
+    rew_tgap_coef:            1.0               # [time-gap punishment multiplier coefficient (default -> 0.6)]
     rew_ttc_coef:             1.2               # [ttc reward is inversely multiplied with rew_ttc_coef]
     rew_u_range:              [ -0.50, 0.5 ]    # [throttle-brake action reward for being between this range]
     rew_u_coef:               0.3               # [positive reward coeficient for throttle-brake in rew_u_range]
-    rew_speed_coef:           4.0               # [velocity multiplier for reward function]
+    rew_speed_coef:           5.0               # [velocity multiplier for reward function (default -> 4.0)]
     rew_jerk_lim:             3.0               # [negative reward is given when abs(ego jerk) > rew_jerk_lim]
-    rew_jerk_coef:            0.05              # [jerk punishment multiplier]
+    rew_jerk_coef:            -0.5              # [jerk punishment multiplier when jerk is higher than rew_jerk_lim (default -> -0.05)]
+    rew_steer_coef:           -5.0              # [steering action punishment coefficient]
     
     screen_width:             600               # [px]
     screen_height:            150               # [px]
@@ -33,7 +38,7 @@ config:
     
     other_vehicles_type:      "highway_env.vehicle.behavior.IDMVehicle"
     show_trajectories:        false
-    manual_control:           false
+    manual_control:           false             # [true: manual control is enabled (make sure that real_time_rendering=true)]
     
     offscreen_rendering:      false             # [instruction allows the drawing to be done on surfaces without handling a screen display]
     rendering_mode:           rgb_array         # ['human', 'rgb_array']
@@ -56,6 +61,6 @@ config:
         steering_range:       [ -1.0, 1.0 ]     # [radian]
         speed_range:          [ 10.0, 40.0 ]    # [m/s]
         longitudinal:         true              # [whether to enable throttle control]
-        lateral:              false             # [whether to enable steering control]
+        lateral:              false              # [whether to enable steering control]
         dynamical:            false             # [whether to simulate dynamics (i.e. friction) rather than kinematics]
         clip:                 true              # [clip action to the defined range]
