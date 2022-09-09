@@ -1,9 +1,9 @@
-# config for -> python ./experiments/algorithms/adaptive_seq_mc_search.py
+# config for -> python ./experiments/algorithms/ams_search.py
 
-experiment_name:        adaptive_seq_mc_search
+experiment_name:        ams_search
 
 # [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
-load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-07_21-22-18mdgw9lf4_Agent0
+load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-09-08_11-29-208cqobkz4_Agent0
 
 checkpoint_number:      100      # [trained model saved checkpoint number]
 
@@ -39,3 +39,5 @@ eps_final:              0.1     # [final logarithmic epsilon value]
 J:                      5       # [number of steps to reach final epsilon value]
 Ne:                     100     # [number of countering loops to sample from search space and check impossibility scenarios]
 noise_level:            1       # [range of applied noise to samples range(-noise_level, +noise_level)]
+
+use_custom_torch_model: false   # [true: use custom model in ./experiments/models/ folder]

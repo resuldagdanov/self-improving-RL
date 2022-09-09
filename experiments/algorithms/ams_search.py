@@ -4,6 +4,7 @@ import ray
 import copy
 import numpy as np
 
+from ray.tune import TuneConfig
 from ray.tune.logger import pretty_print
 
 parent_directory = os.path.join(os.environ["BLACK_BOX"])
@@ -214,7 +215,7 @@ if __name__ == "__main__":
 
     # get arguments
     args = validation_utils.argument_parser()
-    args.algo_config_file = "adaptive_seq_mc_search.yaml"
+    args.algo_config_file = "ams_search.yaml"
 
     # config for specified algorithm
     algorithm_config = validation_utils.get_algorithm_config(args=args)
@@ -222,35 +223,44 @@ if __name__ == "__main__":
 
     # initialize main agent class
     agent = MainAgent(
-        algorithm_config=algorithm_config
+        algorithm_config    =       algorithm_config
     )
     print("\n[INFO]-> Agent Class:\t", agent)
 
     # construct adaptive sequential monte carlo optimizer class
     optimizer = AdapSeqMCOptimizer(
-        algorithm_config=algorithm_config
+        algorithm_config    =       algorithm_config
     )
     print("\n[INFO]-> Optimizer:\t", optimizer)
 
     # custom searcher class for keeping track of a metric to optimize
     searcher = SearchAgent(
-        optimizer=optimizer,
-        metric=algorithm_config["metric"],
-        mode=algorithm_config["mode"]
+        optimizer           =       optimizer,
+        metric              =       algorithm_config["metric"],
+        mode                =       algorithm_config["mode"]
     )
     print("\n[INFO]-> Searcher:\t", searcher)
 
+    # tuning configurations class -> new from ray v2.0.0
+    tune_config = TuneConfig(
+        search_alg          =       searcher,
+        num_samples         =       algorithm_config["num_samples"]
+    )
+    print("\n[INFO]-> TuneConfig:\t", tune_config)
+
     # set project directory for all ray workers
     runtime_env = {
-        "working_dir": parent_directory,
-        "excludes": ["*.err", "*.out"] # exclude error and output files (relative path from "parent_directory")
+        "working_dir"       :       parent_directory,
+        "excludes"          :       ["*.err", "*.out"] # exclude error and output files (relative path from "parent_directory")
     }
-    ray.init(runtime_env=runtime_env)    
+    ray.init(
+        runtime_env         =       runtime_env
+    )
 
     # execute validation search algorithm and save results to csv
     validation_utils.run_search_algorithm(
-        agent=agent,
-        validation_config=algorithm_config,
-        seach_config=None,
-        search_alg=searcher
+        agent               =       agent,
+        validation_config   =       algorithm_config,
+        tune_config         =       tune_config,
+        param_space         =       None
     )

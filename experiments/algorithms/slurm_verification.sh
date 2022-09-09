@@ -16,4 +16,4 @@ python grid_search.py
 # python monte_carlo_search.py
 # python bayesian_search.py
 # python ce_search.py
-# python adaptive_seq_mc_search.py
+# python ams_search.py

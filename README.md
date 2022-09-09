@@ -20,7 +20,7 @@ Test Verification Algorithms on Gym Highway Environment using Ray RLlib
     - [Monte-Carlo-Search Validation](#monte-carlo-search-validation)
     - [Cross-Entropy-Search Validation](#cross-entropy-search-validation)
     - [Bayesian-Optimization-Search Validation](#bayesian-optimization-search-validation)
-    - [Adaptive-Sequential-Monto-Carlo-Search Validation](#adaptive-sequential-monto-Carlo-search-validation)
+    - [Adaptive-Multilevel-Splitting-Search Validation](#adaptive-multilevel-splitting-search-validation)
 * [Self Healing](#self-healing)
     - [Train RL on Custom Verification Scenarios](#train-rl-on-custom-verification-scenarios)
 * [Analyse Results](#analyse-results)
@@ -247,17 +247,17 @@ python bayesian_search.py
 ```
 
 ---
-## Adaptive-Sequential-Monto-Carlo-Search Validation
+## Adaptive-Multilevel-Splitting-Search Validation
 
-> apply adaptive-sequential-monte-carlo-search algorithm verification on a trained rl model
+> apply adaptive-multilevel-splitting-search algorithm verification on a trained rl model
 
 NOTE:
-* check _load-agent-name_ key inside **/experiments/configs/adaptive_seq_mc_search.yaml** config and make sure that the model is located in **/experiments/results/trained_models/** folder
+* check _load-agent-name_ key inside **/experiments/configs/ams_search.yaml** config and make sure that the model is located in **/experiments/results/trained_models/** folder
 
 ```sh
 cd experiments/algorithms
 
-python adaptive_seq_mc_search.py
+python ams_search.py
 ```
 
 # Self-Healing
