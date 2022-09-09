@@ -16,41 +16,40 @@ repo_path = os.path.join(os.environ["BLACK_BOX"], "experiments")
 configs_path = os.path.join(repo_path, "configs")
 
 
-def run_search_algorithm(agent: object, validation_config: dict, seach_config: Optional[dict] = None, search_alg: Optional[object] = None) -> None:
+def run_search_algorithm(agent: object, validation_config: dict, tune_config: dict, param_space: Optional[dict] = None) -> None:
     local_directory = os.path.join(repo_path, "results/validation_checkpoints")
     save_folder_name = validation_config["experiment_name"] + "_" + validation_config["load_agent_name"] + "_Chkpt" + str(validation_config["checkpoint_number"])
+    
+    # create a directory to save the results
+    save_folder_path = os.path.join(local_directory, save_folder_name)
+    os.makedirs(save_folder_path, exist_ok=True)
 
     analysis = None
     try:
-        analysis = tune.run(
-            run_or_experiment   =   agent.simulate,
-            num_samples         =   validation_config["num_samples"],
-            resources_per_trial =   validation_config["ray_tune_resources"],
-            metric              =   validation_config["metric"],
-            mode                =   validation_config["mode"],
-            config              =   seach_config,
-            search_alg          =   search_alg,
-            local_dir           =   local_directory, 
-            name                =   save_folder_name,
-            sync_config         =   tune.SyncConfig(),
-            resume              =   validation_config["resume"]
+        tuner = tune.Tuner(
+            trainable       =      agent.simulate,
+            tune_config     =      tune_config,
+            param_space     =      param_space,
         )
-
+        analysis = tuner.fit()
+        
     except KeyboardInterrupt:
         raise Exception("[EXIT]-> Keyboard Interrupted")
-
-    except Exception as e:
-        raise Exception("[ERROR]-> Exception Occured:", e)
-
+    
     finally:
         if analysis is not None:
-            experiment_data = analysis.results_df
-
+            # get a dataframe for the last reported results of all of the trials
+            experiment_data = analysis.get_dataframe()
             print("\n[INFO]-> Results Head:\t", experiment_data.head())
             print("\n[INFO]-> Results Shape:\t", experiment_data.shape)
 
-            csv_path = os.path.join(os.path.join(local_directory, save_folder_name), "results.csv")
+            csv_path = os.path.join(save_folder_path, "results.csv")
             experiment_data.to_csv(csv_path, index=False)
+
+            # report best results
+            if validation_config["metric"] and validation_config["mode"] is not None:
+                best_result = analysis.get_best_result(metric=validation_config["metric"], mode=validation_config["mode"])
+                print("\n[INFO]-> Best Result:\t", best_result.config)
         
         else:
             raise Exception("[ERROR]-> Analysis is None")

@@ -5,7 +5,7 @@ class SearchAgent(Searcher):
 
     def __init__(self, optimizer: object, metric: str, mode: str, **kwargs) -> None:
         super(SearchAgent, self).__init__(metric=metric, mode=mode, **kwargs)
-
+        
         self.optimizer = optimizer
         self.configurations = {}
 
@@ -19,5 +19,5 @@ class SearchAgent(Searcher):
     # notification for the completion of trial
     def on_trial_complete(self, trial_id: int, result: dict, **kwargs) -> None:
         configuration = self.configurations[trial_id]
-        self.optimizer.update(configuration, result)
-    
+        if result and self.metric in result:
+            self.optimizer.update(configuration, result)
