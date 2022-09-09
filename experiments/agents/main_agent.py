@@ -167,7 +167,7 @@ class MainAgent:
         }
         is_collision = False
         episode_reward = 0.0
-        episode_min_ttc = 100.0
+        episode_min_ttc = 99.0
         
         # get initial observation
         obs = env.reset()
@@ -200,6 +200,10 @@ class MainAgent:
             is_collision = info["collision"]
             is_impossible = info["impossible"]
             is_terminated = info["terminated"]
+
+            # overwrite and store episode minimum ttc in the impossible scenario cases
+            if is_impossible:
+                episode_min_ttc = 99.0
 
             if is_impossible:
                 print("\n[INFO]-> Collision is Impossible to Avoid!")
