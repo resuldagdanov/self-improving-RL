@@ -11,9 +11,6 @@ from ray.rllib.algorithms.ppo import PPO
 from ray.rllib.algorithms.sac import SAC
 
 from highway_env.road.lane import AbstractLane
-
-from highway_env.road.lane import AbstractLane
-
 from highway_environment.envs import Environment
 
 parent_directory = os.path.join(os.environ["BLACK_BOX"])

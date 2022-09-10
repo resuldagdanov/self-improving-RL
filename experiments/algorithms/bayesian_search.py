@@ -37,16 +37,17 @@ if __name__ == "__main__":
     print("\n[INFO]-> Velocity Space:\t", velocity_space)
 
     # uniform search space configurations from given parameters
-    search_configs = {
-        'ego_v1'    : tune.uniform(velocity_space[0], velocity_space[-1]),
-        'front_v1'  : tune.uniform(velocity_space[0], velocity_space[-1]),
-        'front_v2'  : tune.uniform(velocity_space[0], velocity_space[-1]),
-        'delta_dist': tune.uniform(distance_space[0], distance_space[-1])
+    bayes_search_space = {
+        "ego_v1"            :       (velocity_space[0], velocity_space[-1]),
+        "front_v1"          :       (velocity_space[0], velocity_space[-1]),
+        "front_v2"          :       (velocity_space[0], velocity_space[-1]),
+        "delta_dist"        :       (distance_space[0], distance_space[-1])
     }
-    print("\n[INFO]-> Search Space:\t", pretty_print(search_configs))
+    print("\n[INFO]-> Search Space:\t", pretty_print(bayes_search_space))
 
     # create build-in bayesian search algorithm object
     searcher = BayesOptSearch(
+        space               =       bayes_search_space,
         metric              =       algorithm_config["metric"],
         mode                =       algorithm_config["mode"],
         random_state        =       algorithm_config["seed"],
@@ -75,5 +76,5 @@ if __name__ == "__main__":
         agent               =       agent,
         validation_config   =       algorithm_config,
         tune_config         =       tune_config,
-        param_space         =       search_configs
+        param_space         =       None
     )

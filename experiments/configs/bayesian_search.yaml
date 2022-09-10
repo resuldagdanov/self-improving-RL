@@ -14,7 +14,7 @@ max_eps_length:         250
 search_space:
     distance: 
         min:            10.0    # [m]
-        max:            40.0    # [m]
+        max:            120.0   # [m]
         steps:          2       # [discrete number]
     
     velocity:
