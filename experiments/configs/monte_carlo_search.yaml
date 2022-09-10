@@ -2,7 +2,7 @@
 
 experiment_name:        monte_carlo_search
 
-# [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
+# [trained model folder inside ./experiments/results/trained_models/ (make sure that folder name starts with 'PPOTrainer' or 'SACTrainer')]
 load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-07-11_13-14-25s0r035pg
 
 checkpoint_number:      30      # [trained model saved checkpoint number]

@@ -1,11 +1,14 @@
 # config for -> python ./experiments/evaluation/evaluate_model.py
 
-experiment_name:        evaluation
+experiment_name:        evaluation_container_uniform
 
-# [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
-load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-08-08_09-45-04y_mw9iyt_Agent0123
+# [trained model folder inside ./experiments/results/trained_models/ (make sure that folder name starts with 'PPOTrainer' or 'SACTrainer')]
+load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-09-10_11-56-460y0strry_Agent2_ams
 
-checkpoint_number:      400     # [trained model saved checkpoint number]
+checkpoint_number:      300     # [trained model saved checkpoint number]
+
+# [folder name in ./experiments/results/validation_checkpoints/  -> verification method results for evaluation;  null  -> uniform samples]
+validation_container:   monte_carlo_search_PPOTrainer_highway_environment:highway-environment-v0_2022-09-09_16-29-35uxa2mv8v_Agent2_mc_Chkpt300
 
 simulation_loops:       1000    # [each simulation has max_eps_length number of steps]
 max_eps_length:         250     # [maximum number of steps in each episode without collision]

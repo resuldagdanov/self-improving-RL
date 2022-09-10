@@ -2,7 +2,7 @@
 
 experiment_name:        ams_search
 
-# [trained model checkpoint moved from ~/ray_results/ folder to ./results/trained_models/ folder]
+# [trained model folder inside ./experiments/results/trained_models/ (make sure that folder name starts with 'PPOTrainer' or 'SACTrainer')]
 load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-09-08_11-29-208cqobkz4_Agent0
 
 checkpoint_number:      100      # [trained model saved checkpoint number]
