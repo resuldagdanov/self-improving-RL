@@ -110,11 +110,19 @@ class Environment(AbstractEnv):
             else:
                 ego_speed = self.np_random.normal(np.random.uniform(*(self.config["speed_range"])), self.config["speed_std"])
                 
-                controlled_vehicle = self.action_type.vehicle_class.create_random(
-                    road=self.road,
-                    speed=ego_speed,
-                    lane_id=self.config["initial_lane_id"]
-                )
+                # set IDM for ego vehicle when number of controlled vehicles is 0
+                if self.config["controlled_vehicles"] == 0:
+                    controlled_vehicle = other_vehicles_type.create_random(
+                        road=self.road,
+                        speed=ego_speed,
+                        lane_id=self.config["initial_lane_id"]
+                    )
+                else:
+                    controlled_vehicle = self.action_type.vehicle_class.create_random(
+                        road=self.road,
+                        speed=ego_speed,
+                        lane_id=self.config["initial_lane_id"]
+                    )
             
             self.controlled_vehicles.append(controlled_vehicle)
             self.road.vehicles.append(controlled_vehicle)
@@ -170,8 +178,6 @@ class Environment(AbstractEnv):
                     ego_acceleration=controlled_vehicle.action["acceleration"],
                     front_acceleration=other_vehicle.action["acceleration"]
                 )
-            
-            print("self.road.vehicles  ", self.road.vehicles)
     
     def _is_terminal(self) -> bool:
         return self.vehicle.crashed or self.is_impossible or \
