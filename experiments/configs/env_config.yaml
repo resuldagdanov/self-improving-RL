@@ -2,7 +2,7 @@ config:
     lanes_count:              1                 # [number of lanes on the track; minimum 1 is required]
     initial_lane_id:          0                 # [change this to start agent from spesific lane id (if lane could is 1 -> initial_lane_id = 0)]
     vehicles_count:           1                 # [number of IDM vehicles (not controlled vehicles)]
-    controlled_vehicles:      1                 # [number of controlled vehicles]
+    controlled_vehicles:      1                 # [number of controlled vehicles (zero -> controlled vehicle will be controled by IDM)]
     episode_length:           250               # [steps]
     duration:                 60                # [s]
     simulation_frequency:     10                # [hz]

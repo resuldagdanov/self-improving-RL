@@ -15,6 +15,7 @@ Test Verification Algorithms on Gym Highway Environment using Ray RLlib
 * [Tune Reward Function](#tune-reward-function)
 * [Evaluation](#evaluation)
     - [Evaluate RL Agent](#evaluate-rl-agent)
+    - [Evaluate IDM Vehicle](#evaluate-idm-vehicle)
 * [Verification Algorithms](#verification-algorithms)
     - [Grid-Search Validation](#grid-search-validation)
     - [Monte-Carlo-Search Validation](#monte-carlo-search-validation)
@@ -181,6 +182,14 @@ cd experiments/evaluation
 
 python evaluate_model.py
 ```
+
+---
+## Evaluate IDM Vehicle
+
+NOTE:
+* EGO vehicle could be set as an IDM vehicle
+* controlling actions of an EGO vehicle will be taken by IDM vehicle
+* set _controlled-vehicles_ key inside **/experiments/configs/env_config.yaml** to 0 (zero)
 
 # Verification Algorithms
 

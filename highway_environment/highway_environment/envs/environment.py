@@ -9,6 +9,7 @@ from highway_env.envs.common.action import action_factory, Action
 from highway_env.road.road import Road, RoadNetwork
 from highway_env.utils import near_split
 from highway_env.vehicle.controller import ControlledVehicle
+from highway_env.vehicle.behavior import IDMVehicle
 
 from typing import Tuple, Optional
 from highway_environment.envs.observation import Observation
@@ -69,8 +70,12 @@ class Environment(AbstractEnv):
 
     def _create_vehicles(self) -> None:
         other_vehicles_type = utils.class_from_path(self.config["other_vehicles_type"])
-        other_per_controlled = near_split(self.config["vehicles_count"], num_bins=self.config["controlled_vehicles"])
 
+        if self.config["controlled_vehicles"] != 0:
+            other_per_controlled = near_split(self.config["vehicles_count"], num_bins=self.config["controlled_vehicles"])
+        else:
+            other_per_controlled = range(1, self.config["vehicles_count"]) # TODO: does not work work with vehicles_count=1
+        
         # reset impossibility condition of avoiding collision
         self.is_impossible = False
 
@@ -79,15 +84,27 @@ class Environment(AbstractEnv):
 
             # manually set ego vehicle position and speed for verification algorithms
             if len(self.config["set_manually"]) != 0:
-                vehicle = ControlledVehicle(
-                    road=self.road,
-                    position=self.config["set_manually"]["ego_position"],
-                    heading=self.config["set_manually"]["ego_heading"],
-                    speed=self.config["set_manually"]["ego_speed"],
-                    target_speed=self.config["set_manually"]["ego_target_speed"],
-                    target_lane_index=None
-                )
-                controlled_vehicle = self.action_type.vehicle_class.create_from(vehicle=vehicle)
+                # set IDM for ego vehicle when number of controlled vehicles is 0
+                if self.config["controlled_vehicles"] == 0:
+                    vehicle = IDMVehicle(
+                        road=self.road,
+                        position=self.config["set_manually"]["ego_position"],
+                        heading=self.config["set_manually"]["ego_heading"],
+                        speed=self.config["set_manually"]["ego_speed"],
+                        target_speed=self.config["set_manually"]["ego_target_speed"],
+                        target_lane_index=("0", "1", self.config["initial_lane_id"])
+                    )
+                    controlled_vehicle = other_vehicles_type.create_from(vehicle=vehicle)
+                else:
+                    vehicle = ControlledVehicle(
+                        road=self.road,
+                        position=self.config["set_manually"]["ego_position"],
+                        heading=self.config["set_manually"]["ego_heading"],
+                        speed=self.config["set_manually"]["ego_speed"],
+                        target_speed=self.config["set_manually"]["ego_target_speed"],
+                        target_lane_index=None
+                    )
+                    controlled_vehicle = self.action_type.vehicle_class.create_from(vehicle=vehicle)
             
             # randomly set ego vehicle position and initial velocity
             else:
@@ -153,6 +170,8 @@ class Environment(AbstractEnv):
                     ego_acceleration=controlled_vehicle.action["acceleration"],
                     front_acceleration=other_vehicle.action["acceleration"]
                 )
+            
+            print("self.road.vehicles  ", self.road.vehicles)
     
     def _is_terminal(self) -> bool:
         return self.vehicle.crashed or self.is_impossible or \

@@ -105,6 +105,13 @@ class MainAgent:
         return general_config
 
     def initialize_model(self, general_config: dict, log_folder_path: Optional[str] = None) -> object:
+        # return none model when controlled vehicle count is 0
+        if general_config["env_config"]["config"]["controlled_vehicles"] == 0:
+            print("\n[INFO]-> EGO is set as an IDM Vehicle!\n")
+            return None
+        else:
+            pass
+
         if self.agent_model_name == "SAC":
             log_folder_name = "evaluation_SACTrainer_" + str(general_config["env"])
         elif self.agent_model_name == "PPO":
@@ -145,7 +152,7 @@ class MainAgent:
         print("\n[INFO]-> Environment:\t", env)
         return env
 
-    def run_episode(self, env: Environment, agent: object) -> tuple:        
+    def run_episode(self, env: Environment, agent: Optional[object] = None) -> tuple:        
         statistics = {
             "ego_speeds"     :  [],
             "ego_accels"     :  [],
@@ -172,9 +179,13 @@ class MainAgent:
         # loop until episode is finished or terminated
         for step_idx in range(self.algorithm_config["max_eps_length"]):
 
-            # get model action prediction
-            action_prediction = agent.compute_single_action(obs) # NOTE: change this line when model different than PPO is used
-            
+            if agent is None:
+                # IDM vehicle controling; no need for agent to take an action
+                action_prediction = None
+            else:
+                # get model action prediction
+                action_prediction = agent.compute_single_action(obs)
+                        
             # step in the environment with predicted action to get next state
             obs, reward, done, info = env.step(action_prediction)
             episode_reward += reward

@@ -96,7 +96,7 @@ if __name__ == "__main__":
         "working_dir"       :   parent_directory,
         "excludes"          :   ["*.err", "*.out"] # exclude error and output files (relative path from "parent_directory")
     }
-    # ray.shutdown()
+    ray.shutdown()
     ray.init(runtime_env    =   runtime_env)
 
     # loop through each episode to evaluate
