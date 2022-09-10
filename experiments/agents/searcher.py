@@ -12,9 +12,12 @@ class SearchAgent(Searcher):
     # queries the algorithm to retrieve the next set of parameters
     def suggest(self, trial_id: int) -> dict:
         configuration = self.optimizer.query()
-        self.configurations[trial_id] = configuration
         
-        return self.configurations[trial_id]
+        if configuration is None:
+            return None
+        else:
+            self.configurations[trial_id] = configuration
+            return self.configurations[trial_id]
 
     # notification for the completion of trial
     def on_trial_complete(self, trial_id: int, result: dict, **kwargs) -> None:
