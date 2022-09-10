@@ -36,7 +36,7 @@ front_accel_range:      [-6, 6] # [front acceleration range for IDM vehicle (hig
 space_type:             log     # [search space type (linear -> lin or logarithmic -> log)]
 eps_init:               0.5     # [initial logarithmic epsilon value]
 eps_final:              0.1     # [final logarithmic epsilon value]
-J:                      5       # [number of steps to reach final epsilon value]
+J:                      82      # [number of steps to reach final epsilon value]
 Ne:                     100     # [number of countering loops to sample from search space and check impossibility scenarios]
 noise_level:            1       # [range of applied noise to samples range(-noise_level, +noise_level)]
 
