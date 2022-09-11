@@ -8,7 +8,7 @@ load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_20
 checkpoint_number:      400     # [trained model saved checkpoint number]
 
 # [folder name in ./experiments/results/validation_checkpoints/  -> verification method results for evaluation;  null  -> uniform samples]
-validation_container:   monte_carlo_search_PPOTrainer_highway_environment:highway-environment-v0_2022-09-09_16-29-35uxa2mv8v_Agent2_mc_Chkpt300
+validation_container:   null    # monte_carlo_search_PPOTrainer_highway_environment:highway-environment-v0_2022-09-09_16-29-35uxa2mv8v_Agent2_mc_Chkpt300
 
 simulation_loops:       1000    # [each simulation has max_eps_length number of steps]
 max_eps_length:         250     # [maximum number of steps in each episode without collision]
@@ -18,14 +18,14 @@ evaluate_randomly:      true    # [true: selects initial conditions with random 
 seed:                   12      # [random seed for initial conditions sampling (used when evaluate_randomly is true)]
 
 evaluation_state:
-    distance:           19.5    # [m: this will define initial relative distance of front vehicle]
+    distance:           27.5    # [m: this will define initial relative distance of front vehicle]
 
     ego_velocity:
-        initial_value:  38.5    # [m/s; this will also be used for ego vehicle initial velocity]
+        initial_value:  20.9    # [m/s; this will also be used for ego vehicle initial velocity]
     
     front_velocity:
-        initial_value:  33.5    # [m/s; this will also be used for front vehicle initial velocity]
-        target_value:   20.5    # [m/s; this will define front vehicle target velocity]
+        initial_value:  16.5    # [m/s; this will also be used for front vehicle initial velocity]
+        target_value:   25.5    # [m/s; this will define front vehicle target velocity]
 
 data_sort_metric:       episode_min_ttc  # [metric to optimize (should be one of columns of validation_container/results.csv]
 

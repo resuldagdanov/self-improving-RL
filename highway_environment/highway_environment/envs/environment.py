@@ -71,6 +71,14 @@ class Environment(AbstractEnv):
     def _create_vehicles(self) -> None:
         other_vehicles_type = utils.class_from_path(self.config["other_vehicles_type"])
 
+        # update constant parameters for IDM
+        other_vehicles_type.ACC_MAX = self.config["idm_max_accel"]
+        other_vehicles_type.COMFORT_ACC_MAX = self.config["idm_comfort_acc_max"]
+        other_vehicles_type.COMFORT_ACC_MIN = self.config["idm_comfort_acc_min"]
+        other_vehicles_type.DISTANCE_WANTED = self.config["idm_distance_wanted"] + ControlledVehicle.LENGTH
+        other_vehicles_type.TIME_WANTED = self.config["idm_time_wanted"]
+        other_vehicles_type.DELTA = self.config["idm_delta"]
+
         if self.config["controlled_vehicles"] != 0:
             other_per_controlled = near_split(self.config["vehicles_count"], num_bins=self.config["controlled_vehicles"])
         else:
@@ -117,6 +125,7 @@ class Environment(AbstractEnv):
                         speed=ego_speed,
                         lane_id=self.config["initial_lane_id"]
                     )
+                    controlled_vehicle.target_speed = self.config["speed_range"][-1]
                 else:
                     controlled_vehicle = self.action_type.vehicle_class.create_random(
                         road=self.road,

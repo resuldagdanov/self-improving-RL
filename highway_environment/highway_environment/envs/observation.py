@@ -34,6 +34,8 @@ class Observation(ObservationType):
         self.features = features or self.FEATURES
         self.features_range = features_range or self.FEATURES_RANGE
 
+        self.env.PERCEPTION_DISTANCE = self.features_range["mio_pos"][1]
+
         self.normalize = normalize
         self.clip = clip
         self.frequency = frequency
@@ -60,7 +62,8 @@ class Observation(ObservationType):
         # for multi lane scenario increase count in "close_vehicles_to" then check lanes of vehicles to find mio!
         if not self.env.road:
             return np.zeros(self.space().shape)[0]
-
+        
+        ego_pos = self.observer_vehicle.to_dict()["x"]
         ego_speed = self.observer_vehicle.to_dict()["vx"]
 
         if self.initial:
@@ -83,19 +86,20 @@ class Observation(ObservationType):
             see_behind=False,
             sort=True
         )
-
-        mio = vehicles[0].to_dict(self.observer_vehicle, observe_intentions=False) if len(vehicles) > 0 else {"presence": False}
         
+        mio = vehicles[0].to_dict(self.observer_vehicle, observe_intentions=False) if len(vehicles) > 0 else {"presence": False}
+
         if mio["presence"] == 1:
             mio_pos = mio["x"]
             mio_vel = mio["vx"]
-            
+        
         else:
+            # relative position and velocity of mio
             mio_pos = self.features_range["mio_pos"][1]
             mio_vel = self.features_range["mio_vel"][1]
         
         # global position and velocity of mio
-        mio_location = mio_pos + self.observer_vehicle.to_dict()["x"]
+        mio_location = mio_pos + ego_pos
         mio_speed = mio_vel + ego_speed
         
         # calculate time-gap and time-to-collision
