@@ -152,3 +152,6 @@ dmypy.json
 
 # make Eatron driving dataset private (used for reward function tuning)
 /experiments/dataset/eatron_dataset
+
+# include asset figures
+!/assets/*.png

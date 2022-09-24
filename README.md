@@ -1,6 +1,13 @@
-# Black-Box-Verification
+# Self-Improving Reinforcement Learning
 
-Test Verification Algorithms on Gym Highway Environment using Ray RLlib
+Self-Improving Safety Performance of Reinforcement Learning Based Driving with Black-Box Verification Algorithms
+---
+
+<p align="center">
+    <img src="assets/system_overview.png" width="1000px"/>
+</p>
+
+# Contents
 
 * [Installation](#installation)
     - [Export Repository Path](#export-repository-path)
