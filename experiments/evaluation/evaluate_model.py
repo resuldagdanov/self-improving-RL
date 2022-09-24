@@ -130,6 +130,8 @@ if __name__ == "__main__":
                 log_folder_path =   stats_path
             )
 
+            env.close()
+
         # run one simulation (episode) loop for defined amount of steps
         statistics = agent.run_episode(
                 env         =   env,

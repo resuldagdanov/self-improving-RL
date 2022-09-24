@@ -48,6 +48,7 @@ jupyter-core==4.10.0
 jupyterlab-pygments==0.2.2
 jupyterlab-widgets==1.1.0
 kiwisolver==1.4.2
+kaleido==0.2.1
 laser_geometry==1.6.7
 Markdown==3.3.7
 MarkupSafe==2.1.1
