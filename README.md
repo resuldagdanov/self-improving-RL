@@ -29,7 +29,7 @@ Self-Improving Safety Performance of Reinforcement Learning Based Driving with B
     - [Cross-Entropy-Search Validation](#cross-entropy-search-validation)
     - [Bayesian-Optimization-Search Validation](#bayesian-optimization-search-validation)
     - [Adaptive-Multilevel-Splitting-Search Validation](#adaptive-multilevel-splitting-search-validation)
-* [Self Healing](#self-healing)
+* [Self Improvement](#self-improvement)
     - [Train RL on Custom Verification Scenarios](#train-rl-on-custom-verification-scenarios)
 * [Analyse Results](#analyse-results)
     - [Analyse & Visualize Validation Scenarios](#analyse-&-visualize-validation-scenarios)
@@ -276,7 +276,7 @@ cd experiments/algorithms
 python ams_search.py
 ```
 
-# Self-Healing
+# Self-Improvement
 
 ---
 ## Train RL on Custom Verification Scenarios
@@ -284,22 +284,22 @@ python ams_search.py
 > after applying verification algorithm, RL agent could be trained again on validation results
 
 NOTE:
-- use **/experiments/configs/self_healing.yaml** config
-- train model with **/experiments/training/self_healing.py** script
+- use **/experiments/configs/self_improvement.yaml** config
+- train model with **/experiments/training/self_improvement.py** script
 - trained model could be loaded and re-trained from latest checkpoint with _is-restore_ key inside config
 - custom scenario setter class is located at **/experiments/utils/scenarios.py**
-- new scenario loader could be added and referenced with key _validation-type_ in config **self_healing.yaml** config
+- new scenario loader could be added and referenced with key _validation-type_ in config **self_improvement.yaml** config
 
 ```sh
 cd experiments/training
 
-python self_healing.py
+python self_improvement.py
 ```
 
 > to include specific verification results into sampling container, read the following note
 
 NOTE:
-- change _validation-type_ key inside **/experiments/configs/self_healing.yaml** config to "mixture"
+- change _validation-type_ key inside **/experiments/configs/self_improvement.yaml** config to "mixture"
 - take a look at _scenario-mixer_ key parameters and specify which validation results to include
 - each validation comes with probability of sampling which should sum up to **1.0**
 - folder names in _scenario-mixer_ key should be **null** if not specified and total sum _percentage-probability_ of existing folders should be 100 (1.0)

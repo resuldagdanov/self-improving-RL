@@ -1,6 +1,6 @@
-# config for -> python ./experiments/training/self_healing.py
+# config for -> python ./experiments/training/self_improvement.py
 
-experiment_name:                    healing
+experiment_name:                    improvement
 max_eps_length:                     250        # [number of steps in each episode without collision]
 
 # [trained model folder inside ./experiments/results/trained_models/ (make sure that folder name starts with 'PPOTrainer' or 'SACTrainer')]

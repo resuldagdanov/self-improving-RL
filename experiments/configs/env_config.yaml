@@ -56,8 +56,8 @@ config:
     
     set_manually:             {}                # [search space -> when initial speed and positions are set manually, especially during verifications]
     scenario_config:
-        type:                 null              # [custom scenario evaluation class -> experiments.utils.scenarios.py (please modify self_healing.yaml config)]
-        file_name:            null              # [csv file names of verification results (please modify self_healing.yaml config)]
+        type:                 null              # [custom scenario evaluation class -> experiments.utils.scenarios.py (please modify self_improvement.yaml config)]
+        file_name:            null              # [csv file names of verification results (please modify self_improvement.yaml config)]
     
     observation:
         type:                 Kinematics

@@ -59,7 +59,7 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
         # fixed path to stored all verification results
         base_validation_path = repo_path + "/results/validation_checkpoints/"
         
-        # make sure that single verification scenario folder is used or all scenarios folders are used (take a look at self_healing.yaml)
+        # make sure that single verification scenario folder is used or all scenarios folders are used (take a look at self_improvement.yaml)
         if train_config["validation_type"] != "mixture":
             verifications_list = [(os.path.join(base_validation_path + train_config["validation_folder_name"], train_config["validation_file_name"]), 1.0)]
         
