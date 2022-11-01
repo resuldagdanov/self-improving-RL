@@ -3,7 +3,11 @@
 Self-Improving Safety Performance of Reinforcement Learning Based Driving with Black-Box Verification Algorithms
 ---
 
-## [Paper](https://arxiv.org/abs/2210.16575) | [Code](https://github.com/resuldagdanov/self-improving-RL) | [Slides](https://github.com/resuldagdanov/self-improving-RL/slides)
+## [Paper](https://arxiv.org/abs/2210.16575) | [Code](https://github.com/resuldagdanov/self-improving-RL) | [Slides](https://github.com/resuldagdanov/self-improving-RL/tree/main/slides)
+
+<p align="center">
+    <img src="assets/system_overview.png" width="1000px"/>
+</p>
 
 ## Citation
 ```bibtex
@@ -17,10 +21,6 @@ Self-Improving Safety Performance of Reinforcement Learning Based Driving with B
   copyright = {Creative Commons Attribution 4.0 International}
 }
 ```
-
-<p align="center">
-    <img src="assets/system_overview.png" width="1000px"/>
-</p>
 
 # Contents
 
