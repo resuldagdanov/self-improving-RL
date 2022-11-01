@@ -3,12 +3,28 @@
 Self-Improving Safety Performance of Reinforcement Learning Based Driving with Black-Box Verification Algorithms
 ---
 
+## [Paper](https://arxiv.org/abs/2210.16575) | [Code](https://github.com/resuldagdanov/self-improving-RL) | [Slides](https://github.com/resuldagdanov/self-improving-RL/slides)
+
+## Citation
+```bibtex
+@misc{https://doi.org/10.48550/arXiv.2210.16575,
+  doi = {10.48550/ARXIV.2210.16575},
+  url = {https://arxiv.org/abs/2210.16575},
+  author = {Dagdanov, Resul and Durmus, Halil and Ure, Nazim Kemal},
+  title = {Self-Improving Safety Performance of Reinforcement Learning Based Driving with Black-Box Verification Algorithms},
+  publisher = {arXiv},
+  year = {2022},
+  copyright = {Creative Commons Attribution 4.0 International}
+}
+```
+
 <p align="center">
     <img src="assets/system_overview.png" width="1000px"/>
 </p>
 
 # Contents
 
+* [Citation](#citation)
 * [Installation](#installation)
     - [Export Repository Path](#export-repository-path)
     - [Anaconda Environment Creation](#anaconda-environment-creation)
