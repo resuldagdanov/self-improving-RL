@@ -155,3 +155,5 @@ dmypy.json
 
 # include asset figures
 !/assets/*.png
+
+*.code-workspace
