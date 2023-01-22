@@ -3,7 +3,7 @@
 Self-Improving Safety Performance of Reinforcement Learning Based Driving with Black-Box Verification Algorithms
 ---
 
-## [Paper](https://arxiv.org/abs/2210.16575) | [Code](https://github.com/resuldagdanov/self-improving-RL) | [Slides](https://github.com/resuldagdanov/self-improving-RL/tree/ICRA-23/slides) | [Video](https://github.com/resuldagdanov/self-improving-RL/tree/ICRA-23/assets/ICRA23_Video_Submission.mp4)
+## [Paper](https://arxiv.org/abs/2210.16575) | [Code](https://github.com/resuldagdanov/self-improving-RL) | [ArXiv](https://arxiv.org/abs/2210.16575) | [Slide](https://github.com/resuldagdanov/self-improving-RL/tree/ICRA-23/slides) | [Video](https://github.com/resuldagdanov/self-improving-RL/tree/ICRA-23/assets/ICRA23_Video_Submission.mp4)
 
 <p align="center">
     <img src="assets/system_overview.png" width="1000px"/>
