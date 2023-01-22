@@ -5,8 +5,8 @@ config:
     controlled_vehicles:      1                 # [number of controlled vehicles (zero -> controlled vehicle will be controled by IDM)]
     episode_length:           250               # [steps]
     duration:                 60                # [s]
-    simulation_frequency:     10                # [hz]
-    policy_frequency:         1                 # [hz]
+    simulation_frequency:     15                # [hz]
+    policy_frequency:         5                 # [hz]
     
     collision_reward:         -10.0              # [reward received when colliding with a vehicle (default -> -1.0)]
     right_lane_reward:        0.1               # [reward received when driving on the right-most lanes, linearly mapped to zero for other lanes]

@@ -6,7 +6,7 @@ config:
     episode_length:           250               # [steps]
     duration:                 60                # [s]
     simulation_frequency:     15                # [hz]
-    policy_frequency:         1                 # [hz]
+    policy_frequency:         5                 # [hz]
     
     collision_reward:         -10.0             # [reward received when colliding with a vehicle]
     offroad_terminal:         true              # [create termination condition for road deviation]
@@ -35,6 +35,12 @@ config:
     scaling:                  5.5
     
     other_vehicles_type:      "highway_env.vehicle.behavior.IDMVehicle"
+    idm_max_accel:            4.0               # [maximum acceleration (m/s^2)]
+    idm_comfort_acc_max:      2.0               # [desired maximum acceleration (m/s^2)]
+    idm_comfort_acc_min:      -2.0              # [desired maximum deceleration (m/s^2)]
+    idm_distance_wanted:      3.0               # [desired jam distance to the front vehicle (m)]
+    idm_time_wanted:          1.2               # [desired time gap to the front vehicle (s)]
+    idm_delta:                4.0               # [acceleration exponent]
     show_trajectories:        false
     manual_control:           false             # [true: manual control is enabled (make sure that real_time_rendering=true)]
     
