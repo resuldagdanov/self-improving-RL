@@ -111,13 +111,6 @@ sudo apt-get install -y python-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsd
 pip install highway-env==1.5
 ```
 
-> register custom environment wrapper class
-```sh
-cd highway_environment/highway_environment
-
-python create_env.py
-```
-
 > install custom highway environment globally
 ```sh
 cd highway_environment
@@ -126,17 +119,24 @@ python setup.py install
 ```
 NOTE: make sure that after each update of Environment class, environment installation has to be performed again
 
+> register custom environment wrapper class
+```sh
+cd highway_environment/highway_environment
+
+python create_env.py
+```
+
 ---
 ## Package Installation
 
 > install Ray + dependencies for Ray Tune
 ```python
-pip install -U "ray[tune]"
+pip install -U "ray[tune]"==2.0.0
 ```
 
 > install Ray + dependencies for Ray RLlib
 ```python
-pip install -U "ray[rllib]"
+pip install -U "ray[rllib]"==2.0.0
 ```
 
 # Tests
