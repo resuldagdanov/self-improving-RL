@@ -77,7 +77,7 @@ source ~/.bashrc
 
 > used python3.7
 ```python
-conda create -n highway python=3.7
+conda create -n highway python=3.7.13
 
 conda activate highway
 ```
@@ -104,6 +104,11 @@ sudo apt-get update -y
 
 sudo apt-get install -y python-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl1.2-dev libsmpeg-dev
     python-numpy subversion libportmidi-dev ffmpeg libswscale-dev libavformat-dev libavcodec-dev libfreetype6-dev gcc
+```
+
+> accept license for additional gym alike games, otherwise this can cause error in highway-environment installation
+```python
+pip install autorom-accept-rom-license==0.4.2
 ```
 
 > install highway-environment
