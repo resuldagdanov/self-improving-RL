@@ -271,7 +271,7 @@ python ce_search.py
 
 > install package
 ```sh
-pip install bayesian-optimization
+pip install bayesian-optimization==1.4.0
 ```
 
 NOTE:
