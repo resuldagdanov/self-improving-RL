@@ -320,7 +320,7 @@ python self_improvement.py
 > to include specific verification results into sampling container, read the following note
 
 NOTE:
-- change _validation-type_ key inside **/experiments/configs/self_improvement.yaml** config to "mixture"
+- change _validation-type_ key inside **/experiments/configs/self_improvement.yaml** config to "complex"
 - take a look at _scenario-mixer_ key parameters and specify which validation results to include
 - each validation comes with probability of sampling which should sum up to **1.0**
 - folder names in _scenario-mixer_ key should be **null** if not specified and total sum _percentage-probability_ of existing folders should be 100 (1.0)

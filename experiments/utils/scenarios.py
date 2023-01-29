@@ -25,6 +25,9 @@ class Scenarios(object):
         elif self.scenario_config["type"] == "mixture":
             return self.sampler.mixture_sample_with_percentage()
         
+        elif self.scenario_config["type"] == "complex":
+            return self.sampler.include_uniform_candidates()
+        
         else:
             sys.exit("[ERROR]-> Defined Validation Type is Invalid!")
     
@@ -72,8 +75,16 @@ class Sampler(Scenarios):
         
         if (1 - 1e-8) < sum(self.probabilities) < (1 + 1e-8):
             pass
+        
         else:
-            sys.exit("[ERROR]-> Scenario Selection Probabilities Do Not Sum Up To 1!")
+            if self.scenario_config["type"] == "complex":
+                # include uniform sampling for rest of empty sampling probability options
+                # (check self_improvement.yaml comments for more details and reasonable explanations)
+                self.scenarios_dfs.append({})
+                self.probabilities.append(1.0 - sum(self.probabilities))
+            
+            else:
+                sys.exit("[ERROR]-> Scenario Selection Probabilities Do Not Sum Up To 1!")
     
     def uniform_sample_worst_30_percent(self) -> dict:
         """
@@ -83,7 +94,7 @@ class Sampler(Scenarios):
 
         # dropping last 70 percent of the rows
         filtered_df = sorted_df[
-            sorted_df.reward < np.percentile( sorted_df.reward, 30)
+            sorted_df.reward < np.percentile(sorted_df.reward, 30)
         ]
 
         # uniformly select one index
@@ -115,7 +126,7 @@ class Sampler(Scenarios):
             samples_to_choose = pd.concat(
                 objs        =   [samples_to_choose, scenarios.iloc[choosen_idx]],
                 axis        =   0,
-                ignore_index=   False
+                ignore_index=   True
             )
         
         # select one index out of combined dataframe with given probabilities
@@ -130,4 +141,48 @@ class Sampler(Scenarios):
             single_row_df   =   samples_to_choose.iloc[selected_idx]
         )
         return single_scenario
+    
+    def include_uniform_candidates(self) -> dict:
+        """
+            - sample with predefined contribution probability sampling method of the paper
+        """
+        samples_to_choose = pd.DataFrame()
+
+        # get one uniformly random sample from all verification results
+        for scenarios in self.scenarios_dfs:
+
+            if len(scenarios) != 0:
+                # uniformly select one index
+                choosen_idx = np.random.choice(
+                        a       =   np.arange(0, len(scenarios.index), 1, dtype=int),
+                        size    =   1
+                )
+                # get the row with choosen index
+                candidate_scenario = scenarios.iloc[choosen_idx]
+            else:
+                candidate_scenario = candidate_scenario
+            
+            samples_to_choose = pd.concat(
+                objs        =   [samples_to_choose, candidate_scenario],
+                axis        =   0,
+                ignore_index=   True
+            )
+        
+        # select one index out of combined dataframe with given probabilities
+        selected_idx = np.random.choice(
+                    a       =   np.arange(0, len(samples_to_choose), 1, dtype=int),
+                    size    =   1,
+                    p       =   self.probabilities
+        )
+
+        if selected_idx == samples_to_choose.index[-1]:
+            # sample uniformly from optimization state space
+            return {}
+        
+        else:
+            # convert dataframe to scenario initialization configuration
+            single_scenario = super().set_parameters(
+                single_row_df   =   samples_to_choose.iloc[selected_idx]
+            )
+            return single_scenario
     

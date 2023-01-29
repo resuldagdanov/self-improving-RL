@@ -60,9 +60,12 @@ def initialize_config(env_config_path: str, model_config_path: str, train_config
         base_validation_path = repo_path + "/results/validation_checkpoints/"
         
         # make sure that single verification scenario folder is used or all scenarios folders are used (take a look at self_improvement.yaml)
-        if train_config["validation_type"] != "mixture":
-            verifications_list = [(os.path.join(base_validation_path + train_config["validation_folder_name"], train_config["validation_file_name"]), 1.0)]
+        if train_config["validation_type"] == None or train_config["validation_type"] == "uniform":
+            verifications_list = [
+                (os.path.join(base_validation_path + train_config["validation_folder_name"], train_config["validation_file_name"]), 1.0)
+                ]
         
+        # the following condition will be applied if validation_type == mixture or validation_type == complex (take a look at scenarios.py)
         else:
             verifications_list = []
 

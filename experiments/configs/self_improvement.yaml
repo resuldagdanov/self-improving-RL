@@ -22,11 +22,13 @@ use_custom_torch_model:             false      # [true: use custom model in ./ex
 # [validated model's results folder inside ./results/validation_checkpoints/ folder]
 validation_folder_name:             ce_search_PPOTrainer_highway_environment:highway-environment-v0_2022-07-14_21-53-33jw2m0yb4_Chkpt30
 validation_file_name:               "results.csv"
-validation_type:                    "mixture"  # [custom name -> related to ./experiments/utils/scenarios.py]
+validation_type:                    "complex"  # [custom name -> related to ./experiments/utils/scenarios.py]
 
 # [the following parameters are used when validation_type is NOT "uniform", (check out ./experiments/utils/scenarios.py)]
+# [folder names should be null if not specified and total sum percentage_probability of existing folders should be 100 (1.0)]
+# [remaining probabilities will be considered as a uniform monte-carlo sampling in order to sum up all probabilities to 1.0]
+# [assign float number between 0-1 to variable percent_probability and remaining probabilities will be considered as a uniform sampling]
 scenario_mixer:
-    # [folder names should be null if not specified and total sum percentage_probability of existing folders should be 100 (1.0)]
     validation_folder_1:            ce_search_PPOTrainer_highway_environment:highway-environment-v0_2022-08-07_21-22-18mdgw9lf4_Agent0_Chkpt100
     percent_probability_1:          0.17       # [randomly select percentage of scenarios from validation_folder_1]
     
