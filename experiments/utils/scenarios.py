@@ -11,6 +11,7 @@ class Scenarios(object):
         
         if self.scenario_config["type"] is not None:
             self.sampler = Sampler(
+                scenario_type     =   self.scenario_config["type"],
                 scenarios_list    =   self.scenario_config["file_name"]
             )
 
@@ -48,7 +49,7 @@ class Scenarios(object):
 
 class Sampler(Scenarios):
 
-    def __init__(self, scenarios_list: list) -> None:
+    def __init__(self, scenario_type: str, scenarios_list: list) -> None:
         self.scenarios_dfs = []
         self.probabilities = []
         self.sort_df_by_reward = []
@@ -77,7 +78,7 @@ class Sampler(Scenarios):
             pass
         
         else:
-            if self.scenario_config["type"] == "complex":
+            if scenario_type == "complex":
                 # include uniform sampling for rest of empty sampling probability options
                 # (check self_improvement.yaml comments for more details and reasonable explanations)
                 self.scenarios_dfs.append({})
