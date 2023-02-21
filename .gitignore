@@ -156,3 +156,5 @@ dmypy.json
 # include asset figures, gif, and videos
 !/assets/*.png
 !/assets/*.mp4
+
+*.code-workspace
