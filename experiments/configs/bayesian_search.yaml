@@ -1,6 +1,6 @@
-# config for -> python ./experiments/algorithms/beyesian_search.py
+# config for -> python ./experiments/algorithms/bayesian_search.py
 
-experiment_name:        beyesian_search
+experiment_name:        bayesian_search
 
 # [trained model folder inside ./experiments/results/trained_models/ (make sure that folder name starts with 'PPOTrainer' or 'SACTrainer')]
 load_agent_name:        PPOTrainer_highway_environment:highway-environment-v0_2022-09-08_10-55-47es7uo_wq

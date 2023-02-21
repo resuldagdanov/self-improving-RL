@@ -3,7 +3,7 @@
 Self-Improving Safety Performance of Reinforcement Learning Based Driving with Black-Box Verification Algorithms
 ---
 
-## [Paper](https://arxiv.org/abs/2210.16575) | [Code](https://github.com/resuldagdanov/self-improving-RL) | [Slides](https://github.com/resuldagdanov/self-improving-RL/tree/main/slides)
+## [Paper](https://arxiv.org/abs/2210.16575) | [Code](https://github.com/resuldagdanov/self-improving-RL) | [ArXiv](https://arxiv.org/abs/2210.16575) | [Slide](https://github.com/resuldagdanov/self-improving-RL/tree/ICRA-23/slides) | [Video](https://github.com/resuldagdanov/self-improving-RL/tree/ICRA-23/assets/ICRA23_Video_Submission.mp4)
 
 <p align="center">
     <img src="assets/system_overview.png" width="1000px"/>
@@ -77,7 +77,7 @@ source ~/.bashrc
 
 > used python3.7
 ```python
-conda create -n highway python=3.7
+conda create -n highway python=3.7.13
 
 conda activate highway
 ```
@@ -106,16 +106,14 @@ sudo apt-get install -y python-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsd
     python-numpy subversion libportmidi-dev ffmpeg libswscale-dev libavformat-dev libavcodec-dev libfreetype6-dev gcc
 ```
 
+> accept license for additional gym alike games, otherwise this can cause error in highway-environment installation
+```python
+pip install autorom-accept-rom-license==0.4.2
+```
+
 > install highway-environment
 ```python
 pip install highway-env==1.5
-```
-
-> register custom environment wrapper class
-```sh
-cd highway_environment/highway_environment
-
-python create_env.py
 ```
 
 > install custom highway environment globally
@@ -126,17 +124,24 @@ python setup.py install
 ```
 NOTE: make sure that after each update of Environment class, environment installation has to be performed again
 
+> register custom environment wrapper class
+```sh
+cd highway_environment/highway_environment
+
+python create_env.py
+```
+
 ---
 ## Package Installation
 
 > install Ray + dependencies for Ray Tune
 ```python
-pip install -U "ray[tune]"
+pip install -U "ray[tune]"==2.0.0
 ```
 
 > install Ray + dependencies for Ray RLlib
 ```python
-pip install -U "ray[rllib]"
+pip install -U "ray[rllib]"==2.0.0
 ```
 
 # Tests
@@ -266,7 +271,7 @@ python ce_search.py
 
 > install package
 ```sh
-pip install bayesian-optimization
+pip install bayesian-optimization==1.4.0
 ```
 
 NOTE:
@@ -315,7 +320,7 @@ python self_improvement.py
 > to include specific verification results into sampling container, read the following note
 
 NOTE:
-- change _validation-type_ key inside **/experiments/configs/self_improvement.yaml** config to "mixture"
+- change _validation-type_ key inside **/experiments/configs/self_improvement.yaml** config to "complex"
 - take a look at _scenario-mixer_ key parameters and specify which validation results to include
 - each validation comes with probability of sampling which should sum up to **1.0**
 - folder names in _scenario-mixer_ key should be **null** if not specified and total sum _percentage-probability_ of existing folders should be 100 (1.0)

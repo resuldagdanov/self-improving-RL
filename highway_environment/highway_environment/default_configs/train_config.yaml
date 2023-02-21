@@ -19,7 +19,7 @@ train:
         num_envs_per_worker:            1
         num_sgd_iter:                   10
         entropy_coeff:                  0.001
-        evaluation_interval:            0
+        evaluation_interval:            1
         evaluation_num_episodes:        50
         evaluation_num_workers:         0
         
