@@ -3,7 +3,7 @@
 Self-Improving Safety Performance of Reinforcement Learning Based Driving with Black-Box Verification Algorithms
 ---
 
-## [Paper](https://arxiv.org/abs/2210.16575) | [Code](https://github.com/resuldagdanov/self-improving-RL) | [ArXiv](https://arxiv.org/abs/2210.16575) | [Slide](https://github.com/resuldagdanov/self-improving-RL/tree/ICRA-23/slides) | [Video](https://github.com/resuldagdanov/self-improving-RL/tree/ICRA-23/assets/ICRA23_Video_Submission.mp4)
+## [Paper](https://ieeexplore.ieee.org/document/10160883) | [Code](https://github.com/resuldagdanov/self-improving-RL) | [ArXiv](https://arxiv.org/abs/2210.16575) | [Slide](https://github.com/resuldagdanov/self-improving-RL/tree/ICRA-23/slides) | [Video](https://github.com/resuldagdanov/self-improving-RL/tree/ICRA-23/assets/ICRA23_Video_Submission.mp4)
 
 <p align="center">
     <img src="assets/system_overview.png" width="1000px"/>
@@ -11,14 +11,15 @@ Self-Improving Safety Performance of Reinforcement Learning Based Driving with B
 
 ## Citation
 ```bibtex
-@misc{https://doi.org/10.48550/arXiv.2210.16575,
-  doi = {10.48550/ARXIV.2210.16575},
-  url = {https://arxiv.org/abs/2210.16575},
-  author = {Dagdanov, Resul and Durmus, Halil and Ure, Nazim Kemal},
-  title = {Self-Improving Safety Performance of Reinforcement Learning Based Driving with Black-Box Verification Algorithms},
-  publisher = {arXiv},
-  year = {2022},
-  copyright = {Creative Commons Attribution 4.0 International}
+@INPROCEEDINGS{dagdanov2023self,
+  author={Dagdanov, Resul and Durmus, Halil and Ure, Nazim Kemal},
+  booktitle={2023 IEEE International Conference on Robotics and Automation (ICRA)}, 
+  title={Self-Improving Safety Performance of Reinforcement Learning Based Driving with Black-Box Verification Algorithms}, 
+  year={2023},
+  volume={},
+  number={},
+  pages={5631-5637},
+  doi={10.1109/ICRA48891.2023.10160883}
 }
 ```
 
